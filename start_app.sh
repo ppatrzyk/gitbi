@@ -3,12 +3,12 @@
 set -e
 
 app_dir="$(realpath ./app)";
-export gitbi_repo_dir="$(realpath $1)";
-cd $gitbi_repo_dir;
+export GITBI_REPO_DIR="$(realpath $1)";
+cd $GITBI_REPO_DIR;
 
 inside_git_repo="$(git rev-parse --is-inside-work-tree)";
 toplevel="$(git rev-parse --show-toplevel)";
-if [ $gitbi_repo_dir != $toplevel ]; then
+if [ $GITBI_REPO_DIR != $toplevel ]; then
     echo "Passed subdirectory of an existing git repo at $toplevel";
     exit 1
 else
