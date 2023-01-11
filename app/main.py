@@ -1,4 +1,5 @@
 from starlette.applications import Starlette
+from starlette.exceptions import HTTPException
 from starlette.responses import JSONResponse
 from starlette.routing import Mount, Route
 from starlette.staticfiles import StaticFiles
@@ -17,13 +18,17 @@ async def home(request):
 
 async def query(request):
     params = request.path_params
-    query = get_query(
-        state='file',
-        db=params.get('db'),
-        file=params.get('file')
-    )
-    data = {"request": request, **query, }
-    return templates.TemplateResponse('query.html', data)
+    try:
+        query = get_query(
+            state='file',
+            db=params.get('db'),
+            file=params.get('file')
+        )
+    except:
+        raise HTTPException(status_code=404, detail="Query not found")
+    else:
+        data = {"request": request, **query, }
+        return templates.TemplateResponse('query.html', data)
 
 routes = [
     Route("/", endpoint=home),
