@@ -1,6 +1,7 @@
 from starlette.applications import Starlette
 from starlette.responses import JSONResponse
-from starlette.routing import Route
+from starlette.routing import Mount, Route
+from starlette.staticfiles import StaticFiles
 from starlette.templating import Jinja2Templates
 
 from home import get_home
@@ -27,6 +28,7 @@ async def query(request):
 routes = [
     Route("/", endpoint=home),
     Route('/query/{db:str}/{file:str}', endpoint=query),
+    Mount('/static', app=StaticFiles(directory='static'), name="static"),
 ]
 
 app = Starlette(debug=True, routes=routes)
