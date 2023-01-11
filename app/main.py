@@ -1,17 +1,28 @@
 from starlette.applications import Starlette
 from starlette.responses import JSONResponse
 from starlette.routing import Route
+from starlette.templating import Jinja2Templates
 
 from home import get_home
 from query import get_query
 
+templates = Jinja2Templates(directory='templates')
+
 async def home(request):
-    home_data = get_home()
-    return JSONResponse(home_data)
+    print(__file__)
+    home_data = get_home(state='file')
+    data = {"request": request, **home_data, }
+    return templates.TemplateResponse('index.html', data)
 
 async def query(request):
-    query = get_query(**request.path_params)
-    return JSONResponse({"query": query})
+    params = request.path_params
+    query = get_query(
+        state='file',
+        db=params.get('db'),
+        file=params.get('file')
+    )
+    data = {"request": request, **query, }
+    return templates.TemplateResponse('query.html', data)
 
 routes = [
     Route("/", endpoint=home),

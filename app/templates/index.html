@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gitbi Home</title>
+</head>
+<body>
+    <h1>Main page</h1>
+    <!-- TODO turn md into html -->
+    <div>{{ readme }}</div>
+    <h2>Data sources:</h2>
+    {% for db, queries in databases.items() %}
+        <h3>{{ db }}</h3>
+        {% for query in queries %}
+        <a href="/query/{{ db }}/{{ query }}">{{ query }}</a>
+        {% endfor %}
+    {% endfor %}
+</body>
+</html>

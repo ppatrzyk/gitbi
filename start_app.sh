@@ -16,6 +16,7 @@ else
 fi;
 
 echo "Git repo OK, starting gitbi...";
+cd $app_dir
 uvicorn \
     --host=127.0.0.1 \
     --port=8000 \
