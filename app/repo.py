@@ -1,5 +1,6 @@
 import os
 import re
+from pathlib import Path
 from pygit2 import Repository
 
 DIR = os.environ["GITBI_REPO_DIR"]
@@ -11,56 +12,63 @@ def get_conn_str(db):
     var_name = f"GITBI_{db.upper()}_CONN"
     return os.environ[var_name]
 
-def get_query(db, file):
+def get_query(state, db, query):
     """
     """
-    query_path = os.path.join(DIR, db, file)
-    return get_file_content(query_path)
+    query_path = os.path.join(db, query)
+    return _get_file_content(state, query_path)
 
-def get_readme():
+def get_readme(state):
     """
     """
-    readme_path = os.path.join(DIR, "README.md")
-    return get_file_content(readme_path)
+    return _get_file_content(state, "README.md")
 
-def list_sources():
+def list_sources(state):
     """
     """
-    db_dirs = {db_dir for db_dir in os.scandir(DIR) if db_dir.is_dir() and db_dir.name != ".git"}
-    sources = {db_dir.name: tuple(el.name for el in os.scandir(db_dir) if el.is_file()) for db_dir in db_dirs}
+    # TODO no ifloop solution, tuples not list ?
+    match state:
+        case 'file':
+            db_dirs = {db_dir for db_dir in os.scandir(DIR) if db_dir.is_dir() and db_dir.name != ".git"}
+            sources = {db_dir.name: [el.name for el in os.scandir(db_dir) if el.is_file()] for db_dir in db_dirs}
+        case hash:
+            commit = REPO.revparse_single(hash)
+            sources = dict()
+            for path in (Path(el) for el in _get_tree_objects_generator(commit.tree)):
+                if len(path.parts) == 2:
+                    db = str(path.parent)
+                    query = str(path.name)
+                    try:
+                        sources[db].append(query)
+                    except:
+                        sources[db] = [query, ]
     return sources
 
-def get_file_content(path):
+def _get_file_content(state, path):
     """
     """
-    with open(path, "r") as f:
-        content = f.read()
-        assert re.sub("\s", "", content), "File is empty"
+    match state:
+        case 'file':
+            with open(os.path.join(DIR, path), "r") as f:
+                content = f.read()
+        case hash:
+            commit = REPO.revparse_single(hash)
+            blob = commit.tree / path
+            content = blob.data.decode("UTF-8")
+    assert re.sub(r"\s", "", content), "File is empty"
     return content
 
-# https://stackoverflow.com/a/9684612
-def get_tree_objects(tree):
+def _get_tree_objects_generator(tree, prefix=""):
     """
-    """
-    return tuple(get_tree_objects_generator(tree, prefix=""))
-
-def get_tree_objects_generator(tree, prefix=""):
-    """
+    # https://stackoverflow.com/a/9684612
     """
     for obj in tree:
         if obj.type_str == "blob":
             yield os.path.join(prefix, obj.name)
         elif obj.type_str == "tree":
             new_prefix = os.path.join(prefix, obj.name)
-            for entry in get_tree_objects_generator(obj, new_prefix):
+            for entry in _get_tree_objects_generator(obj, new_prefix):
                 yield entry
 
-def get_file_content_git(tree, path):
-    """
-    """
-    #TODO path is relative without DIR, unify later
-    blob = tree / path
-    return blob.data.decode("UTF-8")
-
-# head = REPO.revparse_single('HEAD')
+# TODO list all commits
 # commits = tuple(commit for commit in REPO.walk(REPO.head.target))
