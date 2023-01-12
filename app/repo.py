@@ -9,14 +9,21 @@ REPO = Repository(DIR)
 def get_conn_str(db):
     """
     """
-    var_name = f"GITBI_{db.upper()}_CONN"
-    return os.environ[var_name]
+    try:
+        conn_str = os.environ[f"GITBI_{db.upper()}_CONN"]
+    except:
+        raise NameError("DB variables not set")
+    return conn_str
 
 def get_query(state, db, query):
     """
     """
-    query_path = os.path.join(db, query)
-    return _get_file_content(state, query_path)
+    try:
+        query_path = os.path.join(db, query)
+        query = _get_file_content(state, query_path)
+    except:
+        raise FileNotFoundError("Query not found")
+    return query
 
 def get_readme(state):
     """

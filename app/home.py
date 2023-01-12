@@ -1,8 +1,8 @@
 import repo
 
-def get_home(state):
+def get_home_data(state):
     """
-    Get home page
+    Get home page data
     """
     try:
         readme = repo.get_readme(state)

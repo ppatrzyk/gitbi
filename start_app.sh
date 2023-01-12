@@ -3,7 +3,12 @@
 set -e
 
 app_dir="$(realpath ./app)";
-export GITBI_REPO_DIR="$(realpath $1)";
+if [ -n "$GITBI_REPO_DIR" ]; then
+    export GITBI_REPO_DIR="$(realpath $GITBI_REPO_DIR)";
+else
+    echo "GITBI_REPO_DIR not specified"
+    exit 1
+fi
 cd $GITBI_REPO_DIR;
 
 inside_git_repo="$(git rev-parse --is-inside-work-tree)";
