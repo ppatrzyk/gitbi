@@ -1,9 +1,10 @@
 import os
+import re
 import repo
 import prettytable
 import sqlite3
+import sqlparse
 
-# TODO execute query against db
 DATABASES = {
     "sqlite": sqlite3,
 }
@@ -13,10 +14,10 @@ def get_query_data(state, db, file):
     """
     driver, conn_str = _get_db_params(db)
     query = repo.get_query(state, db, file)
-    result = _execute_query(driver, conn_str, query)
+    table_formatted = _execute_query(driver, conn_str, query)
     data = {
         "query": query,
-        "result": result,
+        "table": table_formatted,
     }
     return data
 
@@ -36,15 +37,28 @@ def _get_db_params(db):
         raise ValueError(f"DB type {db_type} not supported")
     return driver, conn_str
 
+def _format_query(result):
+    """
+    TODO this might need to be changed in the future if there are paged results
+    """
+    try:
+        table = prettytable.from_db_cursor(result)
+        table_formatted = "" if table is None else table.get_html_string()
+    except Exception as e:
+        raise ValueError(f"Formatting error: {str(e)}")
+    return table_formatted
+
 def _execute_query(driver, conn_str, query):
     """
     """
     try:
         conn = driver.connect(conn_str)
         cursor = conn.cursor()
-        result = cursor.execute(query)
-        table = prettytable.from_db_cursor(result)
-        table_formatted = table.get_html_string()
+        statements = tuple(el for el in sqlparse.split(query) if not re.search(r"^\s?--", el))
+        assert statements, f"No valid SQL statements in: {query}"
+        for statement in statements:
+            result = cursor.execute(statement)
+        table_formatted = _format_query(result)
     except Exception as e:
         raise ValueError(f"Error executing query: {str(e)}")
     finally:

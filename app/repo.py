@@ -28,7 +28,7 @@ def list_sources(state):
     match state:
         case 'file':
             db_dirs = {db_dir for db_dir in os.scandir(DIR) if db_dir.is_dir() and db_dir.name != ".git"}
-            sources = {db_dir.name: [el.name for el in os.scandir(db_dir) if el.is_file()] for db_dir in db_dirs}
+            sources = {db_dir.name: set(el.name for el in os.scandir(db_dir) if el.is_file()) for db_dir in db_dirs}
         case hash:
             commit = REPO.revparse_single(hash)
             sources = dict()
@@ -37,9 +37,9 @@ def list_sources(state):
                     db = str(path.parent)
                     query = str(path.name)
                     try:
-                        sources[db].append(query)
+                        sources[db].add(query)
                     except:
-                        sources[db] = [query, ]
+                        sources[db] = set((query, ))
     return sources
 
 def _get_file_content(state, path):
