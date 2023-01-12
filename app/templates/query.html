@@ -9,6 +9,9 @@
 </head>
 <body>
     <h1>Query page</h1>
-    <code>{{ query }}</code>
+    <h2>Query</h2>
+    <code>{{ query|e }}</code>
+    <h2>Result</h2>
+    <div>{{ result }}</div>
 </body>
 </html>

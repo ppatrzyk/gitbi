@@ -8,7 +8,7 @@ from starlette.templating import Jinja2Templates
 from home import get_home_data
 from query import get_query_data
 
-templates = Jinja2Templates(directory='templates')
+templates = Jinja2Templates(directory='templates', autoescape=False)
 
 async def home(request):
     home_data = get_home_data(state='file')
@@ -26,6 +26,8 @@ async def query(request):
     except FileNotFoundError as e:
         raise HTTPException(status_code=404, detail=str(e))
     except NameError as e:
+        raise HTTPException(status_code=500, detail=str(e))
+    except ValueError as e:
         raise HTTPException(status_code=500, detail=str(e))
     else:
         data = {"request": request, **query, }

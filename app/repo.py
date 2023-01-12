@@ -6,15 +6,6 @@ from pygit2 import Repository
 DIR = os.environ["GITBI_REPO_DIR"]
 REPO = Repository(DIR)
 
-def get_conn_str(db):
-    """
-    """
-    try:
-        conn_str = os.environ[f"GITBI_{db.upper()}_CONN"]
-    except:
-        raise NameError("DB variables not set")
-    return conn_str
-
 def get_query(state, db, query):
     """
     """
