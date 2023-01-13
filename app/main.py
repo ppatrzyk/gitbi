@@ -11,14 +11,15 @@ from starlette.templating import Jinja2Templates
 from home import get_home_data
 from query import get_query_data
 
+VERSION = "0.1"
 templates = Jinja2Templates(directory='templates', autoescape=False)
 
 async def home(request):
     """
     Endpoint for home page
     """
-    home_data = get_home_data(state='file')
-    data = {"request": request, **home_data, }
+    home_data = get_home_data(state='HEAD')
+    data = {"request": request, "version": VERSION, **home_data, }
     return templates.TemplateResponse('index.html', data)
 
 async def query(request):
@@ -28,7 +29,7 @@ async def query(request):
     params = request.path_params
     try:
         query = get_query_data(
-            state='file',
+            state='HEAD',
             db=params.get('db'),
             file=params.get('file')
         )
@@ -39,12 +40,12 @@ async def query(request):
     except ValueError as e:
         raise HTTPException(status_code=500, detail=str(e))
     else:
-        data = {"request": request, **query, }
+        data = {"request": request, "version": VERSION, **query, }
         return templates.TemplateResponse('query.html', data)
 
 routes = [
-    Route("/", endpoint=home),
-    Route('/query/{db:str}/{file:str}', endpoint=query),
+    Route("/", endpoint=home, name="home"),
+    Route('/query/{db:str}/{file:str}', endpoint=query, name="query"),
     Mount('/static', app=StaticFiles(directory='static'), name="static"),
 ]
 

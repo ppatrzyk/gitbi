@@ -13,8 +13,7 @@ def test_get_readme():
 def test_get_query():
     with pytest.raises(FileNotFoundError):
         get_query("f76d73c56b16bb3d74535e7f5b672066c11e17af", "postgres", "query.sql")
-    with pytest.raises(FileNotFoundError):
-        get_query("81b3c23584459b4e3693d6428e3fc608aab7252a", "postgres", "query.sql")
+    assert get_query("81b3c23584459b4e3693d6428e3fc608aab7252a", "postgres", "query.sql") == ""
     assert get_query("5bb043654572d1d768df503e04c4dbdd3606d65f", "postgres", "query.sql") == "script file content\n"
     assert get_query("836bd2dced3aad27abb0c1def6de4696e0722dfe", "postgres", "query.sql") == "script file content\n"
     assert get_query("bdd50332c25777feaaee7b3f40a4a42ab173ae18", "postgres", "query.sql") == "script file content\n"

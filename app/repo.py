@@ -2,7 +2,6 @@
 Functions to interact with config repository
 """
 import os
-import re
 from pathlib import Path
 from pygit2 import Repository
 
@@ -30,7 +29,6 @@ def list_sources(state):
     """
     Lists all available sources (db + queries)
     """
-    # TODO no ifloop solution, tuples not list ?
     match state:
         case 'file':
             db_dirs = {db_dir for db_dir in os.scandir(DIR) if db_dir.is_dir() and db_dir.name != ".git"}
@@ -60,7 +58,6 @@ def _get_file_content(state, path):
             commit = REPO.revparse_single(hash)
             blob = commit.tree / path
             content = blob.data.decode("UTF-8")
-    assert re.sub(r"\s", "", content), "File is empty"
     return content
 
 def _get_tree_objects_generator(tree, prefix=""):

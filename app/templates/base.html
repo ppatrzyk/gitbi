@@ -1,0 +1,32 @@
+{# https://jinja.palletsprojects.com/en/3.0.x/templates/#base-template #}
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="{{ url_for('static', path='/favicon.ico') }}" rel="shortcut icon" type="image/x-icon">
+    <link href="{{ url_for('static', path='/css/pico.min.css') }}" rel="stylesheet">
+    <link href="{{ url_for('static', path='/css/gitbi.css') }}" rel="stylesheet">
+    <title>Gitbi | {% block title %}{% endblock %}</title>
+</head>
+<body>
+<main class="container">
+    <nav>
+        <ul>
+          <li><strong>Gitbi</strong></li>
+        </ul>
+        <ul>
+          <li><a href="{{ url_for('home') }}">Home</a></li>
+        </ul>
+      </nav>
+      {% block content %}{% endblock %}
+      <footer class="container footer">
+        <hr>
+        <small>
+            <p><a target="_blank" href="https://github.com/ppatrzyk/gitbi">Gitbi</a> v{{ version }}.</p>
+        </small>
+    </footer>
+</main>
+</body>
+</html>

@@ -2,6 +2,7 @@
 Getting data for home page
 """
 import repo
+from markdown import markdown
 
 def get_home_data(state):
     """
@@ -9,10 +10,12 @@ def get_home_data(state):
     """
     try:
         readme = repo.get_readme(state)
+        readme = markdown(readme)
     except:
         readme = None
+    databases = {db: sorted(tuple(queries)) for db, queries in repo.list_sources(state).items()}
     home_data = {
         "readme": readme,
-        "databases": repo.list_sources(state),
+        "databases": databases,
     }
     return home_data

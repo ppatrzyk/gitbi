@@ -1,26 +1,19 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="shortcut icon" type="image/x-icon" href="/static/favicon.ico"/>
-    <title>Gitbi Home</title>
-</head>
-<body>
-    <h1>Main page</h1>
-    <!-- TODO turn md into html -->
+{% extends "base.html" %}
+{% block title %}Query{% endblock %}
+{% block content %}
     {% if readme is not none %}
     <div>{{ readme }}</div>
     {% else %}
-    <div>Readme file missing</div>
+    <h1>Gitbi Home</h1>
+    <p>[Readme file is missing]</p>
     {% endif %}
     <h2>Data sources:</h2>
     {% for db, queries in databases.items() %}
-        <h3>{{ db }}</h3>
+        <h3>{{ db|e }}</h3>
+        <ul>
         {% for query in queries %}
-        <a href="/query/{{ db }}/{{ query }}">{{ query }}</a>
+        <li><a href="{{ url_for('query', db=db, file=query) }}">{{ query|e }}</a></li>
         {% endfor %}
+        </ul>
     {% endfor %}
-</body>
-</html>
+{% endblock %}
