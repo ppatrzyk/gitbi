@@ -1,3 +1,6 @@
+"""
+Main app file
+"""
 from starlette.applications import Starlette
 from starlette.exceptions import HTTPException
 from starlette.responses import JSONResponse
@@ -11,11 +14,17 @@ from query import get_query_data
 templates = Jinja2Templates(directory='templates', autoescape=False)
 
 async def home(request):
+    """
+    Endpoint for home page
+    """
     home_data = get_home_data(state='file')
     data = {"request": request, **home_data, }
     return templates.TemplateResponse('index.html', data)
 
 async def query(request):
+    """
+    Endpoint for displaying query results
+    """
     params = request.path_params
     try:
         query = get_query_data(

@@ -1,3 +1,6 @@
+"""
+Functions to interact with config repository
+"""
 import os
 import re
 from pathlib import Path
@@ -8,6 +11,7 @@ REPO = Repository(DIR)
 
 def get_query(state, db, query):
     """
+    Gets query content from the repo
     """
     try:
         query_path = os.path.join(db, query)
@@ -18,11 +22,13 @@ def get_query(state, db, query):
 
 def get_readme(state):
     """
+    Gets readme content from the repo
     """
     return _get_file_content(state, "README.md")
 
 def list_sources(state):
     """
+    Lists all available sources (db + queries)
     """
     # TODO no ifloop solution, tuples not list ?
     match state:
@@ -44,6 +50,7 @@ def list_sources(state):
 
 def _get_file_content(state, path):
     """
+    Read file content from git or filesystem
     """
     match state:
         case 'file':
@@ -58,7 +65,7 @@ def _get_file_content(state, path):
 
 def _get_tree_objects_generator(tree, prefix=""):
     """
-    # https://stackoverflow.com/a/9684612
+    List files from given state of the repo
     """
     for obj in tree:
         if obj.type_str == "blob":

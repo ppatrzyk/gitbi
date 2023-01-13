@@ -1,3 +1,6 @@
+"""
+Functions to process SQL queries
+"""
 import os
 import re
 import repo
@@ -11,6 +14,7 @@ DATABASES = {
 
 def get_query_data(state, db, file):
     """
+    Main function to get all data about the query
     """
     driver, conn_str = _get_db_params(db)
     query = repo.get_query(state, db, file)
@@ -23,6 +27,7 @@ def get_query_data(state, db, file):
 
 def _get_db_params(db):
     """
+    Reads database configuration from environment variables
     """
     db_type_key = f"GITBI_{db.upper()}_TYPE"
     conn_str_key = f"GITBI_{db.upper()}_CONN"
@@ -39,6 +44,7 @@ def _get_db_params(db):
 
 def _format_query(result):
     """
+    Format query result as html table
     TODO this might need to be changed in the future if there are paged results
     """
     try:
@@ -50,6 +56,7 @@ def _format_query(result):
 
 def _execute_query(driver, conn_str, query):
     """
+    Executes query against DB using suitable driver
     """
     try:
         conn = driver.connect(conn_str)

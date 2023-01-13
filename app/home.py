@@ -1,3 +1,6 @@
+"""
+Getting data for home page
+"""
 import repo
 
 def get_home_data(state):
