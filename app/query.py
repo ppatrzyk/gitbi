@@ -1,15 +1,19 @@
 """
 Functions to process SQL queries
 """
+from clickhouse_driver import dbapi as clickhouse
 import os
+import prettytable
+import psycopg
 import re
 import repo
-import prettytable
 import sqlite3
 import sqlparse
 
 DATABASES = {
     "sqlite": sqlite3,
+    "postgres": psycopg,
+    "clickhouse": clickhouse
 }
 
 def get_query_data(state, db, file):

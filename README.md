@@ -2,11 +2,11 @@
 
 [In Progress]
 
-_Gitbi_ is a lightweight business intelligence application that reads all data from a git repository. This design enables you to write and commit SQL queries directly to git repo and have _Gitbi_ display them.
+_Gitbi_ is a lightweight business intelligence application that reads all queries from a git repository. This design enables you to write and commit SQL queries directly to git repo and have _Gitbi_ display them.
 
 ## Configuration
 
-_Gitbi_ requires the following to run
+_Gitbi_ requires the following to run:
 
 ### Repository with saved queries
 
@@ -14,6 +14,26 @@ Repository needs to have the following structure:
 - directories in repo root refer to databases
 - files in each directory are queries to be run against respective database
 - README.md file content will be displayed on _Gitbi_ main page
+
+### Environment variables
+
+Name | Description
+--- | ---
+GITBI\_REPO\_DIR | Path to the repository
+GITBI\_<DB\_NAME>\_CONN | Connection string
+GITBI\_<DB\_NAME>\_TYPE | Database type (see below for permissible values)
+
+Following database types are supported:
+
+Type (value of GITBI\_<DB\_NAME>\_TYPE) | Connection string format (GITBI\_<DB\_NAME>\_CONN)
+--- | ---
+clickhouse | clickhouse://[login]:[password]@[host]:[port]/[database]
+postgres | postgresql://[userspec@][hostspec][/dbname][?paramspec]
+sqlite | path to db file
+
+### Example
+
+Assume you have repository with the following structure:
 
 ```
 repo/
@@ -27,20 +47,27 @@ repo/
 └── README.md
 ```
 
-### Environment variables
+There are 2 databases named _db1_ and _db2_. For configuration you'd need to set the following environment variables:
 
-Name | Description
---- | ---
-GITBI_REPO_DIR | Path to the repository
-GITBI_<DB_NAME>_CONN | Connection string
-GITBI_<DB_NAME>_TYPE | Database type
+```
+GITBI_REPO_DIR=<path_to_repo>
+GITBI_DB1_CONN=<conn_str_to_db1>
+GITBI_DB1_TYPE=<type_db1>
+GITBI_DB2_CONN=<conn_str_to_db2>
+GITBI_DB2_TYPE=<type_db2>
+```
 
-TODO document available db_types and conn strings
+For a working deployment example, see https://github.com/ppatrzyk/gitbi-example
 
 ## Development
 
 ```
+# run local
 GITBI_REPO_DIR="./tests/gitbi-testing" ./start_app.sh
 
+#run tests
 GITBI_REPO_DIR="./tests/gitbi-testing" pytest
+
+# build image
+docker build -t pieca/gitbi:<version> .
 ```
