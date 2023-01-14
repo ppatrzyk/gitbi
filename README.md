@@ -1,6 +1,6 @@
 # gitbi
 
-[In Progress]
+**[DEVELOPMENT IN PROGRESS]**
 
 _Gitbi_ is a lightweight business intelligence application that reads all queries from a git repository. This design enables you to write and commit SQL queries directly to git repo and have _Gitbi_ display them.
 
@@ -64,9 +64,6 @@ For a working deployment example, see https://github.com/ppatrzyk/gitbi-example
 ```
 # run local
 GITBI_REPO_DIR="./tests/gitbi-testing" ./start_app.sh
-
-#run tests
-GITBI_REPO_DIR="./tests/gitbi-testing" pytest
 
 # build image
 docker build -t pieca/gitbi:<version> .

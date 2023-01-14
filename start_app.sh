@@ -7,11 +7,12 @@ if [ -n "$GITBI_REPO_DIR" ]; then
     echo "GITBI_REPO_DIR specified: $GITBI_REPO_DIR"
 else
     echo "GITBI_REPO_DIR not specified, running example configuration"
-    git clone https://github.com/ppatrzyk/gitbi-example.git
-    GITBI_REPO_DIR=./gitbi-example
-    git -C $GITBI_REPO_DIR checkout example
-    export GITBI_POKEMON_TYPE=sqlite
-    export GITBI_POKEMON_CONN="$(realpath ./gitbi-example/pokemon.sqlite)"
+    if [ -d "./gitbi-example" ]; then
+        echo "Example repo already exists, skipping clone"
+    else
+        git clone https://github.com/ppatrzyk/gitbi-example.git
+    fi
+    . ./gitbi-example/example_setup.sh
 fi
 export GITBI_REPO_DIR="$(realpath $GITBI_REPO_DIR)";
 cd $GITBI_REPO_DIR;

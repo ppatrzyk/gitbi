@@ -43,10 +43,22 @@ async def query(request):
         data = {"request": request, "version": VERSION, **query, }
         return templates.TemplateResponse('query.html', data)
 
+async def server_error(request, exc):
+    data = {
+        "request": request,
+        "code": exc.status_code,
+        "message": exc.detail
+    }
+    return templates.TemplateResponse('error.html', data)
+
 routes = [
     Route("/", endpoint=home, name="home"),
     Route('/query/{db:str}/{file:str}', endpoint=query, name="query"),
     Mount('/static', app=StaticFiles(directory='static'), name="static"),
 ]
 
-app = Starlette(debug=True, routes=routes)
+exception_handlers = {
+    HTTPException: server_error,
+}
+
+app = Starlette(debug=True, routes=routes, exception_handlers=exception_handlers)
