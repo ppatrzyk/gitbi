@@ -8,6 +8,27 @@ from pygit2 import Repository
 DIR = os.environ["GITBI_REPO_DIR"]
 REPO = Repository(DIR)
 
+def get_db_params(db):
+    """
+    Reads database configuration from environment variables
+    """
+    db_type_key = f"GITBI_{db.upper()}_TYPE"
+    conn_str_key = f"GITBI_{db.upper()}_CONN"
+    conn_str_file_key = f"GITBI_{db.upper()}_CONN_FILE"
+    try:
+        db_type = os.environ[db_type_key]
+    except:
+        raise NameError(f"{db_type_key} not set")
+    try:
+        conn_str = os.environ[conn_str_key]
+    except:
+        try:
+            conn_str_file = os.environ[conn_str_file_key]
+            conn_str = _get_file_content('file', conn_str_file)
+        except:
+            raise NameError(f"Neither {conn_str_key} nor valid {conn_str_file_key} was set")
+    return db_type, conn_str
+
 def get_query(state, db, query):
     """
     Gets query content from the repo

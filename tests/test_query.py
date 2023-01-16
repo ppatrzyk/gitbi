@@ -1,6 +1,6 @@
-from app.query import *
 import pytest
 from contextlib import nullcontext as does_not_raise
+from app.query import *
 
 def test_get_query_data():
     with pytest.raises(ValueError):

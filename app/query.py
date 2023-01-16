@@ -2,10 +2,9 @@
 Functions to process SQL queries
 """
 from clickhouse_driver import dbapi as clickhouse
-import os
 import prettytable
 import psycopg
-import re
+import os
 import repo
 import sqlite3
 import sqlparse
@@ -20,7 +19,11 @@ def get_query_data(state, db, file):
     """
     Main function to get all data about the query
     """
-    driver, conn_str = _get_db_params(db)
+    db_type, conn_str = repo.get_db_params(db)
+    try:
+        driver = DATABASES[db_type]
+    except:
+        raise ValueError(f"DB type {db_type} not supported")
     query = repo.get_query(state, db, file)
     table_formatted = _execute_query(driver, conn_str, query)
     data = {
@@ -28,23 +31,6 @@ def get_query_data(state, db, file):
         "table": table_formatted,
     }
     return data
-
-def _get_db_params(db):
-    """
-    Reads database configuration from environment variables
-    """
-    db_type_key = f"GITBI_{db.upper()}_TYPE"
-    conn_str_key = f"GITBI_{db.upper()}_CONN"
-    try:
-        db_type = os.environ[db_type_key]
-        conn_str = os.environ[conn_str_key]
-    except:
-        raise NameError(f"DB variables ({db_type_key} and {conn_str_key}) not set")
-    try:
-        driver = DATABASES[db_type]
-    except:
-        raise ValueError(f"DB type {db_type} not supported")
-    return driver, conn_str
 
 def _format_query(result):
     """
@@ -63,9 +49,12 @@ def _execute_query(driver, conn_str, query):
     Executes query against DB using suitable driver
     """
     try:
+        if driver == sqlite3:
+            assert os.path.exists(conn_str), f"No sqlite DB at {conn_str}"
         conn = driver.connect(conn_str)
         cursor = conn.cursor()
-        statements = tuple(el for el in sqlparse.split(query) if not re.search(r"^\s?--", el))
+        statements = (sqlparse.format(s, strip_comments=True).strip() for s in sqlparse.split(query))
+        statements = tuple(el for el in statements if el)
         assert statements, f"No valid SQL statements in: {query}"
         for statement in statements:
             result = cursor.execute(statement)

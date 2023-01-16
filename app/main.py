@@ -1,6 +1,7 @@
 """
 Main app file
 """
+import os
 from starlette.applications import Starlette
 from starlette.exceptions import HTTPException
 from starlette.responses import JSONResponse
@@ -12,7 +13,10 @@ from home import get_home_data
 from query import get_query_data
 
 VERSION = "0.1"
-templates = Jinja2Templates(directory='templates', autoescape=False)
+APP_DIR = os.path.abspath(os.path.dirname(__file__))
+STATIC_DIR = os.path.join(APP_DIR, "static")
+TEMPLATE_DIR = os.path.join(APP_DIR, "templates")
+TEMPLATES = Jinja2Templates(directory=TEMPLATE_DIR, autoescape=False)
 
 async def home(request):
     """
@@ -20,7 +24,7 @@ async def home(request):
     """
     home_data = get_home_data(state='HEAD')
     data = {"request": request, "version": VERSION, **home_data, }
-    return templates.TemplateResponse('index.html', data)
+    return TEMPLATES.TemplateResponse(name='index.html', context=data)
 
 async def query(request):
     """
@@ -41,7 +45,7 @@ async def query(request):
         raise HTTPException(status_code=500, detail=str(e))
     else:
         data = {"request": request, "version": VERSION, **query, }
-        return templates.TemplateResponse('query.html', data)
+        return TEMPLATES.TemplateResponse(name='query.html', context=data)
 
 async def server_error(request, exc):
     data = {
@@ -49,16 +53,20 @@ async def server_error(request, exc):
         "code": exc.status_code,
         "message": exc.detail
     }
-    return templates.TemplateResponse('error.html', data)
+    return TEMPLATES.TemplateResponse(name='error.html', context=data, status_code=exc.status_code)
 
 routes = [
     Route("/", endpoint=home, name="home"),
     Route('/query/{db:str}/{file:str}', endpoint=query, name="query"),
-    Mount('/static', app=StaticFiles(directory='static'), name="static"),
+    Mount('/static', app=StaticFiles(directory=STATIC_DIR), name="static"),
 ]
 
 exception_handlers = {
     HTTPException: server_error,
 }
 
-app = Starlette(debug=True, routes=routes, exception_handlers=exception_handlers)
+app = Starlette(
+    debug=True,
+    routes=routes,
+    exception_handlers=exception_handlers
+)
