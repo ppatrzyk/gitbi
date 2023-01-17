@@ -4,7 +4,7 @@ Main app file
 import os
 from starlette.applications import Starlette
 from starlette.exceptions import HTTPException
-from starlette.responses import HTMLResponse
+from starlette.responses import HTMLResponse, PlainTextResponse
 from starlette.routing import Mount, Route
 from starlette.staticfiles import StaticFiles
 from starlette.templating import Jinja2Templates
@@ -55,21 +55,36 @@ async def execute_route(request):
     Used by htmx
     """
     state = "HEAD"
+    params = request.path_params
+    htmx_req = bool(request.headers.get("HX-Request"))
     try:
-        params = request.path_params
         table = query.get_query_result(
             state=state,
             db=params.get("db"),
             file=params.get("file")
         )
-    except RuntimeError as e: # file not accessible
-        raise HTTPException(status_code=404, detail=str(e))
-    except NameError as e: # variables not set
-        raise HTTPException(status_code=500, detail=str(e))
-    except ValueError as e: # bad query
-        raise HTTPException(status_code=500, detail=str(e))
+    except Exception as e:
+        status_code = 404 if isinstance(e, RuntimeError) else 500
+        # 404 RuntimeError file not accessible; 500 NameError variables not set, or ValueError bad query
+        if htmx_req:
+            return _htmx_error(str(e), status_code)
+        else:
+            raise HTTPException(status_code=status_code, detail=str(e))
     else:
         return HTMLResponse(content=table, status_code=200)
+
+def _htmx_error(message, code):
+    """
+    Creates successful reponse for htmx (with error msg)
+    even if endpoint actually failed
+    """
+    error_msg = f"""
+    <article>
+        <header><h3>{code} Error</h3></header>
+        {message}
+    </article>
+    """
+    return HTMLResponse(content=error_msg, status_code=200)
 
 async def server_error(request, exc):
     data = {
