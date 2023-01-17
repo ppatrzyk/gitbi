@@ -2,17 +2,21 @@ import pytest
 from app.repo import *
 
 def test_get_readme():
-    assert get_readme("f76d73c56b16bb3d74535e7f5b672066c11e17af") == "# gitbi-testing"
-    assert get_readme("81b3c23584459b4e3693d6428e3fc608aab7252a") == "# gitbi-testing\nnew content\n"
-    assert get_readme("5bb043654572d1d768df503e04c4dbdd3606d65f") == "# gitbi-testing\nnew content\n"
-    assert get_readme("836bd2dced3aad27abb0c1def6de4696e0722dfe") == "# gitbi-testing\nnew content\n"
-    assert get_readme("bdd50332c25777feaaee7b3f40a4a42ab173ae18") == "# gitbi-testing\nnew content\n"
-    assert get_readme("38ceabd502ad82f828f640e418fce0bd1d45a2bd") == "# gitbi-testing\nnew content\n"
-    assert get_readme("HEAD") == "# gitbi-testing\nnew content\n"
-    assert get_readme("file") == "# gitbi-testing\nnew content\n"
+    assert get_readme("incorrect_commit_hash") is None
+    assert get_readme("f76d73c56b16bb3d74535e7f5b672066c11e17af") == "<h1>gitbi-testing</h1>"
+    latest = "<h1>gitbi-testing</h1>\n<p>new content</p>"
+    assert get_readme("81b3c23584459b4e3693d6428e3fc608aab7252a") == latest
+    assert get_readme("5bb043654572d1d768df503e04c4dbdd3606d65f") == latest
+    assert get_readme("836bd2dced3aad27abb0c1def6de4696e0722dfe") == latest
+    assert get_readme("bdd50332c25777feaaee7b3f40a4a42ab173ae18") == latest
+    assert get_readme("38ceabd502ad82f828f640e418fce0bd1d45a2bd") == latest
+    assert get_readme("HEAD") == latest
+    assert get_readme("file") == latest
 
 def test_get_query():
-    with pytest.raises(FileNotFoundError):
+    with pytest.raises(RuntimeError):
+        get_query("incorrect_commit_hash", "postgres", "query.sql")
+    with pytest.raises(RuntimeError):
         get_query("f76d73c56b16bb3d74535e7f5b672066c11e17af", "postgres", "query.sql")
     assert get_query("81b3c23584459b4e3693d6428e3fc608aab7252a", "postgres", "query.sql") == ""
     assert get_query("5bb043654572d1d768df503e04c4dbdd3606d65f", "postgres", "query.sql") == "script file content\n"
@@ -21,7 +25,7 @@ def test_get_query():
     assert get_query("38ceabd502ad82f828f640e418fce0bd1d45a2bd", "postgres", "query.sql") == "script file content\n"
     assert get_query("HEAD", "postgres", "query.sql") == "script file content\n"
     assert get_query("file", "postgres", "query.sql") == "script file content\n"
-    with pytest.raises(FileNotFoundError):
+    with pytest.raises(RuntimeError):
         get_query("file", "postgres", "nonexistent.sql")
     assert get_query("836bd2dced3aad27abb0c1def6de4696e0722dfe", "sqlite", "myquery.sql") == "select * from mytable;\n-- comment\n"
     assert get_query("bdd50332c25777feaaee7b3f40a4a42ab173ae18", "sqlite", "myquery.sql") == "select * from mytable;\n-- comment\n"
@@ -30,6 +34,8 @@ def test_get_query():
     assert get_query("file", "sqlite", "myquery.sql") == "select * from mytable;\n-- comment\n"
 
 def test_list_sources():
+    with pytest.raises(RuntimeError):
+        list_sources("incorrect_commit_hash")
     assert list_sources("f76d73c56b16bb3d74535e7f5b672066c11e17af") == {}
     assert list_sources("81b3c23584459b4e3693d6428e3fc608aab7252a") == {"postgres": {"query.sql", }}
     assert list_sources("5bb043654572d1d768df503e04c4dbdd3606d65f") == {"postgres": {"query.sql", }}

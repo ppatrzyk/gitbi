@@ -43,7 +43,7 @@ async def query_route(request):
             db=params.get("db"),
             file=params.get("file")
         )
-    except FileNotFoundError as e:
+    except RuntimeError as e:
         raise HTTPException(status_code=404, detail=str(e))
     else:
         data = {"request": request, "version": VERSION, "query": query, }
@@ -62,11 +62,11 @@ async def execute_route(request):
             db=params.get("db"),
             file=params.get("file")
         )
-    except FileNotFoundError as e:
+    except RuntimeError as e: # file not accessible
         raise HTTPException(status_code=404, detail=str(e))
-    except NameError as e:
+    except NameError as e: # variables not set
         raise HTTPException(status_code=500, detail=str(e))
-    except ValueError as e:
+    except ValueError as e: # bad query
         raise HTTPException(status_code=500, detail=str(e))
     else:
         return HTMLResponse(content=table, status_code=200)
