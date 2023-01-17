@@ -15,9 +15,9 @@ DATABASES = {
     "clickhouse": clickhouse
 }
 
-def get_query_data(state, db, file):
+def get_query_result(state, db, file):
     """
-    Main function to get all data about the query
+    Executes query and returns formatted table
     """
     db_type, conn_str = repo.get_db_params(db)
     try:
@@ -25,12 +25,7 @@ def get_query_data(state, db, file):
     except:
         raise ValueError(f"DB type {db_type} not supported")
     query = repo.get_query(state, db, file)
-    table_formatted = _execute_query(driver, conn_str, query)
-    data = {
-        "query": query,
-        "table": table_formatted,
-    }
-    return data
+    return _execute_query(driver, conn_str, query)
 
 def _format_query(result):
     """

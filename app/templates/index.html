@@ -8,11 +8,11 @@
     <p>[Readme file is missing]</p>
     {% endif %}
     <h2>Data sources:</h2>
-    {% for db, queries in databases.items() %}
+    {% for db, files in databases.items() %}
         <h3>{{ db|e }}</h3>
         <ul>
-        {% for query in queries %}
-        <li><a href="{{ url_for('query', db=db, file=query) }}">{{ query|e }}</a></li>
+        {% for file in files %}
+        <li><a href="{{ url_for('query_route', db=db, file=file) }}">{{ file|e }}</a></li>
         {% endfor %}
         </ul>
     {% endfor %}

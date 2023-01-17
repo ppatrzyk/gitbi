@@ -1,6 +1,7 @@
 """
 Functions to interact with config repository
 """
+from markdown import markdown
 import os
 from pathlib import Path
 from pygit2 import Repository
@@ -29,12 +30,12 @@ def get_db_params(db):
             raise NameError(f"Neither {conn_str_key} nor valid {conn_str_file_key} was set")
     return db_type, conn_str
 
-def get_query(state, db, query):
+def get_query(state, db, file):
     """
     Gets query content from the repo
     """
     try:
-        query_path = os.path.join(db, query)
+        query_path = os.path.join(db, file)
         query = _get_file_content(state, query_path)
     except:
         raise FileNotFoundError("Query not found")
@@ -44,7 +45,12 @@ def get_readme(state):
     """
     Gets readme content from the repo
     """
-    return _get_file_content(state, "README.md")
+    try:
+        readme = _get_file_content(state, "README.md")
+        readme = markdown(readme)
+    except:
+        readme = None
+    return readme
 
 def list_sources(state):
     """
@@ -60,11 +66,11 @@ def list_sources(state):
             for path in (Path(el) for el in _get_tree_objects_generator(commit.tree)):
                 if len(path.parts) == 2:
                     db = str(path.parent)
-                    query = str(path.name)
+                    file = str(path.name)
                     try:
-                        sources[db].add(query)
+                        sources[db].add(file)
                     except:
-                        sources[db] = set((query, ))
+                        sources[db] = set((file, ))
     return sources
 
 def _get_file_content(state, path):
