@@ -4,6 +4,14 @@
     <h1>Query page</h1>
     <h2>Query</h2>
     <pre><code>{{ query|e }}</code></pre>
-    <!-- <h2>Result</h2>
-    <div>{{ table }}</div> -->
+    <h2>Result</h2>
+    <button 
+        hx-get="{{ url_for('execute_route', db=db, file=file) }}"
+        hx-trigger="click"
+        hx-target="#query-result"
+        hx-swap="innerHTML"
+    >
+        Trigger
+    </button>
+    <div id="query-result">Nothing yet...</div>
 {% endblock %}

@@ -12,7 +12,7 @@ from starlette.templating import Jinja2Templates
 import query
 import repo
 
-VERSION = "0.1"
+VERSION = "0.2"
 APP_DIR = os.path.abspath(os.path.dirname(__file__))
 STATIC_DIR = os.path.join(APP_DIR, "static")
 TEMPLATE_DIR = os.path.join(APP_DIR, "templates")
@@ -46,7 +46,7 @@ async def query_route(request):
     except RuntimeError as e:
         raise HTTPException(status_code=404, detail=str(e))
     else:
-        data = {"request": request, "version": VERSION, "query": query, }
+        data = {"request": request, "version": VERSION, "query": query, **params, }
         return TEMPLATES.TemplateResponse(name='query.html', context=data)
 
 async def execute_route(request):
