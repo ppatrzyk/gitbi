@@ -15,10 +15,10 @@
 <main class="container">
     <nav>
         <ul>
-          <li><strong>Gitbi</strong></li>
-        </ul>
-        <ul>
-          <li><a href="{{ url_for('home_route') }}">Home</a></li>
+          {% block header %}
+          <li><a href="{{ url_for('home_route', state=state) }}"><strong>Gitbi</strong></a></li>
+          <li>{{ state }}</li>
+          {% endblock %}
         </ul>
       </nav>
       {% block content %}{% endblock %}

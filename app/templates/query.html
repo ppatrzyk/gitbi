@@ -6,7 +6,7 @@
     <pre><code>{{ query|e }}</code></pre>
     <h2>Result</h2>
     <button 
-        hx-get="{{ url_for('execute_route', db=db, file=file) }}"
+        hx-get="{{ url_for('execute_route', state=state, db=db, file=file) }}"
         hx-trigger="click"
         hx-target="#query-result"
         hx-swap="innerHTML"

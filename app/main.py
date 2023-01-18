@@ -4,7 +4,7 @@ Main app file
 import os
 from starlette.applications import Starlette
 from starlette.exceptions import HTTPException
-from starlette.responses import HTMLResponse, PlainTextResponse
+from starlette.responses import HTMLResponse, RedirectResponse
 from starlette.routing import Mount, Route
 from starlette.staticfiles import StaticFiles
 from starlette.templating import Jinja2Templates
@@ -22,32 +22,33 @@ async def home_route(request):
     """
     Endpoint for home page
     """
-    state = "HEAD"
+    state = request.path_params.get("state")
     data = {
         "request": request,
         "version": VERSION,
+        "state": state,
         "readme": repo.get_readme(state),
         "databases": {db: sorted(tuple(queries)) for db, queries in repo.list_sources(state).items()},
         "commits": repo.list_commits(),
     }
     return TEMPLATES.TemplateResponse(name='index.html', context=data)
 
+async def home_default_route(request):
+    """
+    Default endpoint: redirect to HEAD state
+    """
+    return RedirectResponse(url="/HEAD/")
+
 async def query_route(request):
     """
     Endpoint for displaying query
     """
-    state = "HEAD"
-    params = request.path_params
     try:
-        query = repo.get_query(
-            state=state,
-            db=params.get("db"),
-            file=params.get("file")
-        )
+        query = repo.get_query(**request.path_params)
     except RuntimeError as e:
         raise HTTPException(status_code=404, detail=str(e))
     else:
-        data = {"request": request, "version": VERSION, "query": query, **params, }
+        data = {"request": request, "version": VERSION, "query": query, **request.path_params, }
         return TEMPLATES.TemplateResponse(name='query.html', context=data)
 
 async def execute_route(request):
@@ -55,15 +56,9 @@ async def execute_route(request):
     Endpoint for getting query result
     Used by htmx
     """
-    state = "HEAD"
-    params = request.path_params
     htmx_req = bool(request.headers.get("HX-Request"))
     try:
-        table = query.get_query_result(
-            state=state,
-            db=params.get("db"),
-            file=params.get("file")
-        )
+        table = query.get_query_result(**request.path_params)
     except Exception as e:
         status_code = 404 if isinstance(e, RuntimeError) else 500
         # 404 RuntimeError file not accessible; 500 NameError variables not set, or ValueError bad query
@@ -90,6 +85,7 @@ def _htmx_error(message, code):
 async def server_error(request, exc):
     data = {
         "request": request,
+        "version": VERSION,
         "code": exc.status_code,
         "message": exc.detail
     }
@@ -97,10 +93,10 @@ async def server_error(request, exc):
 
 routes = [
     Mount('/static', app=StaticFiles(directory=STATIC_DIR), name="static"),
-    Route("/", endpoint=home_route, name="home_route"),
-    Route('/query/{db:str}/{file:str}', endpoint=query_route, name="query_route"),
-    Route('/execute/{db:str}/{file:str}', endpoint=execute_route, name="execute_route"),
-    # TODO routes with commti prefix
+    Route("/", endpoint=home_default_route, name="home_default_route"),
+    Route("/{state:str}/", endpoint=home_route, name="home_route"),
+    Route('/{state:str}/query/{db:str}/{file:str}', endpoint=query_route, name="query_route"),
+    Route('/{state:str}/execute/{db:str}/{file:str}', endpoint=execute_route, name="execute_route"),
 ]
 
 exception_handlers = {

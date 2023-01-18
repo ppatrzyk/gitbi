@@ -1,5 +1,9 @@
 {% extends "base.html" %}
 {% block title %}ERROR{% endblock %}
+{% block header %}
+<li><a href="{{ url_for('home_default_route') }}"><strong>Gitbi</strong></a></li>
+<li>ERROR</li>
+{% endblock %}
 {% block content %}
 <h1>Error {{ code }}</h1>
 <p>{{ message }}</p>
