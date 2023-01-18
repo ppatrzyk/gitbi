@@ -28,6 +28,7 @@ async def home_route(request):
         "version": VERSION,
         "readme": repo.get_readme(state),
         "databases": {db: sorted(tuple(queries)) for db, queries in repo.list_sources(state).items()},
+        "commits": repo.list_commits(),
     }
     return TEMPLATES.TemplateResponse(name='index.html', context=data)
 
@@ -95,10 +96,11 @@ async def server_error(request, exc):
     return TEMPLATES.TemplateResponse(name='error.html', context=data, status_code=exc.status_code)
 
 routes = [
+    Mount('/static', app=StaticFiles(directory=STATIC_DIR), name="static"),
     Route("/", endpoint=home_route, name="home_route"),
     Route('/query/{db:str}/{file:str}', endpoint=query_route, name="query_route"),
     Route('/execute/{db:str}/{file:str}', endpoint=execute_route, name="execute_route"),
-    Mount('/static', app=StaticFiles(directory=STATIC_DIR), name="static"),
+    # TODO routes with commti prefix
 ]
 
 exception_handlers = {

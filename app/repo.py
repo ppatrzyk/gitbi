@@ -1,6 +1,7 @@
 """
 Functions to interact with config repository
 """
+from datetime import datetime
 from markdown import markdown
 import os
 from pathlib import Path
@@ -74,6 +75,20 @@ def list_sources(state):
     else:
         return sources
 
+def list_commits():
+    """
+    Function lists all commits present in current branch of the repo
+    """
+    commits = [{"hash": "file", "msg": "Current filesystem"}, ]
+    for el in REPO.walk(REPO.head.target):
+        commit = {
+            "hash": str(el.id),
+            "msg": el.message.replace("\n", ""),
+            "date": datetime.fromtimestamp(el.commit_time).isoformat(),
+        }
+        commits.append(commit)
+    return commits
+
 def _get_file_content(state, path):
     """
     Read file content from git or filesystem
@@ -104,6 +119,3 @@ def _get_tree_objects_generator(tree, prefix=""):
             new_prefix = os.path.join(prefix, obj.name)
             for entry in _get_tree_objects_generator(obj, new_prefix):
                 yield entry
-
-# TODO list all commits
-# commits = tuple(commit for commit in REPO.walk(REPO.head.target))

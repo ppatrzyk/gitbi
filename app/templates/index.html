@@ -7,6 +7,17 @@
     <h1>Gitbi Home</h1>
     <p>[Readme file is missing]</p>
     {% endif %}
+    <h2>Commits</h2>
+    <table>
+        <tr><th>Commit</th><th>Date</th><th>Message</th></tr>
+        {% for commit in commits %}
+        <tr>
+            <th><a href="{{ url_for('home_route') }}">{{ commit.hash|e }}</a></th>
+            <th>{{ commit.date|e }}</th>
+            <th>{{ commit.msg|e }}</th>
+        </tr>
+        {% endfor %}
+    </table>
     <h2>Data sources:</h2>
     {% for db, files in databases.items() %}
         <h3>{{ db|e }}</h3>

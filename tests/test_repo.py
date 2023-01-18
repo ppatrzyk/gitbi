@@ -45,3 +45,9 @@ def test_list_sources():
     assert list_sources("38ceabd502ad82f828f640e418fce0bd1d45a2bd") == latest
     assert list_sources("HEAD") == latest
     assert list_sources("file") == latest
+
+def test_list_commits():
+    commits = list_commits()
+    assert commits[0]["hash"] == "file"
+    assert commits[1]["hash"] == "38ceabd502ad82f828f640e418fce0bd1d45a2bd"
+    assert commits[2]["hash"] == "bdd50332c25777feaaee7b3f40a4a42ab173ae18"
