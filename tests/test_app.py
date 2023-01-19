@@ -9,21 +9,23 @@ def test_home():
 
 def test_query():
     assert client.get("/query/postgres/query.sql/HEAD").status_code == 200
+    assert client.get("/query/postgres/query.sql/badstate").status_code == 404
     assert client.get("/query/postgres/incorrectfile/HEAD").status_code == 404
     assert client.get("/query/sqlite/incorrectfile/HEAD").status_code == 404
     assert client.get("/query/sqlite/myquery.sql/HEAD").status_code == 200
     assert client.get("/query/sqlite/myquery_bad.sql/HEAD").status_code == 200
     assert client.get("/query/sqlite/myquery_empty.sql/HEAD").status_code == 200
-    assert client.get("/query/sqlite/myquery_multi.sql/HEAD").status_code == 200 
+    assert client.get("/query/sqlite/myquery_multi.sql/HEAD").status_code == 200
+    # empty query, validations on db and query done on execute, so always 200
+    assert client.get("/query/sqlite").status_code == 200
+    assert client.get("/query/baddb").status_code == 200
 
 def test_execute():
-    assert client.get("/execute/postgres/query.sql/HEAD").status_code == 500
-    assert client.get("/execute/postgres/incorrectfile/HEAD").status_code == 500
-    assert client.get("/execute/sqlite/incorrectfile/HEAD").status_code == 404
-    assert client.get("/execute/sqlite/myquery.sql/HEAD").status_code == 200
-    assert client.get("/execute/sqlite/myquery_bad.sql/HEAD").status_code == 500
-    assert client.get("/execute/sqlite/myquery_empty.sql/HEAD").status_code == 200
-    assert client.get("/execute/sqlite/myquery_multi.sql/HEAD").status_code == 200
+    assert client.post("/execute/postgres/", data={"query": "--"}).status_code == 500
+    assert client.post("/execute/baddb/", data={"query": "--"}).status_code == 500
+    assert client.post("/execute/sqlite/", data={"query": "--"}).status_code == 500
+    assert client.post("/execute/sqlite/", data={"query": "select badfunc();"}).status_code == 500
+    assert client.post("/execute/sqlite/", data={"query": "select 1;"}).status_code == 200
     # htmx responses always return 200 even if there was an error
-    assert client.get("/execute/postgres/incorrectfile/HEAD", headers=htmx_headers).status_code == 200
-    assert client.get("/execute/sqlite/incorrectfile/HEAD", headers=htmx_headers).status_code == 200
+    assert client.post("/execute/sqlite/", data={"query": "select badfunc();"}, headers=htmx_headers).status_code == 200
+    assert client.post("/execute/sqlite/", data={"query": "select 1;"}, headers=htmx_headers).status_code == 200

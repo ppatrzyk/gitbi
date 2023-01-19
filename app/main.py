@@ -52,10 +52,30 @@ async def db_route(request):
         status_code = 404 if isinstance(e, RuntimeError) else 500
         raise HTTPException(status_code=status_code, detail=str(e))
     else:
-        data = {"request": request, "version": VERSION, "queries": queries, "tables": tables, **request.path_params, }
+        data = {
+            "request": request,
+            "version": VERSION,
+            "queries": queries,
+            "tables": tables,
+            **request.path_params,
+        }
         return TEMPLATES.TemplateResponse(name='db.html', context=data)
 
 async def query_route(request):
+    """
+    Endpoint for editable empty query
+    """
+    data = {
+        "request": request,
+        "version": VERSION,
+        "state": None,
+        "query": "",
+        "editable": True,
+        **request.path_params, 
+    }
+    return TEMPLATES.TemplateResponse(name='query.html', context=data)
+
+async def saved_query_route(request):
     """
     Endpoint for displaying query
     """
@@ -64,7 +84,13 @@ async def query_route(request):
     except RuntimeError as e:
         raise HTTPException(status_code=404, detail=str(e))
     else:
-        data = {"request": request, "version": VERSION, "query": query, **request.path_params, }
+        data = {
+            "request": request,
+            "version": VERSION,
+            "query": query,
+            "editable": False,
+            **request.path_params,
+        }
         return TEMPLATES.TemplateResponse(name='query.html', context=data)
 
 async def execute_route(request):
@@ -74,12 +100,8 @@ async def execute_route(request):
     """
     htmx_req = bool(request.headers.get("HX-Request"))
     try:
-        if set(request.path_params.keys()) == {"db", "file", "state"}: # execute_file_route
-            table = query.execute_from_file(**request.path_params)
-        else: # execute_route
-            body = await request.body()
-            query_str = body.decode()
-            table = query.execute(db=request.path_params.get("db"), query=query_str)
+        form = await request.form()
+        table = query.execute(db=request.path_params.get("db"), query=form["query"])
     except Exception as e:
         status_code = 404 if isinstance(e, RuntimeError) else 500
         # 404 RuntimeError file not accessible; 500 NameError variables not set, or ValueError bad query
@@ -117,9 +139,9 @@ routes = [
     Route("/", endpoint=home_default_route, name="home_default_route"),
     Route("/home/{state:str}", endpoint=home_route, name="home_route"),
     Route("/db/{db:str}/{state:str}", endpoint=db_route, name="db_route"),
-    Route('/query/{db:str}/{file:str}/{state:str}', endpoint=query_route, name="query_route"),
+    Route('/query/{db:str}', endpoint=query_route, name="query_route"),
+    Route('/query/{db:str}/{file:str}/{state:str}', endpoint=saved_query_route, name="saved_query_route"),
     Route('/execute/{db:str}', endpoint=execute_route, methods=("POST", ), name="execute_route"),
-    Route('/execute/{db:str}/{file:str}/{state:str}', endpoint=execute_route, methods=("POST", ), name="execute_file_route"),
 ]
 
 exception_handlers = {

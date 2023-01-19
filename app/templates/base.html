@@ -15,10 +15,8 @@
 <main class="container">
     <nav>
         <ul>
-          {% block header %}
-          <li><a href="{{ url_for('home_route', state=state) }}"><strong>Gitbi</strong></a></li>
-          <li>{{ state }}</li>
-          {% endblock %}
+          <li><a href="{{ url_for('home_default_route') }}"><strong>Gitbi</strong></a></li>
+          {% block header %}{% endblock %}
         </ul>
       </nav>
       {% block content %}{% endblock %}

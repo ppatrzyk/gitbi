@@ -1,18 +1,35 @@
 {% extends "base.html" %}
 {% block title %}Query{% endblock %}
+{% block header %}
+    {% if state is not none %}
+    <li>{{ state }}</li>
+    {% endif %}
+{% endblock %}
 {% block content %}
     <h1>Query page</h1>
     <h2>Query</h2>
-    <pre><code>{{ query|e }}</code></pre>
-    <button 
-        id="query-button"
-        hx-post="{{ url_for('execute_file_route', state=state, db=db, file=file) }}"
-        hx-trigger="click, load"
+    <form
+        hx-post="{{ url_for('execute_route', db=db) }}"
         hx-target="#query-result"
         hx-swap="innerHTML"
     >
-        Trigger
-    </button>
+        <!-- TODO actual params into grid https://picocss.com/docs/forms.html -->
+        <label for="query">
+        Query
+        <textarea 
+            id="query"
+            name="query"
+            {% if not editable %}
+            readonly
+            {% endif %}
+        >
+            {{ query }}
+        </textarea>
+        </label>
+        
+        <button type="submit">Trigger</button>
+    </form>
+    <pre><code>{{ query|e }}</code></pre>
     <h2>Result</h2>
     <div id="query-result">
         <p class="htmx-indicator" aria-busy="true">Running query...</p>
