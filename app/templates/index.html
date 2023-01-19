@@ -25,7 +25,9 @@
     </table>
     <h2>Data sources:</h2>
     {% for db, files in databases.items() %}
-        <h3><a href="{{ url_for('db_route', state=state, db=db) }}">{{ db|e }}</a></h3>
+        <h3>{{ db|e }}</h3>
+        <p><a href="{{ url_for('db_route', state=state, db=db) }}">List tables</a></p>
+        <p><a href="{{ url_for('query_route', db=db) }}">New query</a></p>
         <ul>
         {% for file in files %}
         <li><a href="{{ url_for('saved_query_route', state=state, db=db, file=file) }}">{{ file|e }}</a></li>

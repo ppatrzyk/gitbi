@@ -17,8 +17,7 @@
     <ul>
         {% for table in tables %}
         <!-- TODO init query with select all from table -->
-        <li><a href="{{ url_for('query_route', db=db) }}">{{ table|e }}</a></li>
-        <li>{{ table|e }}</li>
+        <li><a href="{{ url_for('query_route', db=db) }}?query=select * from {{ table }} limit 10;">{{ table|e }}</a></li>
         {% endfor %}
     </ul>
 {% endblock %}

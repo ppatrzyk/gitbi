@@ -18,20 +18,28 @@ STATIC_DIR = os.path.join(APP_DIR, "static")
 TEMPLATE_DIR = os.path.join(APP_DIR, "templates")
 TEMPLATES = Jinja2Templates(directory=TEMPLATE_DIR, autoescape=False)
 
+# Error types
+# 404 RuntimeError file not accessible
+# 500 NameError variables not set
+# 500 ValueError bad query
+
 async def home_route(request):
     """
     Endpoint for home page
     """
-    state = request.path_params.get("state")
-    data = {
-        "request": request,
-        "version": VERSION,
-        "state": state,
-        "readme": repo.get_readme(state),
-        "databases": repo.list_sources(state),
-        "commits": repo.list_commits(),
-    }
-    return TEMPLATES.TemplateResponse(name='index.html', context=data)
+    try:
+        state = request.path_params.get("state")
+        data = {
+            "request": request,
+            "version": VERSION,
+            "state": state,
+            "readme": repo.get_readme(state),
+            "databases": repo.list_sources(state),
+            "commits": repo.list_commits(),
+        }
+        return TEMPLATES.TemplateResponse(name='index.html', context=data)
+    except Exception as e:
+        raise HTTPException(status_code=404, detail=str(e))
 
 async def home_default_route(request):
     """
@@ -46,6 +54,8 @@ async def db_route(request):
     try:
         db = request.path_params.get("db")
         databases = repo.list_sources(request.path_params.get("state"))
+        if db not in databases:
+            raise RuntimeError(f"db {db} not present in repo")
         queries = databases[db]
         tables = query.list_tables(db)
     except Exception as e:
@@ -65,15 +75,23 @@ async def query_route(request):
     """
     Endpoint for editable empty query
     """
-    data = {
-        "request": request,
-        "version": VERSION,
-        "state": None,
-        "query": "",
-        "editable": True,
-        **request.path_params, 
-    }
-    return TEMPLATES.TemplateResponse(name='query.html', context=data)
+    try:
+        query_str = request.query_params.get('query')
+        db = request.path_params.get("db")
+        if db not in repo.list_sources("HEAD").keys():
+            raise RuntimeError(f"db {db} not present in repo")
+    except RuntimeError as e:
+        raise HTTPException(status_code=404, detail=str(e))
+    else:
+        data = {
+            "request": request,
+            "version": VERSION,
+            "state": None,
+            "query": query_str or "",
+            "editable": True,
+            "db": db, 
+        }
+        return TEMPLATES.TemplateResponse(name='query.html', context=data)
 
 async def saved_query_route(request):
     """
@@ -104,7 +122,6 @@ async def execute_route(request):
         table = query.execute(db=request.path_params.get("db"), query=form["query"])
     except Exception as e:
         status_code = 404 if isinstance(e, RuntimeError) else 500
-        # 404 RuntimeError file not accessible; 500 NameError variables not set, or ValueError bad query
         if htmx_req:
             return _htmx_error(str(e), status_code)
         else:
