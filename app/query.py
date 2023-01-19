@@ -2,7 +2,7 @@
 Functions to process SQL queries
 """
 from clickhouse_driver import dbapi as clickhouse
-import prettytable
+from prettytable import PrettyTable
 import psycopg
 import os
 import repo
@@ -15,25 +15,44 @@ DATABASES = {
     "clickhouse": clickhouse
 }
 
-def get_query_result(state, db, file):
+def list_tables(db):
+    """
+    List tables in db
+    """
+    db_type, conn_str = repo.get_db_params(db)
+    driver = DATABASES[db_type]
+    match driver:
+        case sqlite3:
+            query = "SELECT * FROM sqlite_master where type='table';"
+    _col_names, rows = _execute_query(driver, conn_str, query)
+    tables = tuple(el[1] for el in rows)
+    return tables
+
+def execute(db, query):
     """
     Executes query and returns formatted table
     """
     db_type, conn_str = repo.get_db_params(db)
-    try:
-        driver = DATABASES[db_type]
-    except:
-        raise ValueError(f"DB type {db_type} not supported")
-    query = repo.get_query(state, db, file)
-    return _execute_query(driver, conn_str, query)
+    driver = DATABASES[db_type]
+    col_names, rows = _execute_query(driver, conn_str, query)
+    return _format_query(col_names, rows)
 
-def _format_query(result):
+def execute_from_file(state, db, file):
+    """
+    Reads query from repo and executes it
+    """
+    query = repo.get_query(state, db, file)
+    return execute(db, query)
+
+def _format_query(col_names, rows):
     """
     Format query result as html table
     TODO this might need to be changed in the future if there are paged results
     """
     try:
-        table = prettytable.from_db_cursor(result)
+        table = PrettyTable()
+        table.field_names = col_names
+        table.add_rows(rows)
         table_formatted = "" if table is None else table.get_html_string()
     except Exception as e:
         raise ValueError(f"Formatting error: {str(e)}")
@@ -53,7 +72,8 @@ def _execute_query(driver, conn_str, query):
         assert statements, f"No valid SQL statements in: {query}"
         for statement in statements:
             result = cursor.execute(statement)
-        table_formatted = _format_query(result)
+        col_names = tuple(el[0] for el in cursor.description)
+        rows = result.fetchall()
     except Exception as e:
         raise ValueError(f"Error executing query: {str(e)}")
     finally:
@@ -61,4 +81,4 @@ def _execute_query(driver, conn_str, query):
             conn.close()
         except:
             pass
-    return table_formatted
+    return col_names, rows

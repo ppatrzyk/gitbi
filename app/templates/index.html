@@ -20,7 +20,7 @@
     </table>
     <h2>Data sources:</h2>
     {% for db, files in databases.items() %}
-        <h3>{{ db|e }}</h3>
+        <h3><a href="{{ url_for('db_route', state=state, db=db) }}">{{ db|e }}</a></h3>
         <ul>
         {% for file in files %}
         <li><a href="{{ url_for('query_route', state=state, db=db, file=file) }}">{{ file|e }}</a></li>

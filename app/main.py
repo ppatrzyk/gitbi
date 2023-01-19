@@ -28,7 +28,7 @@ async def home_route(request):
         "version": VERSION,
         "state": state,
         "readme": repo.get_readme(state),
-        "databases": {db: sorted(tuple(queries)) for db, queries in repo.list_sources(state).items()},
+        "databases": repo.list_sources(state),
         "commits": repo.list_commits(),
     }
     return TEMPLATES.TemplateResponse(name='index.html', context=data)
@@ -37,7 +37,23 @@ async def home_default_route(request):
     """
     Default endpoint: redirect to HEAD state
     """
-    return RedirectResponse(url="/HEAD/")
+    return RedirectResponse(url="/home/HEAD/")
+
+async def db_route(request):
+    """
+    Endpoint for listing all db info: queries and tables
+    """
+    try:
+        db = request.path_params.get("db")
+        databases = repo.list_sources(request.path_params.get("state"))
+        queries = databases[db]
+        tables = query.list_tables(db)
+    except Exception as e:
+        status_code = 404 if isinstance(e, RuntimeError) else 500
+        raise HTTPException(status_code=status_code, detail=str(e))
+    else:
+        data = {"request": request, "version": VERSION, "queries": queries, "tables": tables, **request.path_params, }
+        return TEMPLATES.TemplateResponse(name='db.html', context=data)
 
 async def query_route(request):
     """
@@ -58,7 +74,12 @@ async def execute_route(request):
     """
     htmx_req = bool(request.headers.get("HX-Request"))
     try:
-        table = query.get_query_result(**request.path_params)
+        if set(request.path_params.keys()) == {"db", "file", "state"}: # execute_file_route
+            table = query.execute_from_file(**request.path_params)
+        else: # execute_route
+            body = await request.body()
+            query_str = body.decode()
+            table = query.execute(db=request.path_params.get("db"), query=query_str)
     except Exception as e:
         status_code = 404 if isinstance(e, RuntimeError) else 500
         # 404 RuntimeError file not accessible; 500 NameError variables not set, or ValueError bad query
@@ -94,9 +115,11 @@ async def server_error(request, exc):
 routes = [
     Mount('/static', app=StaticFiles(directory=STATIC_DIR), name="static"),
     Route("/", endpoint=home_default_route, name="home_default_route"),
-    Route("/{state:str}/", endpoint=home_route, name="home_route"),
-    Route('/{state:str}/query/{db:str}/{file:str}', endpoint=query_route, name="query_route"),
-    Route('/{state:str}/execute/{db:str}/{file:str}', endpoint=execute_route, name="execute_route"),
+    Route("/home/{state:str}", endpoint=home_route, name="home_route"),
+    Route("/db/{db:str}/{state:str}", endpoint=db_route, name="db_route"),
+    Route('/query/{db:str}/{file:str}/{state:str}', endpoint=query_route, name="query_route"),
+    Route('/execute/{db:str}', endpoint=execute_route, methods=("POST", ), name="execute_route"),
+    Route('/execute/{db:str}/{file:str}/{state:str}', endpoint=execute_route, methods=("POST", ), name="execute_file_route"),
 ]
 
 exception_handlers = {

@@ -37,10 +37,10 @@ def test_list_sources():
     with pytest.raises(RuntimeError):
         list_sources("incorrect_commit_hash")
     assert list_sources("f76d73c56b16bb3d74535e7f5b672066c11e17af") == {}
-    assert list_sources("81b3c23584459b4e3693d6428e3fc608aab7252a") == {"postgres": {"query.sql", }}
-    assert list_sources("5bb043654572d1d768df503e04c4dbdd3606d65f") == {"postgres": {"query.sql", }}
-    assert list_sources("836bd2dced3aad27abb0c1def6de4696e0722dfe") == {"postgres": {"query.sql", }, "sqlite": {"myquery.sql", }}
-    latest = {"postgres": {"query.sql", }, "sqlite": {"myquery.sql", "myquery_bad.sql", "myquery_empty.sql",  "myquery_multi.sql"}}
+    assert list_sources("81b3c23584459b4e3693d6428e3fc608aab7252a") == {"postgres": ("query.sql", )}
+    assert list_sources("5bb043654572d1d768df503e04c4dbdd3606d65f") == {"postgres": ("query.sql", )}
+    assert list_sources("836bd2dced3aad27abb0c1def6de4696e0722dfe") == {"postgres": ("query.sql", ), "sqlite": ("myquery.sql", )}
+    latest = {"postgres": ("query.sql", ), "sqlite": ("myquery.sql", "myquery_bad.sql", "myquery_empty.sql",  "myquery_multi.sql")}
     assert list_sources("bdd50332c25777feaaee7b3f40a4a42ab173ae18") == latest
     assert list_sources("38ceabd502ad82f828f640e418fce0bd1d45a2bd") == latest
     assert list_sources("HEAD") == latest

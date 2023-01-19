@@ -9,6 +9,7 @@ from pygit2 import Repository
 
 DIR = os.environ["GITBI_REPO_DIR"]
 REPO = Repository(DIR)
+VALID_DB_TYPES = ("sqlite", "postgres", "clickhouse", )
 
 def get_db_params(db):
     """
@@ -21,6 +22,8 @@ def get_db_params(db):
         db_type = os.environ[db_type_key]
     except:
         raise NameError(f"{db_type_key} not set")
+    if db_type not in VALID_DB_TYPES:
+        raise ValueError(f"DB type {db_type} not supported")
     try:
         conn_str = os.environ[conn_str_key]
     except:
@@ -73,7 +76,7 @@ def list_sources(state):
     except Exception as e:
         raise RuntimeError(f"Sources at state {state} cannot be listed: {str(e)}")
     else:
-        return sources
+        return {db: tuple(sorted(queries)) for db, queries in sources.items()}
 
 def list_commits():
     """

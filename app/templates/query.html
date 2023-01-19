@@ -4,15 +4,16 @@
     <h1>Query page</h1>
     <h2>Query</h2>
     <pre><code>{{ query|e }}</code></pre>
-    <h2>Result</h2>
     <button 
-        hx-get="{{ url_for('execute_route', state=state, db=db, file=file) }}"
-        hx-trigger="click"
+        id="query-button"
+        hx-post="{{ url_for('execute_file_route', state=state, db=db, file=file) }}"
+        hx-trigger="click, load"
         hx-target="#query-result"
         hx-swap="innerHTML"
     >
         Trigger
     </button>
+    <h2>Result</h2>
     <div id="query-result">
         <p class="htmx-indicator" aria-busy="true">Running query...</p>
     </div>

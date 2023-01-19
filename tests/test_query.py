@@ -2,16 +2,23 @@ import pytest
 from contextlib import nullcontext as does_not_raise
 from app.query import *
 
-def test_get_query_result():
+def test_execute_from_file():
     with pytest.raises(ValueError):
-        get_query_result('HEAD', 'sqlite', 'myquery_bad.sql')
+        execute_from_file('HEAD', 'sqlite', 'myquery_bad.sql')
     with pytest.raises(RuntimeError):
-        get_query_result('HEAD', 'sqlite', 'badfile')
+        execute_from_file('HEAD', 'sqlite', 'badfile')
     with pytest.raises(NameError):
-        get_query_result('HEAD', 'baddb', 'badfile')
+        execute_from_file('HEAD', 'baddb', 'badfile')
     with does_not_raise():
-        get_query_result('HEAD', 'sqlite', 'myquery_empty.sql')
+        execute_from_file('HEAD', 'sqlite', 'myquery_empty.sql')
     with does_not_raise():
-        get_query_result('HEAD', 'sqlite', 'myquery_multi.sql')
+        execute_from_file('HEAD', 'sqlite', 'myquery_multi.sql')
     with does_not_raise():
-        get_query_result('HEAD', 'sqlite', 'myquery.sql')
+        execute_from_file('HEAD', 'sqlite', 'myquery.sql')
+
+def test_list_tables():
+    assert list_tables("sqlite") == ("mytable", )
+    with pytest.raises(NameError):
+        list_tables("baddb")
+    with pytest.raises(NameError):
+        list_tables("postgres")

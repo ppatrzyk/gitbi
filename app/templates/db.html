@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% block title %}{{ db|e }}{% endblock %}
+{% block content %}
+    <h1>{{ db|e }}</h1>
+    <h2>Queries</h2>
+    <ul>
+        {% for file in queries %}
+        <li><a href="{{ url_for('query_route', state=state, db=db, file=file) }}">{{ file|e }}</a></li>
+        {% endfor %}
+    </ul>
+    <h2>Tables</h2>
+    <ul>
+        {% for table in tables %}
+        <li>{{ table|e }}</li>
+        {% endfor %}
+    </ul>
+{% endblock %}
