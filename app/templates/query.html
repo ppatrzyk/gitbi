@@ -1,4 +1,12 @@
 {% extends "base.html" %}
+{% block extendhead %}
+    <link href="{{ url_for('static', path='/css/github.min.css') }}" rel="stylesheet">
+    {% if vega %}
+    <script src="{{ url_for('static', path='/js/vega/vega@5.22.1') }}"></script>
+    <script src="{{ url_for('static', path='/js/vega/vega-lite@5.6.0') }}"></script>
+    <script src="{{ url_for('static', path='/js/vega/vega-embed@6.21.0') }}"></script>
+    {% endif %}
+{% endblock %}
 {% block title %}Query{% endblock %}
 {% block header %}
     {% if state is not none %}
@@ -8,29 +16,31 @@
 {% block content %}
     <h1>Query page</h1>
     <h2>Query</h2>
-    <form
+    <p>TODO editable: {{ editable }}</p>
+    <div id="query" class="language-sql">{{ query }}</div>
+    <button 
         hx-post="{{ url_for('execute_route', db=db) }}"
+        hx-include="#query"
+        hx-vals="js:{query: jar.toString()}"
+        hx-trigger="click"
         hx-target="#query-result"
         hx-swap="innerHTML"
     >
-        <!-- TODO actual params into grid https://picocss.com/docs/forms.html -->
-        <label for="query">
-        Query
-        <textarea 
-            id="query"
-            name="query"
-            {% if not editable %}
-            readonly
-            {% endif %}
-        >
-            {{ query }}
-        </textarea>
-        </label>
-        
-        <button type="submit">Trigger</button>
-    </form>
+        Trigger
+    </button>
     <h2>Result</h2>
     <div id="query-result">
         <p class="htmx-indicator" aria-busy="true">Running query...</p>
     </div>
+    <script type="module">
+        import {CodeJar} from '{{ url_for("static", path="/js/codejar.min.js") }}'
+        import hljs from '{{ url_for("static", path="/js/highlight/core.min.js") }}'
+        import sql from '{{ url_for("static", path="/js/highlight/sql.min.js") }}'
+        hljs.registerLanguage('sql', sql);
+        hljs.configure({ignoreUnescapedHTML: true})
+        let input_el = document.getElementById("query")
+        window.jar = CodeJar(input_el, hljs.highlightElement)
+    </script>
 {% endblock %}
+<!-- TODO: https://github.com/highlightjs/highlight.js/wiki/security -->
+<!-- figure out if relevant -->

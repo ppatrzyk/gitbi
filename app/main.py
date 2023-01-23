@@ -88,6 +88,7 @@ async def query_route(request):
             "version": VERSION,
             "state": None,
             "query": query_str or "",
+            "vega": False,
             "editable": True,
             "db": db, 
         }
@@ -127,7 +128,11 @@ async def execute_route(request):
         else:
             raise HTTPException(status_code=status_code, detail=str(e))
     else:
-        return HTMLResponse(content=table, status_code=200)
+        data = {
+            "request": request,
+            "table": table,
+        }
+        return TEMPLATES.TemplateResponse(name='result.html', context=data)
 
 def _htmx_error(message, code):
     """
