@@ -14,11 +14,10 @@
 {% block content %}
     <h1>Query page</h1>
     <h2>Query</h2>
-    <p>TODO editable: {{ editable }}</p>
-    <div id="query-editor" class="language-sql">{{ query }}</div>
+    <div id="query-editor" class="code-editor language-sql">{{ query }}</div>
     <h2>Vega</h2>
-    <div id="vega-editor" class="language-json">{{ vega }}</div>
-    <button 
+    <div id="vega-editor" class="code-editor language-json">{{ vega }}</div>
+    <button
         role="button"
         hx-post="{{ url_for('execute_route', db=db) }}"
         hx-vals="js:{query: query_jar.toString(), vega: vega_jar.toString()}"

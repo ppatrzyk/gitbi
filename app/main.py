@@ -12,7 +12,7 @@ from starlette.templating import Jinja2Templates
 import query
 import repo
 
-VERSION = "0.2"
+VERSION = "0.3"
 APP_DIR = os.path.abspath(os.path.dirname(__file__))
 STATIC_DIR = os.path.join(APP_DIR, "static")
 TEMPLATE_DIR = os.path.join(APP_DIR, "templates")
@@ -73,10 +73,11 @@ async def db_route(request):
 
 async def query_route(request):
     """
-    Endpoint for editable empty query
+    Endpoint for empty query
     """
     try:
-        query_str = request.query_params.get('query')
+        query = request.query_params.get('query')
+        vega = request.query_params.get('vega')
         db = request.path_params.get("db")
         if db not in repo.list_sources("HEAD").keys():
             raise RuntimeError(f"db {db} not present in repo")
@@ -87,9 +88,8 @@ async def query_route(request):
             "request": request,
             "version": VERSION,
             "state": None,
-            "query": query_str or "",
-            "vega": "",
-            "editable": True,
+            "query": query or "",
+            "vega": vega or "",
             "db": db, 
         }
         return TEMPLATES.TemplateResponse(name='query.html', context=data)
@@ -108,7 +108,6 @@ async def saved_query_route(request):
             "version": VERSION,
             "query": query,
             "vega": vega,
-            "editable": False,
             **request.path_params,
         }
         return TEMPLATES.TemplateResponse(name='query.html', context=data)
@@ -147,7 +146,7 @@ def _htmx_error(message, code):
     """
     error_msg = f"""
     <article>
-        <header><h3>{code} Error</h3></header>
+        <header><h3 class="article-head">{code} Error</h3></header>
         {message}
     </article>
     """

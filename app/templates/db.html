@@ -7,17 +7,20 @@
 {% endblock %}
 {% block content %}
     <h1>{{ db|e }}</h1>
-    <h2>Queries</h2>
-    <ul>
-        {% for file in queries %}
-        <li><a href="{{ url_for('saved_query_route', state=state, db=db, file=file) }}">{{ file|e }}</a></li>
-        {% endfor %}
-    </ul>
-    <h2>Tables</h2>
-    <ul>
-        {% for table in tables %}
-        <!-- TODO init query with select all from table -->
-        <li><a href="{{ url_for('query_route', db=db) }}?query=select * from {{ table }} limit 10;">{{ table|e }}</a></li>
-        {% endfor %}
-    </ul>
+    <article>
+        <header><h3 class="article-head">Queries</h3></header>
+        <ul>
+            {% for file in queries %}
+            <li><a href="{{ url_for('saved_query_route', state=state, db=db, file=file) }}">{{ file|e }}</a></li>
+            {% endfor %}
+        </ul>
+    </article>
+    <article>
+        <header><h3 class="article-head">Tables</h3></header>
+        <ul>
+            {% for table in tables %}
+            <li><a href="{{ url_for('query_route', db=db) }}?query=select * from {{ table }} limit 10;">{{ table|e }}</a></li>
+            {% endfor %}
+        </ul>
+    </article>
 {% endblock %}
