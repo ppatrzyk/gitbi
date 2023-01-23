@@ -39,7 +39,12 @@ def get_query(state, db, file):
     Gets query content from the repo
     """
     query_path = os.path.join(db, file)
-    return _get_file_content(state, query_path)
+    try:
+        vega_path = os.path.join(db, f"{file}.json")
+        vega = _get_file_content(state, vega_path)
+    except:
+        vega = ""
+    return _get_file_content(state, query_path), vega
 
 def get_readme(state):
     """

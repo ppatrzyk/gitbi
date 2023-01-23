@@ -1,2 +1,10 @@
 {# partial html - this is used by htmx passing result #}
-{{ table }}
+<details open>
+    <summary>Table</summary>
+    <figure>{{ table }}</figure>
+</details>
+
+<details open>
+    <summary>Visualization</summary>
+    <figure>{{ vega }}</figure>
+</details>

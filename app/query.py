@@ -3,8 +3,10 @@ Functions to process SQL queries
 """
 from clickhouse_driver import dbapi as clickhouse
 from prettytable import PrettyTable
+import json
 import psycopg
 import os
+import re
 import repo
 import sqlite3
 import sqlparse
@@ -28,36 +30,53 @@ def list_tables(db):
     tables = tuple(el[1] for el in rows)
     return tables
 
-def execute(db, query):
+def execute(db, query, vega):
     """
     Executes query and returns formatted table
     """
     db_type, conn_str = repo.get_db_params(db)
     driver = DATABASES[db_type]
     col_names, rows = _execute_query(driver, conn_str, query)
-    return _format_query(col_names, rows)
+    table = _format_table(col_names, rows)
+    vega_viz = _format_vega(col_names, rows, vega)
+    return table, vega_viz
 
 def execute_from_file(state, db, file):
     """
     Reads query from repo and executes it
     # TODO currently not used, left for alerts and reports
     """
-    query = repo.get_query(state, db, file)
-    return execute(db, query)
+    query, vega = repo.get_query(state, db, file)
+    return execute(db, query, vega)
 
-def _format_query(col_names, rows):
+def _format_table(col_names, rows):
     """
     Format query result as html table
-    TODO this might need to be changed in the future if there are paged results
     """
     try:
         table = PrettyTable()
         table.field_names = col_names
         table.add_rows(rows)
         table_formatted = "" if table is None else table.get_html_string()
+        table_formatted = re.sub("<table>", """<table role="grid">""", table_formatted)
     except Exception as e:
-        raise ValueError(f"Formatting error: {str(e)}")
+        table_formatted = f"<p>Formatting error: {str(e)}</p>"
     return table_formatted
+
+def _format_vega(col_names, rows, vega):
+    """
+    Joins passed vega lite specification with received data
+    """
+    try:
+        assert vega, "No vega specification"
+        vega = json.loads(vega)
+        # TODO reformatting
+        data = []
+        vega["data"] = {"values": data}
+        vega_viz = "<p>TODO</p>"
+    except Exception as e:
+        vega_viz = f"<p>Formatting error: {str(e)}</p>"
+    return vega_viz
 
 def _execute_query(driver, conn_str, query):
     """

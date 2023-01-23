@@ -23,14 +23,14 @@ def test_query():
     assert client.get("/query/baddb").status_code == 404
 
 def test_execute():
-    assert client.post("/execute/postgres/", data={"query": "--"}).status_code == 500
-    assert client.post("/execute/baddb/", data={"query": "--"}).status_code == 500
-    assert client.post("/execute/sqlite/", data={"query": "--"}).status_code == 500
-    assert client.post("/execute/sqlite/", data={"query": "select badfunc();"}).status_code == 500
-    assert client.post("/execute/sqlite/", data={"query": "select 1;"}).status_code == 200
+    assert client.post("/execute/postgres/", data={"query": "--", "vega": ""}).status_code == 500
+    assert client.post("/execute/baddb/", data={"query": "--", "vega": ""}).status_code == 500
+    assert client.post("/execute/sqlite/", data={"query": "--", "vega": ""}).status_code == 500
+    assert client.post("/execute/sqlite/", data={"query": "select badfunc();", "vega": ""}).status_code == 500
+    assert client.post("/execute/sqlite/", data={"query": "select 1;", "vega": ""}).status_code == 200
     # htmx responses always return 200 even if there was an error
-    assert client.post("/execute/sqlite/", data={"query": "select badfunc();"}, headers=htmx_headers).status_code == 200
-    assert client.post("/execute/sqlite/", data={"query": "select 1;"}, headers=htmx_headers).status_code == 200
+    assert client.post("/execute/sqlite/", data={"query": "select badfunc();", "vega": ""}, headers=htmx_headers).status_code == 200
+    assert client.post("/execute/sqlite/", data={"query": "select 1;", "vega": ""}, headers=htmx_headers).status_code == 200
 
 def test_db():
     assert client.get("/db/postgres/HEAD").status_code == 500

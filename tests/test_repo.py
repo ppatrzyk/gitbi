@@ -18,20 +18,22 @@ def test_get_query():
         get_query("incorrect_commit_hash", "postgres", "query.sql")
     with pytest.raises(RuntimeError):
         get_query("f76d73c56b16bb3d74535e7f5b672066c11e17af", "postgres", "query.sql")
-    assert get_query("81b3c23584459b4e3693d6428e3fc608aab7252a", "postgres", "query.sql") == ""
-    assert get_query("5bb043654572d1d768df503e04c4dbdd3606d65f", "postgres", "query.sql") == "script file content\n"
-    assert get_query("836bd2dced3aad27abb0c1def6de4696e0722dfe", "postgres", "query.sql") == "script file content\n"
-    assert get_query("bdd50332c25777feaaee7b3f40a4a42ab173ae18", "postgres", "query.sql") == "script file content\n"
-    assert get_query("38ceabd502ad82f828f640e418fce0bd1d45a2bd", "postgres", "query.sql") == "script file content\n"
-    assert get_query("HEAD", "postgres", "query.sql") == "script file content\n"
-    assert get_query("file", "postgres", "query.sql") == "script file content\n"
+    assert get_query("81b3c23584459b4e3693d6428e3fc608aab7252a", "postgres", "query.sql") == ("", "")
+    query_sql_latest = "script file content\n"
+    assert get_query("5bb043654572d1d768df503e04c4dbdd3606d65f", "postgres", "query.sql") == (query_sql_latest, "")
+    assert get_query("836bd2dced3aad27abb0c1def6de4696e0722dfe", "postgres", "query.sql") == (query_sql_latest, "")
+    assert get_query("bdd50332c25777feaaee7b3f40a4a42ab173ae18", "postgres", "query.sql") == (query_sql_latest, "")
+    assert get_query("38ceabd502ad82f828f640e418fce0bd1d45a2bd", "postgres", "query.sql") == (query_sql_latest, "")
+    assert get_query("HEAD", "postgres", "query.sql") == (query_sql_latest, "")
+    assert get_query("file", "postgres", "query.sql") == (query_sql_latest, "")
     with pytest.raises(RuntimeError):
         get_query("file", "postgres", "nonexistent.sql")
-    assert get_query("836bd2dced3aad27abb0c1def6de4696e0722dfe", "sqlite", "myquery.sql") == "select * from mytable;\n-- comment\n"
-    assert get_query("bdd50332c25777feaaee7b3f40a4a42ab173ae18", "sqlite", "myquery.sql") == "select * from mytable;\n-- comment\n"
-    assert get_query("38ceabd502ad82f828f640e418fce0bd1d45a2bd", "sqlite", "myquery.sql") == "select * from mytable;\n-- comment\n"
-    assert get_query("HEAD", "sqlite", "myquery.sql") == "select * from mytable;\n-- comment\n"
-    assert get_query("file", "sqlite", "myquery.sql") == "select * from mytable;\n-- comment\n"
+    myquery_sql_latest = "select * from mytable;\n-- comment\n"
+    assert get_query("836bd2dced3aad27abb0c1def6de4696e0722dfe", "sqlite", "myquery.sql") == (myquery_sql_latest, "")
+    assert get_query("bdd50332c25777feaaee7b3f40a4a42ab173ae18", "sqlite", "myquery.sql") == (myquery_sql_latest, "")
+    assert get_query("38ceabd502ad82f828f640e418fce0bd1d45a2bd", "sqlite", "myquery.sql") == (myquery_sql_latest, "")
+    assert get_query("HEAD", "sqlite", "myquery.sql") == (myquery_sql_latest, "")
+    assert get_query("file", "sqlite", "myquery.sql") == (myquery_sql_latest, "")
 
 def test_list_sources():
     with pytest.raises(RuntimeError):

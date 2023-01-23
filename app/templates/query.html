@@ -1,11 +1,9 @@
 {% extends "base.html" %}
 {% block extendhead %}
     <link href="{{ url_for('static', path='/css/github.min.css') }}" rel="stylesheet">
-    {% if vega %}
-    <script src="{{ url_for('static', path='/js/vega/vega@5.22.1') }}"></script>
-    <script src="{{ url_for('static', path='/js/vega/vega-lite@5.6.0') }}"></script>
-    <script src="{{ url_for('static', path='/js/vega/vega-embed@6.21.0') }}"></script>
-    {% endif %}
+    <script src="{{ url_for('static', path='/js/vega/vega@5.22.1.js') }}"></script>
+    <script src="{{ url_for('static', path='/js/vega/vega-lite@5.6.0.js') }}"></script>
+    <script src="{{ url_for('static', path='/js/vega/vega-embed@6.21.0.js') }}"></script>
 {% endblock %}
 {% block title %}Query{% endblock %}
 {% block header %}
@@ -17,11 +15,13 @@
     <h1>Query page</h1>
     <h2>Query</h2>
     <p>TODO editable: {{ editable }}</p>
-    <div id="query" class="language-sql">{{ query }}</div>
+    <div id="query-editor" class="language-sql">{{ query }}</div>
+    <h2>Vega</h2>
+    <div id="vega-editor" class="language-json">{{ vega }}</div>
     <button 
+        role="button"
         hx-post="{{ url_for('execute_route', db=db) }}"
-        hx-include="#query"
-        hx-vals="js:{query: jar.toString()}"
+        hx-vals="js:{query: query_jar.toString(), vega: vega_jar.toString()}"
         hx-trigger="click"
         hx-target="#query-result"
         hx-swap="innerHTML"
@@ -35,12 +35,14 @@
     <script type="module">
         import {CodeJar} from '{{ url_for("static", path="/js/codejar.min.js") }}'
         import hljs from '{{ url_for("static", path="/js/highlight/core.min.js") }}'
+        import json from '{{ url_for("static", path="/js/highlight/json.min.js") }}'
         import sql from '{{ url_for("static", path="/js/highlight/sql.min.js") }}'
+        hljs.configure({ignoreUnescapedHTML: true});
+        hljs.registerLanguage('json', json);
         hljs.registerLanguage('sql', sql);
-        hljs.configure({ignoreUnescapedHTML: true})
-        let input_el = document.getElementById("query")
-        window.jar = CodeJar(input_el, hljs.highlightElement)
+        let query_editor = document.getElementById("query-editor");
+        let vega_editor = document.getElementById("vega-editor");
+        window.query_jar = CodeJar(query_editor, hljs.highlightElement);
+        window.vega_jar = CodeJar(vega_editor, hljs.highlightElement);
     </script>
 {% endblock %}
-<!-- TODO: https://github.com/highlightjs/highlight.js/wiki/security -->
-<!-- figure out if relevant -->

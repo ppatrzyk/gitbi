@@ -18,11 +18,11 @@ def test_execute_from_file():
 
 def test_execute():
     with pytest.raises(NameError):
-        execute('baddb', 'badquery')
+        execute('baddb', 'badquery', '')
     with pytest.raises(ValueError):
-        execute('sqlite', 'select badfunc();')
+        execute('sqlite', 'select badfunc();', '')
     with does_not_raise():
-        execute('sqlite', "select 1;")
+        execute('sqlite', "select 1;", '')
 
 def test_list_tables():
     assert list_tables("sqlite") == ("mytable", )

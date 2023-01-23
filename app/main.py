@@ -88,7 +88,7 @@ async def query_route(request):
             "version": VERSION,
             "state": None,
             "query": query_str or "",
-            "vega": False,
+            "vega": "",
             "editable": True,
             "db": db, 
         }
@@ -99,7 +99,7 @@ async def saved_query_route(request):
     Endpoint for displaying query
     """
     try:
-        query = repo.get_query(**request.path_params)
+        query, vega = repo.get_query(**request.path_params)
     except RuntimeError as e:
         raise HTTPException(status_code=404, detail=str(e))
     else:
@@ -107,6 +107,7 @@ async def saved_query_route(request):
             "request": request,
             "version": VERSION,
             "query": query,
+            "vega": vega,
             "editable": False,
             **request.path_params,
         }
@@ -120,7 +121,11 @@ async def execute_route(request):
     htmx_req = bool(request.headers.get("HX-Request"))
     try:
         form = await request.form()
-        table = query.execute(db=request.path_params.get("db"), query=form["query"])
+        table, vega_viz = query.execute(
+            db=request.path_params.get("db"),
+            query=form["query"],
+            vega=form["vega"]
+        )
     except Exception as e:
         status_code = 404 if isinstance(e, RuntimeError) else 500
         if htmx_req:
@@ -131,6 +136,7 @@ async def execute_route(request):
         data = {
             "request": request,
             "table": table,
+            "vega": vega_viz,
         }
         return TEMPLATES.TemplateResponse(name='result.html', context=data)
 
