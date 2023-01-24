@@ -70,10 +70,9 @@ def _format_vega(col_names, rows, vega):
     try:
         assert vega, "No vega specification"
         vega = json.loads(vega)
-        # TODO reformatting
-        data = []
-        vega["data"] = {"values": data}
-        vega_viz = "<p>TODO</p>"
+        data = tuple(tuple({col: row[i]} for i, col in enumerate(col_names, start=0)) for row in rows)
+        vega = {**vega, "$schema": "/static/js/vega/v5.json", "data": {"values": data}}
+        vega_viz = f"<p>TODO: {vega}</p>"
     except Exception as e:
         vega_viz = f"<p>Formatting error: {str(e)}</p>"
     return vega_viz

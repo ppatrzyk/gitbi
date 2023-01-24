@@ -146,7 +146,7 @@ def _htmx_error(message, code):
     """
     error_msg = f"""
     <article>
-        <header><h3 class="article-head">{code} Error</h3></header>
+        <header><strong>{code} Error</strong></header>
         {message}
     </article>
     """

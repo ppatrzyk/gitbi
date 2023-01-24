@@ -87,15 +87,29 @@ def list_commits():
     """
     Function lists all commits present in current branch of the repo
     """
-    commits = [{"hash": "file", "msg": "Current filesystem"}, ]
+    commits = [
+        {"hash": "file", "short_hash": "file", "msg": "Current filesystem"},
+    ]
     for el in REPO.walk(REPO.head.target):
+        commit_hash = str(el.id)
         commit = {
-            "hash": str(el.id),
+            "hash": commit_hash,
+            "short_hash": _short_str(commit_hash),
             "msg": el.message.replace("\n", ""),
             "date": datetime.fromtimestamp(el.commit_time).isoformat(),
         }
         commits.append(commit)
     return commits
+
+def _short_str(s):
+    """
+    Make shorter version of string for presentation
+    """
+    if len(s) > 11:
+        short = f"{s[:4]}...{s[-4:]}"
+    else:
+        short = s
+    return short
 
 def _get_file_content(state, path):
     """

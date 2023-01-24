@@ -12,27 +12,40 @@
     <h1>Gitbi Home</h1>
     <p>[Readme file is missing]</p>
     {% endif %}
-    <article>
-        <header><h3 class="article-head">Data Sources</h3></header>
-        {% for db, files in databases.items() %}
-            <h3><a href="{{ url_for('db_route', state=state, db=db) }}">{{ db|e }}</a></h3>
-            <a href="{{ url_for('db_route', state=state, db=db) }}" role="button">List tables and queries</a>
-            <a href="{{ url_for('query_route', db=db) }}" role="button">New query</a>
-        {% endfor %}
-    </article>
-    <article>
-        <header><h3 class="article-head">Commits</h3></header>
+    <details open>
+        <summary>Data Sources</summary>
         <figure>
-            <table>
+        {% for db, files in databases.items() %}
+            <p>
+                <span class="db"><strong>{{ db|e }}</strong></span> | 
+                <a href="{{ url_for('db_route', state=state, db=db) }}">List tables and queries</a> | 
+                <a href="{{ url_for('query_route', db=db) }}">New query</a>
+            </p>
+            <details role="list">
+                <summary aria-haspopup="listbox">Queries</summary>
+                <ul role="listbox">
+                    {% for file in files %}
+                    <li><a href="{{ url_for('saved_query_route', state=state, db=db, file=file) }}">{{ file|e }}</a></li>
+                    {% endfor %}
+                </ul>
+            </details>
+            <br>
+        {% endfor %}
+        </figure>
+    </details>
+    <details>
+        <summary>Commits</summary>
+        <figure>
+            <table role="grid">
                 <tr><th>Commit</th><th>Date</th><th>Message</th></tr>
                 {% for commit in commits %}
                 <tr>
-                    <th><a href="{{ url_for('home_route', state=commit.hash) }}">{{ commit.hash|e }}</a></th>
-                    <th>{{ commit.date|e }}</th>
-                    <th>{{ commit.msg|e }}</th>
+                    <td><a href="{{ url_for('home_route', state=commit.hash) }}">{{ commit.short_hash|e }}</a></td>
+                    <td>{{ commit.date|e }}</td>
+                    <td>{{ commit.msg|e }}</td>
                 </tr>
                 {% endfor %}
             </table>
         </figure>
-    </article>
+    </details>
 {% endblock %}

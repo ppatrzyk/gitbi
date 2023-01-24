@@ -12,11 +12,15 @@
     {% endif %}
 {% endblock %}
 {% block content %}
-    <h1>Query page</h1>
-    <h2>Query</h2>
-    <div id="query-editor" class="code-editor language-sql">{{ query }}</div>
-    <h2>Vega</h2>
-    <div id="vega-editor" class="code-editor language-json">{{ vega }}</div>
+    <h2>Query db: {{ db }}</h2>
+    <details open>
+        <summary>Query</summary>
+        <figure><div id="query-editor" class="code-editor language-sql">{{ query }}</div></figure>
+    </details>
+    <details open>
+        <summary>Vega</summary>
+        <figure><div id="vega-editor" class="code-editor language-json">{{ vega }}</div></figure>
+    </details>
     <button
         role="button"
         hx-post="{{ url_for('execute_route', db=db) }}"
