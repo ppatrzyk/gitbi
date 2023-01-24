@@ -1,10 +1,32 @@
 {# partial html - this is used by htmx passing result #}
 <details open>
     <summary>Visualization</summary>
-    <figure>{{ vega }}</figure>
+    <div id="vega-viz"></div>
 </details>
+<script type="text/javascript">
+    var result_el = document.getElementById("query-result")
+    var vega_spec = JSON.parse('{{ vega }}');
+    var width = Math.floor(result_el.offsetWidth-100)
+    vega_spec["width"] = width
+    vega_spec["height"] = Math.floor(0.5*width)
+    vegaEmbed('#vega-viz', vega_spec, {
+        mode: "vega-lite",
+        renderer: "canvas",
+    });
+</script>
 
 <details open>
     <summary>Table</summary>
     <figure>{{ table }}</figure>
 </details>
+<script>
+    var table = document.querySelector("#results-table");
+    var data_table = new simpleDatatables.DataTable(table, {
+        perPageSelect: [10, 25, 50, 100],
+        classes: {bottom: "grid", top: "grid"},
+        layout: {
+            top: "{select}{search}",
+            bottom: "{pager}{info}"
+        },
+    });
+</script>

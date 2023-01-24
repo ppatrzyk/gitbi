@@ -58,7 +58,7 @@ def _format_table(col_names, rows):
         table.field_names = col_names
         table.add_rows(rows)
         table_formatted = "" if table is None else table.get_html_string()
-        table_formatted = re.sub("<table>", """<table role="grid">""", table_formatted)
+        table_formatted = re.sub("<table>", """<table id="results-table" role="grid">""", table_formatted)
     except Exception as e:
         table_formatted = f"<p>Formatting error: {str(e)}</p>"
     return table_formatted
@@ -70,12 +70,11 @@ def _format_vega(col_names, rows, vega):
     try:
         assert vega, "No vega specification"
         vega = json.loads(vega)
-        data = tuple(tuple({col: row[i]} for i, col in enumerate(col_names, start=0)) for row in rows)
-        vega = {**vega, "$schema": "/static/js/vega/v5.json", "data": {"values": data}}
-        vega_viz = f"<p>TODO: {vega}</p>"
+        data = tuple({col: row[i] for i, col in enumerate(col_names, start=0)} for row in rows)
+        vega = {**vega, "data": {"$schema": "/static/js/vega/v5.json", "values": data}}
     except Exception as e:
-        vega_viz = f"<p>Formatting error: {str(e)}</p>"
-    return vega_viz
+        vega = {"error": str(e)}
+    return json.dumps(vega)
 
 def _execute_query(driver, conn_str, query):
     """

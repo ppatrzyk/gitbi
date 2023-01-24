@@ -10,6 +10,7 @@ from pygit2 import Repository
 DIR = os.environ["GITBI_REPO_DIR"]
 REPO = Repository(DIR)
 VALID_DB_TYPES = ("sqlite", "postgres", "clickhouse", )
+VALID_QUERY_EXTENSIONS = (".sql", )
 
 def get_db_params(db):
     """
@@ -81,7 +82,7 @@ def list_sources(state):
     except Exception as e:
         raise RuntimeError(f"Sources at state {state} cannot be listed: {str(e)}")
     else:
-        return {db: tuple(sorted(queries)) for db, queries in sources.items()}
+        return {db: _filter_queries(queries) for db, queries in sources.items()}
 
 def list_commits():
     """
@@ -110,6 +111,13 @@ def _short_str(s):
     else:
         short = s
     return short
+
+def _filter_queries(queries):
+    """
+    Filter which query files are valid
+    """
+    queries = tuple(sorted(q for q in queries if Path(q).suffix in VALID_QUERY_EXTENSIONS))
+    return queries
 
 def _get_file_content(state, path):
     """

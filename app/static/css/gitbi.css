@@ -18,3 +18,12 @@
 .db {
     font-variant: small-caps;
 }
+.datatable-selector {
+    margin: 0 !important;
+}
+.datatable-info {
+    display: flex;
+    justify-content: right;
+    align-content: center;
+    flex-direction: column;
+}
