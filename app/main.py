@@ -1,6 +1,7 @@
 """
 Main app file
 """
+import json
 import os
 from starlette.applications import Starlette
 from starlette.exceptions import HTTPException
@@ -120,10 +121,11 @@ async def execute_route(request):
     htmx_req = bool(request.headers.get("HX-Request"))
     try:
         form = await request.form()
+        data = json.loads(form["data"])
         table, vega_viz = query.execute(
             db=request.path_params.get("db"),
-            query=form["query"],
-            vega=form["vega"]
+            query=data.get("query"),
+            vega=data.get("vega")
         )
     except Exception as e:
         status_code = 404 if isinstance(e, RuntimeError) else 500

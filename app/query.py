@@ -16,6 +16,16 @@ DATABASES = {
     "postgres": psycopg,
     "clickhouse": clickhouse
 }
+VEGA_DEFAULTS = {
+    "config": {
+        "font": "system-ui",
+        "axis": {"labelFontSize": 16, "titleFontSize": 20},
+        "legend": {"labelFontSize": 16},
+        "header": {"labelFontSize": 16},
+        "text": {"fontSize": 16},
+        "title": {"fontSize": 24},
+    },
+}
 
 def list_tables(db):
     """
@@ -38,7 +48,10 @@ def execute(db, query, vega):
     driver = DATABASES[db_type]
     col_names, rows = _execute_query(driver, conn_str, query)
     table = _format_table(col_names, rows)
-    vega_viz = _format_vega(col_names, rows, vega)
+    if vega is not None:
+        vega_viz = _format_vega(col_names, rows, vega)
+    else:
+        vega_viz = None
     return table, vega_viz
 
 def execute_from_file(state, db, file):
@@ -58,7 +71,7 @@ def _format_table(col_names, rows):
         table.field_names = col_names
         table.add_rows(rows)
         table_formatted = "" if table is None else table.get_html_string()
-        table_formatted = re.sub("<table>", """<table id="results-table" role="grid">""", table_formatted)
+        table_formatted = re.sub("<table>", """<table id="results-table">""", table_formatted)
     except Exception as e:
         table_formatted = f"<p>Formatting error: {str(e)}</p>"
     return table_formatted
@@ -71,7 +84,7 @@ def _format_vega(col_names, rows, vega):
         assert vega, "No vega specification"
         vega = json.loads(vega)
         data = tuple({col: row[i] for i, col in enumerate(col_names, start=0)} for row in rows)
-        vega = {**vega, "data": {"$schema": "/static/js/vega/v5.json", "values": data}}
+        vega = {**VEGA_DEFAULTS, "data": {"values": data}, **vega}
     except Exception as e:
         vega = {"error": str(e)}
     return json.dumps(vega)

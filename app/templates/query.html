@@ -20,12 +20,16 @@
     </details>
     <details open>
         <summary>Vega</summary>
+        <label for="include-vega">
+            <input type="checkbox" id="include-vega" name="include-vega" {% if vega %}checked{% endif %}>
+            Include vega chart
+        </label>
         <figure><div id="vega-editor" class="code-editor language-json">{{ vega }}</div></figure>
     </details>
     <button
         role="button"
         hx-post="{{ url_for('execute_route', db=db) }}"
-        hx-vals="js:{query: query_jar.toString(), vega: vega_jar.toString()}"
+        hx-vals="js:{data: query_format()}"
         hx-trigger="click"
         hx-target="#query-result"
         hx-swap="innerHTML"
@@ -37,16 +41,6 @@
         <p class="htmx-indicator" aria-busy="true">Running query...</p>
     </div>
     <script type="module">
-        import {CodeJar} from '{{ url_for("static", path="/js/codejar.min.js") }}'
-        import hljs from '{{ url_for("static", path="/js/highlight/core.min.js") }}'
-        import json from '{{ url_for("static", path="/js/highlight/json.min.js") }}'
-        import sql from '{{ url_for("static", path="/js/highlight/sql.min.js") }}'
-        hljs.configure({ignoreUnescapedHTML: true});
-        hljs.registerLanguage('json', json);
-        hljs.registerLanguage('sql', sql);
-        let query_editor = document.getElementById("query-editor");
-        let vega_editor = document.getElementById("vega-editor");
-        window.query_jar = CodeJar(query_editor, hljs.highlightElement);
-        window.vega_jar = CodeJar(vega_editor, hljs.highlightElement);
+    {% include 'js/make_code_editor.js' %}
     </script>
 {% endblock %}
