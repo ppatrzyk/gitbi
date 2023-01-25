@@ -23,7 +23,7 @@
 }
 .datatable-info {
     display: flex;
-    justify-content: right;
+    justify-content: center;
     align-content: center;
     flex-direction: column;
 }

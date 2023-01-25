@@ -6,7 +6,7 @@ def test_execute_from_file():
     with pytest.raises(ValueError):
         execute_from_file('HEAD', 'sqlite', 'myquery_bad.sql')
     with pytest.raises(RuntimeError):
-        execute_from_file('HEAD', 'sqlite', 'badfile')
+        execute_from_file('HEAD', 'sqlite', 'nonexistentfile')
     with pytest.raises(RuntimeError):
         execute_from_file('HEAD', 'baddb', 'badfile')
     with does_not_raise():

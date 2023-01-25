@@ -118,7 +118,6 @@ async def execute_route(request):
     Endpoint for getting query result
     Used by htmx
     """
-    htmx_req = bool(request.headers.get("HX-Request"))
     try:
         form = await request.form()
         data = json.loads(form["data"])
@@ -129,10 +128,7 @@ async def execute_route(request):
         )
     except Exception as e:
         status_code = 404 if isinstance(e, RuntimeError) else 500
-        if htmx_req:
-            return _htmx_error(str(e), status_code)
-        else:
-            raise HTTPException(status_code=status_code, detail=str(e))
+        return _htmx_error(str(e), status_code)
     else:
         data = {
             "request": request,

@@ -68,3 +68,22 @@ GITBI_REPO_DIR="./tests/gitbi-testing" ./start_app.sh
 # build image
 docker build -t pieca/gitbi:<version> .
 ```
+
+## Alternatives
+
+- if you want to generate static html reports from db queries using Python: [merkury](https://github.com/ppatrzyk/merkury)
+- if you want to analyze single sqlite db: [datasette](https://github.com/simonw/datasette)
+
+## Acknowledgements
+
+Backend:
+- [pygit2](https://github.com/libgit2/pygit2)
+- [starlette](https://github.com/encode/starlette)
+
+Frontend:
+- [codejar](https://github.com/antonmedv/codejar)
+- [highlight](https://github.com/highlightjs/highlight.js)
+- [htmx](https://github.com/bigskysoftware/htmx)
+- [pico](https://github.com/picocss/pico)
+- [simple-datatables](https://github.com/fiduswriter/simple-datatables)
+- [vega](https://github.com/vega)
