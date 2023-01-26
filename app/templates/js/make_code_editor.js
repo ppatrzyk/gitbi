@@ -11,7 +11,8 @@ window.query_jar = CodeJar(query_editor, hljs.highlightElement);
 window.vega_jar = CodeJar(vega_editor, hljs.highlightElement);
 function query_format() {
     var include_vega = document.getElementById("include-vega").checked
-    var data = {query: query_jar.toString(),}
+    var file_name = document.getElementById("file-name").value.trim()
+    var data = {query: query_jar.toString(), file: file_name}
     if (include_vega) {
         data["vega"] = vega_jar.toString()
     }

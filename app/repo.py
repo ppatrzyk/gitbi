@@ -5,7 +5,7 @@ from datetime import datetime
 from markdown import markdown
 import os
 from pathlib import Path
-from pygit2 import Repository
+from pygit2 import Repository, Signature
 
 DIR = os.environ["GITBI_REPO_DIR"]
 REPO = Repository(DIR)
@@ -102,6 +102,34 @@ def list_commits():
         commits.append(commit)
     return commits
 
+def save(db, file, query, vega=None):
+    """
+    Save query into repo
+    file refers to query file name
+    """
+    path_obj = Path(file)
+    assert file == path_obj.name, "Path passed"
+    assert (path_obj.suffix in VALID_QUERY_EXTENSIONS), "Invalid query extension"
+    path = f"{db}/{file}"
+    index = REPO.index
+    assert _write_file_content(path, query), "Writing file content failed"
+    index.add(path)
+    if vega is not None:
+        vega_path = f"{path}.json"
+        assert _write_file_content(vega_path, vega), "Writing file content failed"
+        index.add(vega_path)
+    index.write()
+    author = Signature(name='Gitbi', email="gitbi@gitbi.gitbi")
+    REPO.create_commit(
+        REPO.head.name, # reference_name
+        author, # author
+        author, # committer
+        f"[gitbi] DB {db}, saving {file}", # message
+        index.write_tree(), # tree
+        [REPO.head.target, ] # parents
+    )
+    return True
+
 def _short_str(s):
     """
     Make shorter version of string for presentation
@@ -118,6 +146,14 @@ def _filter_queries(queries):
     """
     queries = tuple(sorted(q for q in queries if Path(q).suffix in VALID_QUERY_EXTENSIONS))
     return queries
+
+def _write_file_content(path, content):
+    """
+    Change file contents on disk
+    """
+    with open(os.path.join(DIR, path), "w") as f:
+        f.write(content)
+    return True
 
 def _get_file_content(state, path):
     """

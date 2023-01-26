@@ -89,6 +89,7 @@ async def query_route(request):
             "request": request,
             "version": VERSION,
             "state": None,
+            "query_file": "",
             "query": query or "",
             "vega": vega or "",
             "db": db, 
@@ -107,6 +108,7 @@ async def saved_query_route(request):
         data = {
             "request": request,
             "version": VERSION,
+            "file": "",
             "query": query,
             "vega": vega,
             **request.path_params,
@@ -137,17 +139,35 @@ async def execute_route(request):
         }
         return TEMPLATES.TemplateResponse(name='result.html', context=data)
 
+async def save_route(request):
+    """
+    Save query to repository
+    """
+    try:
+        form = await request.form()
+        data = json.loads(form["data"])
+        data['file'] = data['file'].strip()
+        repo.save(**request.path_params, **data)
+        redirect_url = request.url_for(
+            "saved_query_route",
+            db=request.path_params['db'],
+            file=data['file'],
+            state="HEAD"
+        )
+        headers = {"HX-Redirect": redirect_url}
+        response = HTMLResponse(content="<p>OK</p>", headers=headers, status_code=200)
+    except Exception as e:
+        status_code = 404 if isinstance(e, RuntimeError) else 500
+        return _htmx_error(str(e), status_code)
+    else:
+        return response
+
 def _htmx_error(message, code):
     """
     Creates successful reponse for htmx (with error msg)
     even if endpoint actually failed
     """
-    error_msg = f"""
-    <article>
-        <header><strong>{code} Error</strong></header>
-        {message}
-    </article>
-    """
+    error_msg = f"<h3>Error {code}</h3><p>{message}</p>"
     return HTMLResponse(content=error_msg, status_code=200)
 
 async def server_error(request, exc):
@@ -167,6 +187,7 @@ routes = [
     Route('/query/{db:str}', endpoint=query_route, name="query_route"),
     Route('/query/{db:str}/{file:str}/{state:str}', endpoint=saved_query_route, name="saved_query_route"),
     Route('/execute/{db:str}', endpoint=execute_route, methods=("POST", ), name="execute_route"),
+    Route('/save/{db:str}', endpoint=save_route, methods=("POST", ), name="save_route"),
 ]
 
 exception_handlers = {

@@ -2,7 +2,7 @@
 
 **[DEVELOPMENT IN PROGRESS]**
 
-_Gitbi_ is a lightweight business intelligence application that reads all queries from a git repository. This design enables you to write and commit SQL queries directly to git repo and have _Gitbi_ display them.
+_Gitbi_ is a lightweight business intelligence application that reads all queries and visualization configuration from a git repository. This design enables you to write and commit SQL queries and visualizations ([vega-lite](https://github.com/vega/vega-lite) specs) directly to git repo and have _Gitbi_ display them. Of course, if you wish to edit them via web interface, that's also possible.
 
 ## Configuration
 
@@ -12,7 +12,9 @@ _Gitbi_ requires the following to run:
 
 Repository needs to have the following structure:
 - directories in repo root refer to databases
-- files in each directory are queries to be run against respective database
+- files in each directory are queries/visualizations to be run against respective database
+    - files ending with `.sql` are queries
+    - files `<query_file_name>.json` are read as [vega-lite](https://github.com/vega/vega-lite) specs
 - README.md file content will be displayed on _Gitbi_ main page
 
 ### Environment variables
@@ -36,18 +38,22 @@ sqlite | path to db file
 Assume you have repository with the following structure:
 
 ```
-repo/
+repo
 ├── db1
-│   ├── query1.sql
-│   └── query2.sql
+│   ├── query1.sql
+│   ├── query2.sql
+│   └── query2.sql.json
 ├── db2
-│   ├── query3.sql
-│   ├── query4.sql
-│   └── query5.sql
+│   ├── query3.sql
+│   ├── query3.sql.json
+│   ├── query4.sql
+│   └── query5.sql
 └── README.md
 ```
 
-There are 2 databases named _db1_ and _db2_. For configuration you'd need to set the following environment variables:
+There are 2 databases named _db1_ and _db2_. _db1_ has 2 queries, one of them has also visualization; _db2_ has 3 queries, 1 with added visualization.
+
+For configuration you'd need to set the following environment variables:
 
 ```
 GITBI_REPO_DIR=<path_to_repo>

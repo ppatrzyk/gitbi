@@ -26,7 +26,13 @@
         </label>
         <figure><div id="vega-editor" class="code-editor language-json">{{ vega }}</div></figure>
     </details>
-    <button
+    <div>
+        <label for="file-name">
+            <input type="text" id="file-name" name="file-name" placeholder="{{ file }}" value="{{ file }}">
+            Query file name
+        </label>
+    </div>
+    <div
         role="button"
         hx-post="{{ url_for('execute_route', db=db) }}"
         hx-vals="js:{data: query_format()}"
@@ -35,7 +41,19 @@
         hx-swap="innerHTML"
     >
         Trigger
-    </button>
+    </div>
+    <div
+        role="button"
+        class="secondary"
+        hx-post="{{ url_for('save_route', db=db) }}"
+        hx-vals="js:{data: query_format()}"
+        hx-trigger="click"
+        hx-target="#save-error"
+        hx-swap="innerHTML"
+    >
+        Save query
+    </div>
+    <div id="save-error"></div>
     <h2>Result</h2>
     <div id="query-result">
         <p class="htmx-indicator" aria-busy="true">Running query...</p>
