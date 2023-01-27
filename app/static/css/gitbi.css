@@ -18,7 +18,7 @@
 .db {
     font-variant: small-caps;
 }
-.datatable-selector {
+.no-margin {
     margin: 0 !important;
 }
 .datatable-info {
@@ -27,3 +27,10 @@
     align-content: center;
     flex-direction: column;
 }
+/* 
+TODO
+datatable-sorter  -- now as normal link, some indication that sorts columns
+datatable-pagination -- into buttons?
+csv_button in make_table js - something wrong with margin? or fix label position for per_page?
+query page - buttons for trigger, save query positioning
+*/
