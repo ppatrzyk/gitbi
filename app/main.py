@@ -12,7 +12,6 @@ from starlette.templating import Jinja2Templates
 
 import query
 import repo
-import scheduler
 
 VERSION = "0.3"
 APP_DIR = os.path.abspath(os.path.dirname(__file__))
@@ -199,14 +198,8 @@ exception_handlers = {
     HTTPException: server_error,
 }
 
-if scheduler.scheduler_middleware is None:
-    middleware = []
-else:
-    middleware = [scheduler.scheduler_middleware, ]
-
 app = Starlette(
     debug=True,
-    exception_handlers=exception_handlers,
-    middleware=middleware,
-    routes=routes
+    routes=routes,
+    exception_handlers=exception_handlers
 )

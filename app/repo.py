@@ -60,19 +60,6 @@ def get_readme(state):
         readme = None
     return readme
 
-def get_crontab(state):
-    """
-    Read and parse crontab for shceduling
-    """
-    try:
-        crontab = _get_file_content(state, "crontab")
-        # TODO parse file to return (cron, path) tuples
-    except:
-        # It is OK for crontab to be missing, nothing set then
-        crontab = []
-    # return crontab
-    return [("* * * * *", "pokemon/stats_by_type1.sql"), ]
-
 def list_sources(state):
     """
     Lists all available sources (db + queries)
