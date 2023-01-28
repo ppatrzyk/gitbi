@@ -1,6 +1,7 @@
 """
 Main app file
 """
+from datetime import datetime
 import json
 import os
 from starlette.applications import Starlette
@@ -15,8 +16,8 @@ import repo
 
 VERSION = "0.3"
 APP_DIR = os.path.abspath(os.path.dirname(__file__))
-STATIC_DIR = os.path.join(APP_DIR, "static")
-TEMPLATE_DIR = os.path.join(APP_DIR, "templates")
+STATIC_DIR = os.path.join(APP_DIR, "frontend/static")
+TEMPLATE_DIR = os.path.join(APP_DIR, "frontend")
 TEMPLATES = Jinja2Templates(directory=TEMPLATE_DIR, autoescape=False)
 
 # Error types
@@ -97,13 +98,13 @@ async def saved_query_route(request):
     Endpoint for saved query
     """
     try:
-        query, vega = repo.get_query(**request.path_params)
+        query_str, vega_str = repo.get_query(**request.path_params)
     except RuntimeError as e:
         raise HTTPException(status_code=404, detail=str(e))
     else:
         request.state.query_data = {
-            "query": query,
-            "vega": vega,
+            "query": query_str,
+            "vega": vega_str,
             **request.path_params, # db, file, state
         }
         return await _query_route(request)
@@ -142,6 +143,30 @@ async def execute_route(request):
             "vega": vega_viz,
         }
         return TEMPLATES.TemplateResponse(name='result.html', context=data)
+
+async def report_route(request):
+    """
+    Endpoint for running reports
+    """
+    try:
+        query_str, vega_str = repo.get_query(**request.path_params)
+        table, _vega_viz = query.execute(
+            db=request.path_params.get("db"),
+            query=query_str,
+            vega=vega_str
+        )
+    except Exception as e:
+        status_code = 404 if isinstance(e, RuntimeError) else 500
+        raise HTTPException(status_code=status_code, detail=str(e))
+    else:
+        data = {
+            "request": request,
+            "table": table,
+            "vega": None,
+            "time": datetime.now().astimezone().strftime("%Y-%m-%d %H:%M:%S %Z"),
+            **request.path_params,
+        }
+        return TEMPLATES.TemplateResponse(name='report.html', context=data)
 
 async def save_route(request):
     """
@@ -190,6 +215,7 @@ routes = [
     Route("/db/{db:str}/{state:str}", endpoint=db_route, name="db_route"),
     Route('/query/{db:str}', endpoint=query_route, name="query_route"),
     Route('/query/{db:str}/{file:str}/{state:str}', endpoint=saved_query_route, name="saved_query_route"),
+    Route('/report/{db:str}/{file:str}/{state:str}', endpoint=report_route, name="report_route"),
     Route('/execute/{db:str}', endpoint=execute_route, methods=("POST", ), name="execute_route"),
     Route('/save/{db:str}', endpoint=save_route, methods=("POST", ), name="save_route"),
 ]

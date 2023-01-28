@@ -71,7 +71,7 @@ def _format_table(col_names, rows):
         table.field_names = col_names
         table.add_rows(rows)
         table_formatted = "" if table is None else table.get_html_string()
-        table_formatted = re.sub("<table>", """<table id="results-table">""", table_formatted)
+        table_formatted = re.sub("<table>", """<table id="results-table" role="grid">""", table_formatted)
     except Exception as e:
         table_formatted = f"<p>Formatting error: {str(e)}</p>"
     return table_formatted
