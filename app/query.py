@@ -57,7 +57,6 @@ def execute(db, query, vega):
 def execute_from_file(state, db, file):
     """
     Reads query from repo and executes it
-    # TODO currently not used, left for alerts and reports
     """
     query, vega = repo.get_query(state, db, file)
     return execute(db, query, vega)

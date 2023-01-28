@@ -199,9 +199,14 @@ exception_handlers = {
     HTTPException: server_error,
 }
 
+if scheduler.scheduler_middleware is None:
+    middleware = []
+else:
+    middleware = [scheduler.scheduler_middleware, ]
+
 app = Starlette(
     debug=True,
     exception_handlers=exception_handlers,
-    middleware=[scheduler.scheduler_middleware, ],
+    middleware=middleware,
     routes=routes
 )
