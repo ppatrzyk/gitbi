@@ -1,6 +1,7 @@
 """
 Functions to interact with config repository
 """
+from collections import OrderedDict
 from datetime import datetime
 from markdown import markdown
 import os
@@ -82,7 +83,7 @@ def list_sources(state):
     except Exception as e:
         raise RuntimeError(f"Sources at state {state} cannot be listed: {str(e)}")
     else:
-        return {db: _filter_queries(queries) for db, queries in sources.items()}
+        return OrderedDict((db, _filter_queries(queries)) for db, queries in sorted(sources.items()))
 
 def list_commits():
     """

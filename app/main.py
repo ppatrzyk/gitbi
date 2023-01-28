@@ -77,43 +77,47 @@ async def query_route(request):
     Endpoint for empty query
     """
     try:
-        query = request.query_params.get('query')
-        vega = request.query_params.get('vega')
         db = request.path_params.get("db")
         if db not in repo.list_sources("HEAD").keys():
             raise RuntimeError(f"db {db} not present in repo")
     except RuntimeError as e:
         raise HTTPException(status_code=404, detail=str(e))
     else:
-        data = {
-            "request": request,
-            "version": VERSION,
+        request.state.query_data = {
+            "query": request.query_params.get('query') or "",
+            "vega": request.query_params.get('vega') or "",
             "state": None,
-            "query_file": "",
-            "query": query or "",
-            "vega": vega or "",
-            "db": db, 
+            "file": "",
+            **request.path_params, # db
         }
-        return TEMPLATES.TemplateResponse(name='query.html', context=data)
+        return await _query_route(request)
 
 async def saved_query_route(request):
     """
-    Endpoint for displaying query
+    Endpoint for saved query
     """
     try:
         query, vega = repo.get_query(**request.path_params)
     except RuntimeError as e:
         raise HTTPException(status_code=404, detail=str(e))
     else:
-        data = {
-            "request": request,
-            "version": VERSION,
-            "file": "",
+        request.state.query_data = {
             "query": query,
             "vega": vega,
-            **request.path_params,
+            **request.path_params, # db, file, state
         }
-        return TEMPLATES.TemplateResponse(name='query.html', context=data)
+        return await _query_route(request)
+
+async def _query_route(request):
+    """
+    Common logic for query endpoint
+    """
+    data = {
+        "request": request,
+        "version": VERSION,
+        **request.state.query_data,
+    }
+    return TEMPLATES.TemplateResponse(name='query.html', context=data)
 
 async def execute_route(request):
     """
