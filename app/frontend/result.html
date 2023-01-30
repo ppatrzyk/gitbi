@@ -1,8 +1,8 @@
 {# partial html - this is used by htmx passing result #}
 <h2>Result</h2>
 <p>
-    Returned {{ no_rows }} rows in {{ duration }}ms<br>
-    Executed on {{ time }}
+    Returned {{ no_rows|e }} rows in {{ duration|e }}ms<br>
+    Executed on {{ time|e }}
 </p>
 
 {% if vega is not none %}

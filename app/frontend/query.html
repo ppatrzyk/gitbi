@@ -9,11 +9,11 @@
 {% block title %}Query{% endblock %}
 {% block header %}
     {% if state is not none %}
-    <li>{{ state }}</li>
+    <li>{{ state|e }}</li>
     {% endif %}
 {% endblock %}
 {% block content %}
-    <h2>Query db: {{ db }}</h2>
+    <h2>Query db: {{ db|e }}</h2>
     <details open>
         <summary>Query</summary>
         <figure><div id="query-editor" class="code-editor language-sql">{{ query }}</div></figure>
@@ -68,7 +68,7 @@
     <details>
         <summary>Reports and alerts</summary>
         <p>CRON entry (adjust emails and frequency):</p>
-        <figure><pre><code>{{cron_entry}}</code></pre></figure>
+        <figure><pre><code>{{ cron_entry|e }}</code></pre></figure>
     </details>
     {% endif %}
     <script type="module">

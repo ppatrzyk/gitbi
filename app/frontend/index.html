@@ -2,7 +2,7 @@
 {% block title %}Query{% endblock %}
 {% block header %}
     {% if state is not none %}
-    <li>{{ state }}</li>
+    <li>{{ state|e }}</li>
     {% endif %}
 {% endblock %}
 {% block content %}

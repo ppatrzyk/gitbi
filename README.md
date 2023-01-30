@@ -75,7 +75,15 @@ GITBI_DB2_TYPE=<type_db2>
 
 ## Reports and alerts
 
+TODO describe
 
+## Repo setup
+
+TODO describe options
+
+```
+git config receive.denyCurrentBranch updateInstead
+```
 
 ## Development
 

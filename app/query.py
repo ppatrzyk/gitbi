@@ -15,7 +15,12 @@ import sqlparse
 DATABASES = {
     "sqlite": sqlite3,
     "postgres": psycopg,
-    "clickhouse": clickhouse
+    "clickhouse": clickhouse,
+}
+TABLE_QUERIES = {
+    "sqlite": "SELECT tbl_name FROM sqlite_master where type='table';",
+    "postgres": "SELECT concat(schemaname, '.', tablename) FROM pg_catalog.pg_tables;",
+    "clickhouse": "SELECT name FROM system.tables where database == currentDatabase();",
 }
 VEGA_DEFAULTS = {
     "config": {
@@ -34,11 +39,9 @@ def list_tables(db):
     """
     db_type, conn_str = repo.get_db_params(db)
     driver = DATABASES[db_type]
-    match driver:
-        case sqlite3:
-            query = "SELECT * FROM sqlite_master where type='table';"
+    query = TABLE_QUERIES[db_type]
     _col_names, rows = _execute_query(driver, conn_str, query)
-    tables = tuple(el[1] for el in rows)
+    tables = tuple(el[0] for el in rows)
     return tables
 
 def execute(db, query, vega):
@@ -60,7 +63,6 @@ def execute(db, query, vega):
 def execute_from_file(state, db, file):
     """
     Reads query from repo and executes it
-    # TODO currently not used, left for alerts and reports
     """
     query, vega = repo.get_query(state, db, file)
     return execute(db, query, vega)
@@ -105,9 +107,9 @@ def _execute_query(driver, conn_str, query):
         statements = tuple(el for el in statements if el)
         assert statements, f"No valid SQL statements in: {query}"
         for statement in statements:
-            result = cursor.execute(statement)
+            cursor.execute(statement)
         col_names = tuple(el[0] for el in cursor.description)
-        rows = result.fetchall()
+        rows = cursor.fetchall()
     except Exception as e:
         raise ValueError(f"Error executing query: {str(e)}")
     finally:

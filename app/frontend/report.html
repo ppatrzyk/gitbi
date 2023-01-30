@@ -10,11 +10,11 @@
     <main class="container">
         <hgroup>
             <h2>Gitbi Report</h2>
-            <h3>{{ db }} | {{ file }} | {{ state }}</h3>
+            <h3>{{ db|e }} | {{ file|e }} | {{ state|e }}</h3>
         </hgroup>
         <p>
-            Returned {{ no_rows }} rows in {{ duration }}ms<br>
-            Executed on {{ time }}
+            Returned {{ no_rows|e }} rows in {{ duration|e }}ms<br>
+            Executed on {{ time|e }}
         </p>
         <details open>
             <summary>Query</summary>
