@@ -3,6 +3,7 @@ Functions to process SQL queries
 """
 from clickhouse_driver import dbapi as clickhouse
 from prettytable import PrettyTable
+from time import time
 import json
 import psycopg
 import os
@@ -46,13 +47,15 @@ def execute(db, query, vega):
     """
     db_type, conn_str = repo.get_db_params(db)
     driver = DATABASES[db_type]
+    start = time()
     col_names, rows = _execute_query(driver, conn_str, query)
+    duration_ms = round(1000*(time()-start))
     table = _format_table(col_names, rows)
     if vega is not None:
         vega_viz = _format_vega(col_names, rows, vega)
     else:
         vega_viz = None
-    return table, vega_viz
+    return table, vega_viz, duration_ms, len(rows)
 
 def execute_from_file(state, db, file):
     """

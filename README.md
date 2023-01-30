@@ -2,7 +2,15 @@
 
 **[DEVELOPMENT IN PROGRESS]**
 
-_Gitbi_ is a lightweight business intelligence application that reads all queries and visualization configuration from a git repository. This design enables you to write and commit SQL queries and visualizations ([vega-lite](https://github.com/vega/vega-lite) specs) directly to git repo and have _Gitbi_ display them. Of course, if you wish to edit them via web interface, that's also possible.
+_Gitbi_ is a lightweight business intelligence application that reads configuration from a git repository. This design enables you to write and commit SQL queries and visualizations ([vega-lite](https://github.com/vega/vega-lite) specs) directly to git repo and have _Gitbi_ display them. Of course, if you wish to edit them via web interface, that's also possible.
+
+Test it now with sample db and config:
+
+```
+docker run pieca/gitbi:0.4
+```
+
+See full deployment example: [ppatrzyk/gitbi-example](https://github.com/ppatrzyk/gitbi-example).
 
 ## Configuration
 
@@ -14,8 +22,10 @@ Repository needs to have the following structure:
 - directories in repo root refer to databases
 - files in each directory are queries/visualizations to be run against respective database
     - files ending with `.sql` are queries
-    - files `<query_file_name>.json` are read as [vega-lite](https://github.com/vega/vega-lite) specs
+    - files `<query_file_name>.json` are read as [vega-lite](https://github.com/vega/vega-lite) specs[^1]
 - README.md file content will be displayed on _Gitbi_ main page
+
+[^1]: You should pass Vega-Lite [specification](https://vega.github.io/vega-lite/docs/spec.html) without `data` field. Data will be appended automatically by gitbi based on query result.
 
 ### Environment variables
 
@@ -63,7 +73,9 @@ GITBI_DB2_CONN=<conn_str_to_db2>
 GITBI_DB2_TYPE=<type_db2>
 ```
 
-For a working deployment example, see https://github.com/ppatrzyk/gitbi-example
+## Reports and alerts
+
+
 
 ## Development
 

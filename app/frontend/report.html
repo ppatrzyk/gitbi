@@ -2,8 +2,6 @@
 <html lang="en" data-theme="light">
 <head>
     <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style>{% include "static/css/pico.min.css" %}</style>
     <style>{% include "static/css/gitbi.css" %}</style>
     <title>Gitbi Report</title>
@@ -12,9 +10,20 @@
     <main class="container">
         <hgroup>
             <h2>Gitbi Report</h2>
-            <h3>{{ db }} | {{ file }} | {{ state }} <br>{{ time }}</h3>
+            <h3>{{ db }} | {{ file }} | {{ state }}</h3>
         </hgroup>
-        {% include "result.html" %}
+        <p>
+            Returned {{ no_rows }} rows in {{ duration }}ms<br>
+            Executed on {{ time }}
+        </p>
+        <details open>
+            <summary>Query</summary>
+            <figure><pre><code>{{ query }}</code></pre></figure>
+        </details>
+        <details open>
+            <summary>Table</summary>
+            <figure>{{ table }}</figure>
+        </details>
     </main>
 </body>
 </html>

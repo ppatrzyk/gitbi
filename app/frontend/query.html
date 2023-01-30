@@ -61,10 +61,16 @@
         Generate share link
     </div>
     <div id="save-error"></div>
-    <h2>Result</h2>
     <div id="query-result">
         <p class="htmx-indicator" aria-busy="true">Running query...</p>
     </div>
+    {% if cron_entry is not none %}
+    <details>
+        <summary>Reports and alerts</summary>
+        <p>CRON entry (adjust emails and frequency):</p>
+        <figure><pre><code>{{cron_entry}}</code></pre></figure>
+    </details>
+    {% endif %}
     <script type="module">
     {% include 'js/make_code_editor.js' %}
     </script>

@@ -14,7 +14,7 @@ from starlette.templating import Jinja2Templates
 import query
 import repo
 
-VERSION = "0.3"
+VERSION = "0.4"
 APP_DIR = os.path.abspath(os.path.dirname(__file__))
 STATIC_DIR = os.path.join(APP_DIR, "frontend/static")
 TEMPLATE_DIR = os.path.join(APP_DIR, "frontend")
@@ -89,6 +89,7 @@ async def query_route(request):
             "vega": request.query_params.get('vega') or "",
             "state": None,
             "file": "",
+            "cron_entry": None,
             **request.path_params, # db
         }
         return await _query_route(request)
@@ -99,12 +100,15 @@ async def saved_query_route(request):
     """
     try:
         query_str, vega_str = repo.get_query(**request.path_params)
+        report_url = request.url_for("report_route", **request.path_params)
+        cron_entry = _get_cron(report_url)
     except RuntimeError as e:
         raise HTTPException(status_code=404, detail=str(e))
     else:
         request.state.query_data = {
             "query": query_str,
             "vega": vega_str,
+            "cron_entry": cron_entry,
             **request.path_params, # db, file, state
         }
         return await _query_route(request)
@@ -128,7 +132,7 @@ async def execute_route(request):
     try:
         form = await request.form()
         data = json.loads(form["data"])
-        table, vega_viz = query.execute(
+        table, vega_viz, duration_ms, no_rows = query.execute(
             db=request.path_params.get("db"),
             query=data.get("query"),
             vega=data.get("vega")
@@ -141,6 +145,9 @@ async def execute_route(request):
             "request": request,
             "table": table,
             "vega": vega_viz,
+            "time": _get_time(),
+            "no_rows": no_rows,
+            "duration": duration_ms,
         }
         return TEMPLATES.TemplateResponse(name='result.html', context=data)
 
@@ -150,7 +157,7 @@ async def report_route(request):
     """
     try:
         query_str, vega_str = repo.get_query(**request.path_params)
-        table, _vega_viz = query.execute(
+        table, _vega_viz, duration_ms, no_rows = query.execute(
             db=request.path_params.get("db"),
             query=query_str,
             vega=vega_str
@@ -159,14 +166,19 @@ async def report_route(request):
         status_code = 404 if isinstance(e, RuntimeError) else 500
         raise HTTPException(status_code=status_code, detail=str(e))
     else:
-        data = {
-            "request": request,
-            "table": table,
-            "vega": None,
-            "time": datetime.now().astimezone().strftime("%Y-%m-%d %H:%M:%S %Z"),
-            **request.path_params,
-        }
-        return TEMPLATES.TemplateResponse(name='report.html', context=data)
+        if no_rows:
+            data = {
+                "request": request,
+                "table": table,
+                "duration": duration_ms,
+                "query": query_str,
+                "time": _get_time(),
+                "no_rows": no_rows,
+                **request.path_params,
+            }
+            return TEMPLATES.TemplateResponse(name='report.html', context=data)
+        else:
+            return HTMLResponse(content=None, status_code=204)
 
 async def save_route(request):
     """
@@ -207,6 +219,18 @@ async def server_error(request, exc):
         "message": exc.detail
     }
     return TEMPLATES.TemplateResponse(name='error.html', context=data, status_code=exc.status_code)
+
+def _get_time():
+    """
+    Returns current time formatted
+    """
+    return datetime.now().astimezone().strftime("%Y-%m-%d %H:%M:%S %Z")
+
+def _get_cron(report_url):
+    """
+    Return template for CRON
+    """
+    return f"""* * * * * echo -e "Subject: Gitbi report\\nContent-Type: text/html\\n\\n$(curl -s {report_url})" | /usr/sbin/sendmail -f <SENDER_EMAIL> <RECIPIENT_EMAIL>"""
 
 routes = [
     Mount('/static', app=StaticFiles(directory=STATIC_DIR), name="static"),
