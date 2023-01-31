@@ -18,14 +18,14 @@
         {% for db, files in databases.items() %}
             <p>
                 <span class="db"><strong>{{ db|e }}</strong></span> | 
-                <a href="{{ url_for('db_route', state=state, db=db) }}">List tables and queries</a> | 
-                <a href="{{ url_for('query_route', db=db) }}">New query</a>
+                <a href="{{ request.app.url_path_for('db_route', state=state, db=db) }}">List tables and queries</a> | 
+                <a href="{{ request.app.url_path_for('query_route', db=db) }}">New query</a>
             </p>
             <details role="list">
                 <summary aria-haspopup="listbox">Queries</summary>
                 <ul role="listbox">
                     {% for file in files %}
-                    <li><a href="{{ url_for('saved_query_route', state=state, db=db, file=file) }}">{{ file|e }}</a></li>
+                    <li><a href="{{ request.app.url_path_for('saved_query_route', state=state, db=db, file=file) }}">{{ file|e }}</a></li>
                     {% endfor %}
                 </ul>
             </details>
@@ -40,7 +40,7 @@
                 <tr><th>Commit</th><th>Date</th><th>Message</th></tr>
                 {% for commit in commits %}
                 <tr>
-                    <td><a href="{{ url_for('home_route', state=commit.hash) }}">{{ commit.short_hash|e }}</a></td>
+                    <td><a href="{{ request.app.url_path_for('home_route', state=commit.hash) }}">{{ commit.short_hash|e }}</a></td>
                     <td>{{ commit.date|e }}</td>
                     <td>{{ commit.msg|e }}</td>
                 </tr>

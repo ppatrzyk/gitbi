@@ -95,10 +95,12 @@ GITBI_REPO_DIR="./tests/gitbi-testing" ./start_app.sh
 docker build -t pieca/gitbi:<version> .
 ```
 
-## Alternatives
+## Some alternatives
 
 - if you want to generate static html reports from db queries using Python: [merkury](https://github.com/ppatrzyk/merkury)
 - if you want to analyze single sqlite db: [datasette](https://github.com/simonw/datasette)
+- if you want to run queries from your browser: [sqlpad](https://github.com/sqlpad/sqlpad), [chartbrew](https://github.com/chartbrew/chartbrew)
+- if you want a full-blown BI solution: [metabase](https://github.com/metabase/metabase)
 
 ## Acknowledgements
 

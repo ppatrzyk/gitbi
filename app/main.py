@@ -100,15 +100,14 @@ async def saved_query_route(request):
     """
     try:
         query_str, vega_str = repo.get_query(**request.path_params)
-        report_url = request.url_for("report_route", **request.path_params)
-        cron_entry = _get_cron(report_url)
+        report_url = request.app.url_path_for("report_route", **request.path_params)
     except RuntimeError as e:
         raise HTTPException(status_code=404, detail=str(e))
     else:
         request.state.query_data = {
             "query": query_str,
             "vega": vega_str,
-            "cron_entry": cron_entry,
+            "report_url": report_url,
             **request.path_params, # db, file, state
         }
         return await _query_route(request)
@@ -156,6 +155,7 @@ async def report_route(request):
     Endpoint for running reports
     """
     try:
+        query_url = request.url_for("saved_query_route", **request.path_params)
         query_str, vega_str = repo.get_query(**request.path_params)
         table, _vega_viz, duration_ms, no_rows = query.execute(
             db=request.path_params.get("db"),
@@ -164,11 +164,13 @@ async def report_route(request):
         )
     except Exception as e:
         status_code = 404 if isinstance(e, RuntimeError) else 500
-        raise HTTPException(status_code=status_code, detail=str(e))
+        return _htmx_error(str(e), status_code)
     else:
+        # TODO alerting and email directly here?
         if no_rows:
             data = {
                 "request": request,
+                "query_url": query_url,
                 "table": table,
                 "duration": duration_ms,
                 "query": query_str,
@@ -189,7 +191,7 @@ async def save_route(request):
         data = json.loads(form["data"])
         data['file'] = data['file'].strip()
         repo.save(**request.path_params, **data)
-        redirect_url = request.url_for(
+        redirect_url = request.app.url_path_for(
             "saved_query_route",
             db=request.path_params['db'],
             file=data['file'],
@@ -225,12 +227,6 @@ def _get_time():
     Returns current time formatted
     """
     return datetime.now().astimezone().strftime("%Y-%m-%d %H:%M:%S %Z")
-
-def _get_cron(report_url):
-    """
-    Return template for CRON
-    """
-    return f"""* * * * * echo -e "Subject: Gitbi report\\nContent-Type: text/html\\n\\n$(curl -s {report_url})" | /usr/sbin/sendmail -f <SENDER_EMAIL> <RECIPIENT_EMAIL>"""
 
 routes = [
     Mount('/static', app=StaticFiles(directory=STATIC_DIR), name="static"),

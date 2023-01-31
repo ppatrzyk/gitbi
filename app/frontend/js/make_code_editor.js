@@ -1,7 +1,7 @@
-import {CodeJar} from '{{ url_for("static", path="/js/codejar.min.js") }}'
-import hljs from '{{ url_for("static", path="/js/highlight/core.min.js") }}'
-import json from '{{ url_for("static", path="/js/highlight/json.min.js") }}'
-import sql from '{{ url_for("static", path="/js/highlight/sql.min.js") }}'
+import {CodeJar} from '{{ request.app.url_path_for("static", path="/js/codejar.min.js") }}'
+import hljs from '{{ request.app.url_path_for("static", path="/js/highlight/core.min.js") }}'
+import json from '{{ request.app.url_path_for("static", path="/js/highlight/json.min.js") }}'
+import sql from '{{ request.app.url_path_for("static", path="/js/highlight/sql.min.js") }}'
 hljs.configure({ignoreUnescapedHTML: true});
 hljs.registerLanguage('json', json);
 hljs.registerLanguage('sql', sql);

@@ -19,7 +19,7 @@ DATABASES = {
 }
 TABLE_QUERIES = {
     "sqlite": "SELECT tbl_name FROM sqlite_master where type='table';",
-    "postgres": "SELECT concat(schemaname, '.', tablename) FROM pg_catalog.pg_tables;",
+    "postgres": "SELECT concat(schemaname, '.', tablename) FROM pg_catalog.pg_tables WHERE schemaname NOT IN ('pg_catalog', 'information_schema');",
     "clickhouse": "SELECT name FROM system.tables where database == currentDatabase();",
 }
 VEGA_DEFAULTS = {
