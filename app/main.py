@@ -6,11 +6,12 @@ import json
 import os
 from starlette.applications import Starlette
 from starlette.exceptions import HTTPException
-from starlette.responses import HTMLResponse, RedirectResponse
+from starlette.responses import HTMLResponse, PlainTextResponse, RedirectResponse
 from starlette.routing import Mount, Route
 from starlette.staticfiles import StaticFiles
 from starlette.templating import Jinja2Templates
 
+import mailer
 import query
 import repo
 
@@ -89,10 +90,10 @@ async def query_route(request):
             "vega": request.query_params.get('vega') or "",
             "state": None,
             "file": "",
-            "cron_entry": None,
+            "report_url": None,
             **request.path_params, # db
         }
-        return await _query_route(request)
+        return await _query(request)
 
 async def saved_query_route(request):
     """
@@ -100,7 +101,7 @@ async def saved_query_route(request):
     """
     try:
         query_str, vega_str = repo.get_query(**request.path_params)
-        report_url = request.app.url_path_for("report_route", **request.path_params)
+        report_url = request.url_for("report_route", **request.path_params)
     except RuntimeError as e:
         raise HTTPException(status_code=404, detail=str(e))
     else:
@@ -110,11 +111,14 @@ async def saved_query_route(request):
             "report_url": report_url,
             **request.path_params, # db, file, state
         }
-        return await _query_route(request)
+        return await _query(request)
 
-async def _query_route(request):
+async def _query(request):
     """
     Common logic for query endpoint
+    Called by:
+    - query
+    - saved query
     """
     data = {
         "request": request,
@@ -138,7 +142,7 @@ async def execute_route(request):
         )
     except Exception as e:
         status_code = 404 if isinstance(e, RuntimeError) else 500
-        return _htmx_error(str(e), status_code)
+        return _partial_html_error(str(e), status_code)
     else:
         data = {
             "request": request,
@@ -153,6 +157,47 @@ async def execute_route(request):
 async def report_route(request):
     """
     Endpoint for running reports
+    This just returns html with report
+    """
+    report, _no_rows =  await _execute_from_saved_query(request)
+    return report
+
+async def email_alert_route(request):
+    """
+    Endpoint for alerts, sends email only if there are results for a query
+    """
+    report, no_rows =  await _execute_from_saved_query(request)
+    if no_rows:
+        try:
+            mailer.send(report)
+        except Exception as e:
+            error = f"Error: {str(e)}"
+            response = PlainTextResponse(content=error, status_code=500)
+        else:
+            response = PlainTextResponse(content="OK", status_code=200)
+    else:
+        response = PlainTextResponse(content=None, status_code=204)
+    return response
+
+async def email_report_route(request):
+    """
+    Endpoint for reports, sends report via email
+    """
+    report, _no_rows =  await _execute_from_saved_query(request)
+    try:
+        mailer.send(report)
+    except Exception as e:
+        error = f"Error: {str(e)}"
+        response = PlainTextResponse(content=error, status_code=500)
+    else:
+        response = PlainTextResponse(content="OK", status_code=200)
+    return response
+
+async def _execute_from_saved_query(request):
+    """
+    Execute saved query, common logic for reports and alerts
+    Called by:
+    - report
     """
     try:
         query_url = request.url_for("saved_query_route", **request.path_params)
@@ -164,23 +209,20 @@ async def report_route(request):
         )
     except Exception as e:
         status_code = 404 if isinstance(e, RuntimeError) else 500
-        return _htmx_error(str(e), status_code)
+        return _partial_html_error(str(e), status_code)
     else:
-        # TODO alerting and email directly here?
-        if no_rows:
-            data = {
-                "request": request,
-                "query_url": query_url,
-                "table": table,
-                "duration": duration_ms,
-                "query": query_str,
-                "time": _get_time(),
-                "no_rows": no_rows,
-                **request.path_params,
-            }
-            return TEMPLATES.TemplateResponse(name='report.html', context=data)
-        else:
-            return HTMLResponse(content=None, status_code=204)
+        data = {
+            "request": request,
+            "query_url": query_url,
+            "table": table,
+            "duration": duration_ms,
+            "query": query_str,
+            "time": _get_time(),
+            "no_rows": no_rows,
+            **request.path_params,
+        }
+        report = TEMPLATES.TemplateResponse(name='report.html', context=data)
+        return report, no_rows
 
 async def save_route(request):
     """
@@ -201,11 +243,11 @@ async def save_route(request):
         response = HTMLResponse(content="<p>OK</p>", headers=headers, status_code=200)
     except Exception as e:
         status_code = 404 if isinstance(e, RuntimeError) else 500
-        return _htmx_error(str(e), status_code)
+        return _partial_html_error(str(e), status_code)
     else:
         return response
 
-def _htmx_error(message, code):
+def _partial_html_error(message, code):
     """
     Creates successful reponse for htmx (with error msg)
     even if endpoint actually failed
@@ -229,15 +271,17 @@ def _get_time():
     return datetime.now().astimezone().strftime("%Y-%m-%d %H:%M:%S %Z")
 
 routes = [
-    Mount('/static', app=StaticFiles(directory=STATIC_DIR), name="static"),
     Route("/", endpoint=home_default_route, name="home_default_route"),
-    Route("/home/{state:str}", endpoint=home_route, name="home_route"),
     Route("/db/{db:str}/{state:str}", endpoint=db_route, name="db_route"),
+    Route('/email/alert/{db:str}/{file:str}/{state:str}', endpoint=email_alert_route, name="email_alert_route"),
+    Route('/email/report/{db:str}/{file:str}/{state:str}', endpoint=email_report_route, name="email_report_route"),
+    Route('/execute/{db:str}', endpoint=execute_route, methods=("POST", ), name="execute_route"),
+    Route("/home/{state:str}", endpoint=home_route, name="home_route"),
     Route('/query/{db:str}', endpoint=query_route, name="query_route"),
     Route('/query/{db:str}/{file:str}/{state:str}', endpoint=saved_query_route, name="saved_query_route"),
     Route('/report/{db:str}/{file:str}/{state:str}', endpoint=report_route, name="report_route"),
-    Route('/execute/{db:str}', endpoint=execute_route, methods=("POST", ), name="execute_route"),
     Route('/save/{db:str}', endpoint=save_route, methods=("POST", ), name="save_route"),
+    Mount('/static', app=StaticFiles(directory=STATIC_DIR), name="static"),
 ]
 
 exception_handlers = {
