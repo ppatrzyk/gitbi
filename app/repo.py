@@ -19,22 +19,21 @@ def get_db_params(db):
     """
     db_type_key = f"GITBI_{db.upper()}_TYPE"
     conn_str_key = f"GITBI_{db.upper()}_CONN"
-    conn_str_file_key = f"GITBI_{db.upper()}_CONN_FILE"
-    try:
-        db_type = os.environ[db_type_key]
-    except:
-        raise NameError(f"{db_type_key} not set")
+    db_type = _read_env_var(db_type_key)
+    conn_str = _read_env_var(conn_str_key)
     if db_type not in VALID_DB_TYPES:
         raise ValueError(f"DB type {db_type} not supported")
-    try:
-        conn_str = os.environ[conn_str_key]
-    except:
-        try:
-            conn_str_file = os.environ[conn_str_file_key]
-            conn_str = _get_file_content('file', conn_str_file)
-        except:
-            raise NameError(f"Neither {conn_str_key} nor valid {conn_str_file_key} was set")
     return db_type, conn_str
+
+def get_email_params():
+    """
+    Reads environment variables for email
+    """
+    smtp_user = _read_env_var("GITBI_SMTP_USER")
+    smtp_pass = _read_env_var("GITBI_SMTP_PASS")
+    smtp_url = _read_env_var("GITBI_SMTP_URL")
+    smtp_email = _read_env_var("GITBI_SMTP_EMAIL")
+    return smtp_user, smtp_pass, smtp_url, smtp_email
 
 def get_query(state, db, file):
     """
@@ -186,3 +185,18 @@ def _get_tree_objects_generator(tree, prefix=""):
             new_prefix = os.path.join(prefix, obj.name)
             for entry in _get_tree_objects_generator(obj, new_prefix):
                 yield entry
+
+def _read_env_var(key):
+    """
+    Read variable, also attempt to take from file
+    """
+    try:
+        value = os.environ[key]
+    except:
+        try:
+            file_key = f"{key}_FILE"
+            value_file = os.environ[file_key]
+            value = _get_file_content('file', value_file)
+        except:
+            raise NameError(f"Neither {key} nor valid {file_key} was set")
+    return value

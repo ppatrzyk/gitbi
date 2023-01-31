@@ -34,6 +34,10 @@ Name | Description
 GITBI\_REPO\_DIR | Path to the repository
 GITBI\_<DB\_NAME>\_CONN | Connection string
 GITBI\_<DB\_NAME>\_TYPE | Database type (see below for permissible values)
+GITBI\_SMTP\_USER | (Optional) SMTP user
+GITBI\_SMTP\_PASS | (Optional) SMTP password
+GITBI\_SMTP\_URL | (Optional) SMTP server (smtp.example.com:587)
+GITBI\_SMTP\_EMAIL | (Optional) SMTP email to send from
 
 Following database types are supported:
 

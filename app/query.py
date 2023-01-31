@@ -60,13 +60,6 @@ def execute(db, query, vega):
         vega_viz = None
     return table, vega_viz, duration_ms, len(rows)
 
-def execute_from_file(state, db, file):
-    """
-    Reads query from repo and executes it
-    """
-    query, vega = repo.get_query(state, db, file)
-    return execute(db, query, vega)
-
 def _format_table(col_names, rows):
     """
     Format query result as html table

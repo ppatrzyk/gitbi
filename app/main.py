@@ -166,15 +166,10 @@ async def email_alert_route(request):
     """
     Endpoint for alerts, sends email only if there are results for a query
     """
+    to = request.query_params.get('to')
     report, no_rows =  await _execute_from_saved_query(request)
     if no_rows:
-        try:
-            mailer.send(report)
-        except Exception as e:
-            error = f"Error: {str(e)}"
-            response = PlainTextResponse(content=error, status_code=500)
-        else:
-            response = PlainTextResponse(content="OK", status_code=200)
+        response = await _mailer_response(report, to)
     else:
         response = PlainTextResponse(content=None, status_code=204)
     return response
@@ -183,9 +178,16 @@ async def email_report_route(request):
     """
     Endpoint for reports, sends report via email
     """
+    to = request.query_params.get('to')
     report, _no_rows =  await _execute_from_saved_query(request)
+    return await _mailer_response(report, to)
+
+async def _mailer_response(report, to):
+    """
+    Wrapper for sending email
+    """
     try:
-        mailer.send(report)
+        _res = mailer.send(report, to)
     except Exception as e:
         error = f"Error: {str(e)}"
         response = PlainTextResponse(content=error, status_code=500)
@@ -198,6 +200,7 @@ async def _execute_from_saved_query(request):
     Execute saved query, common logic for reports and alerts
     Called by:
     - report
+    - email alert/report
     """
     try:
         query_url = request.url_for("saved_query_route", **request.path_params)
