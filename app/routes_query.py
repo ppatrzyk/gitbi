@@ -58,6 +58,8 @@ async def saved_query_route(request):
     try:
         query_str, vega_str = repo.get_query(**request.path_params)
         report_url = request.url_for("report_route", **request.path_params)
+        email_alert_url = request.url_for("email_alert_route", **request.path_params)
+        email_report_url = request.url_for("email_report_route", **request.path_params)
     except RuntimeError as e:
         raise HTTPException(status_code=404, detail=str(e))
     else:
@@ -65,6 +67,8 @@ async def saved_query_route(request):
             "query": query_str,
             "vega": vega_str,
             "report_url": report_url,
+            "email_alert_url": email_alert_url,
+            "email_report_url": email_report_url,
             **request.path_params, # db, file, state
         }
         return await _query(request)

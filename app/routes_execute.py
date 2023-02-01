@@ -1,8 +1,12 @@
 """
 Routes for executing queries
 """
-from datetime import datetime
 from starlette.exceptions import HTTPException
+from starlette.responses import PlainTextResponse
+from datetime import datetime
+import json
+import mailer
+import query
 import repo
 import routes_utils
 
@@ -31,7 +35,8 @@ async def execute_route(request):
             "no_rows": no_rows,
             "duration": duration_ms,
         }
-        return routes_utils.TEMPLATES.TemplateResponse(name='result.html', context=data)
+        headers = {"Gitbi-Row-Count": str(no_rows)}
+        return routes_utils.TEMPLATES.TemplateResponse(name='result.html', headers=headers, context=data)
 
 async def report_route(request):
     """
@@ -48,7 +53,7 @@ async def email_alert_route(request):
     to = request.query_params.get('to')
     report, no_rows =  await _execute_from_saved_query(request)
     if no_rows:
-        response = await _mailer_response(report, to)
+        response = await _mailer_response(report, no_rows, to)
     else:
         response = PlainTextResponse(content=None, status_code=204)
     return response
@@ -58,10 +63,10 @@ async def email_report_route(request):
     Endpoint for reports, sends report via email
     """
     to = request.query_params.get('to')
-    report, _no_rows =  await _execute_from_saved_query(request)
-    return await _mailer_response(report, to)
+    report, no_rows =  await _execute_from_saved_query(request)
+    return await _mailer_response(report, no_rows, to)
 
-async def _mailer_response(report, to):
+async def _mailer_response(report, no_rows, to):
     """
     Wrapper for sending email
     """
@@ -71,6 +76,7 @@ async def _mailer_response(report, to):
         error = f"Error: {str(e)}"
         response = PlainTextResponse(content=error, status_code=500)
     else:
+        headers = {"Gitbi-Row-Count": str(no_rows)}
         response = PlainTextResponse(content="OK", status_code=200)
     return response
 
@@ -91,7 +97,7 @@ async def _execute_from_saved_query(request):
         )
     except Exception as e:
         status_code = 404 if isinstance(e, RuntimeError) else 500
-        return routes_utils.partial_html_error(str(e), status_code)
+        raise HTTPException(status_code=status_code, detail=str(e))
     else:
         data = {
             "request": request,
@@ -103,8 +109,9 @@ async def _execute_from_saved_query(request):
             "no_rows": no_rows,
             **request.path_params,
         }
-        report = routes_utils.TEMPLATES.TemplateResponse(name='report.html', context=data)
-        return report, no_rows
+        headers = {"Gitbi-Row-Count": str(no_rows)}
+        report = routes_utils.TEMPLATES.TemplateResponse(name='report.html', headers=headers, context=data)
+    return report, no_rows
 
 def _get_time():
     """

@@ -13,7 +13,7 @@ TEMPLATES = Jinja2Templates(directory=TEMPLATE_DIR, autoescape=False)
 
 def partial_html_error(message, code):
     """
-    Creates successful reponse for htmx (with error msg)
+    Creates successful (200) reponse for htmx (with error msg)
     even if endpoint actually failed
     """
     error_msg = f"<h3>Error {code}</h3><p>{message}</p>"

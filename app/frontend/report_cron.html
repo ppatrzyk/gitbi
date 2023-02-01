@@ -1,9 +1,14 @@
 {% if report_url is not none %}
 <details>
     <summary>Reports and alerts</summary>
+    <a href="{{ report_url|e }}">See report here</a>
     <label for="cron-mail">Sample CRON configuration (email configured in Gitbi)</label>
     <figure id="cron-mail"><pre><code>
- TODO
+ # alert
+ * * * * * curl {{ email_alert_url|e }}
+
+ #report
+ * * * * * curl {{ email_report_url|e }}
     </code></pre></figure>
     <label for="cron-mail">Sample CRON configuration (no email configured in Gitbi)</label>
     <figure id="cron-mail"><pre><code>

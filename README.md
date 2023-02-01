@@ -77,13 +77,27 @@ GITBI_DB2_CONN=<conn_str_to_db2>
 GITBI_DB2_TYPE=<type_db2>
 ```
 
-## Reports and alerts
+## Usage
 
-TODO describe
+You can view your queries with two endpoints:
+
+- `/query/{db}/{file}/{state}`: this endpoint displays query on a web page and allows you to edit or execute it interactively
+- `/report/{db}/{file}/{state}`: this endpoint displays _and executes_ query, returning self-contained and non-interactive (no JS) html with results
+
+The use case for using report is to execute it and pipe results directly to email for reporting and alerting. Examples how to do it are auto-generated on each query page.
+
+Alternatively, for reporting and alerting, you can set up email credentials in _Gitbi_ and have the app email it to you. Relevant routes are:
+
+- `/email/alert/{db}/{file}/{state}?to=your@email.com`
+- `/email/report/{db}/{file}/{state}to=your@email.com`
+
+Both routes require query parameter `to` to be set. The difference between aforementioned routes is that _report_ always sends an email with results when invoked, while _alert_ sends results _only if there are some rows returned_. Write your alert queries in a way that they usually do not return anything, but you want to be notified when they do. If you don't have email credentials set up, you can implement this logic yourself - the number of rows for a query is available in a header `Gitbi-Row-Count`.
+
+Note, _Gitbi_ does not attempt to reinvent the wheel and suggests to use e.g. CRON for scheduling.
 
 ## Repo setup
 
-TODO describe options
+Standard way to run _Gitbi_ is to set up a repository at the same server the app is running, and then sync changes into your local repo via ssh. _Gitbi_ requires branch to be checked out. For pushing into remote repo from your local you need to set the following (at the server):
 
 ```
 git config receive.denyCurrentBranch updateInstead
@@ -93,7 +107,7 @@ git config receive.denyCurrentBranch updateInstead
 
 ```
 # run local
-GITBI_REPO_DIR="./tests/gitbi-testing" ./start_app.sh
+GITBI_REPO_DIR="./tests/gitbi-testing" GITBI_SQLITE_CONN="$(realpath ./tests/gitbi-testing/db.sqlite)" GITBI_SQLITE_TYPE=sqlite ./start_app.sh
 
 # build image
 docker build -t pieca/gitbi:<version> .
