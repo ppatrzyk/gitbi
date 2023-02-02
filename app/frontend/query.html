@@ -2,9 +2,7 @@
 {% block extendhead %}
     <link href="{{ request.app.url_path_for('static', path='/css/github.min.css') }}" rel="stylesheet">
     <script src="{{ request.app.url_path_for('static', path='/js/simple-datatables.6.0.7.js') }}"></script>
-    <script src="{{ request.app.url_path_for('static', path='/js/vega/vega@5.22.1.js') }}"></script>
-    <script src="{{ request.app.url_path_for('static', path='/js/vega/vega-lite@5.6.0.js') }}"></script>
-    <script src="{{ request.app.url_path_for('static', path='/js/vega/vega-embed@6.21.0.js') }}"></script>
+    <script src="{{ request.app.url_path_for('static', path='/js/vega.all.min.js') }}"></script>
 {% endblock %}
 {% block title %}Query{% endblock %}
 {% block header %}
