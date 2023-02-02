@@ -5,7 +5,7 @@ import os
 from starlette.templating import Jinja2Templates
 from starlette.responses import HTMLResponse
 
-VERSION = "0.4"
+VERSION = "0.5"
 APP_DIR = os.path.abspath(os.path.dirname(__file__))
 STATIC_DIR = os.path.join(APP_DIR, "frontend/static")
 TEMPLATE_DIR = os.path.join(APP_DIR, "frontend")

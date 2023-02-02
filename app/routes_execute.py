@@ -23,6 +23,7 @@ async def execute_route(request):
             query=data.get("query"),
             vega=data.get("vega")
         )
+        vega_script = request.app.url_path_for('static', path='/js/vega.all.min.js')
     except Exception as e:
         status_code = 404 if isinstance(e, RuntimeError) else 500
         return routes_utils.partial_html_error(str(e), status_code)
@@ -31,6 +32,7 @@ async def execute_route(request):
             "request": request,
             "table": table,
             "vega": vega_viz,
+            "vega_script": vega_script,
             "time": _get_time(),
             "no_rows": no_rows,
             "duration": duration_ms,

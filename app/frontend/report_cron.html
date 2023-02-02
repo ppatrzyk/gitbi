@@ -5,10 +5,10 @@
     <label for="cron-mail">Sample CRON configuration (email configured in Gitbi)</label>
     <figure id="cron-mail"><pre><code>
  # alert
- * * * * * curl {{ email_alert_url|e }}
+ * * * * * curl {{ email_alert_url|e }}?to=RECIPIENT_EMAIL
 
  #report
- * * * * * curl {{ email_report_url|e }}
+ * * * * * curl {{ email_report_url|e }}?to=RECIPIENT_EMAIL
     </code></pre></figure>
     <label for="cron-mail">Sample CRON configuration (no email configured in Gitbi)</label>
     <figure id="cron-mail"><pre><code>

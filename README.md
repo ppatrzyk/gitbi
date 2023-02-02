@@ -97,9 +97,15 @@ Note, _Gitbi_ does not attempt to reinvent the wheel and suggests to use e.g. CR
 
 ## Repo setup
 
-Standard way to run _Gitbi_ is to set up a repository at the same server the app is running, and then sync changes into your local repo via ssh. _Gitbi_ requires branch to be checked out. For pushing into remote repo from your local you need to set the following (at the server):
+The easiest way to run _Gitbi_ is to set up a repository at the same server the app is running, and then sync changes into your local repo via ssh. This requires setting proper permissions for everything to work smoothly. Example setup:
 
 ```
+# initialize as shared repo
+# the command below allows any user in group <GROUP> to push into repo, for other options see https://git-scm.com/docs/git-init
+git init --shared=group <REPO_NAME>
+chgrp -R <GROUP> <REPO_NAME>
+chmod g+rwxs <REPO_NAME>
+# enable pushing to checked out branch
 git config receive.denyCurrentBranch updateInstead
 ```
 
