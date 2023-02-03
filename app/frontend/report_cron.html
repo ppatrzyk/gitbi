@@ -5,18 +5,18 @@
     <label for="cron-mail">Sample CRON configuration (email configured in Gitbi)</label>
     <figure id="cron-mail"><pre><code>
  # alert
- * * * * * curl {{ email_alert_url|e }}?to=RECIPIENT_EMAIL
+ * * * * * curl -s {% if user is not none %}-u USER:PASSWORD{% endif %} {{ email_alert_url|e }}?to=RECIPIENT_EMAIL
 
  #report
- * * * * * curl {{ email_report_url|e }}?to=RECIPIENT_EMAIL
+ * * * * * curl -s {% if user is not none %}-u USER:PASSWORD{% endif %} {{ email_report_url|e }}?to=RECIPIENT_EMAIL
     </code></pre></figure>
     <label for="cron-mail">Sample CRON configuration (no email configured in Gitbi)</label>
     <figure id="cron-mail"><pre><code>
  # sendmail
- * * * * * echo -e "Subject: Gitbi report\nContent-Type: text/html\n\n$(curl -s {{ report_url|e }})" | /usr/sbin/sendmail -f SENDER_EMAIL RECIPIENT_EMAIL
+ * * * * * echo -e "Subject: Gitbi report: {{ file }}\nContent-Type: text/html\n\n$(curl -s {% if user is not none %}-u USER:PASSWORD{% endif %} {{ report_url|e }})" | /usr/sbin/sendmail -f SENDER_EMAIL RECIPIENT_EMAIL
 
  # mailgun api
- * * * * * curl -X POST --user "api:MAILGUN_API_KEY" --data-urlencode from=SENDER_EMAIL --data-urlencode to=RECIPIENT_EMAIL --data-urlencode subject="Gitbi report" --data-urlencode html="$(curl -s {{ report_url|e }})" https://api.eu.mailgun.net/v3/SENDER_DOMAIN/messages
+ * * * * * curl -X POST --user "api:MAILGUN_API_KEY" --data-urlencode from=SENDER_EMAIL --data-urlencode to=RECIPIENT_EMAIL --data-urlencode subject="Gitbi report: {{ file }}" --data-urlencode html="$(curl -s {% if user is not none %}-u USER:PASSWORD{% endif %} {{ report_url|e }})" https://api.eu.mailgun.net/v3/SENDER_DOMAIN/messages
     </code></pre></figure>
 </details>
 {% endif %}

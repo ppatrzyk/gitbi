@@ -18,3 +18,25 @@ def partial_html_error(message, code):
     """
     error_msg = f"<h3>Error {code}</h3><p>{message}</p>"
     return HTMLResponse(content=error_msg, status_code=200)
+
+def common_context_args(request):
+    """
+    Return context args common for all endpoints
+    """
+    data = {
+        "request": request,
+        "version": VERSION,
+        "user": _get_user(request),
+        "state": None, # to be overwritten if exists
+    }
+    return data
+
+def _get_user(request):
+    """
+    Get user name, if exists
+    """
+    try:
+        user = request.user.display_name
+    except:
+        user = None
+    return user

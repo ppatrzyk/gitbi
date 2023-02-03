@@ -29,7 +29,7 @@ async def execute_route(request):
         return routes_utils.partial_html_error(str(e), status_code)
     else:
         data = {
-            "request": request,
+            **routes_utils.common_context_args(request),
             "table": table,
             "vega": vega_viz,
             "vega_script": vega_script,
@@ -53,9 +53,10 @@ async def email_alert_route(request):
     Endpoint for alerts, sends email only if there are results for a query
     """
     to = request.query_params.get('to')
+    file_name = request.path_params.get("file")
     report, no_rows =  await _execute_from_saved_query(request)
     if no_rows:
-        response = await _mailer_response(report, no_rows, to)
+        response = await _mailer_response(report, no_rows, to, file_name)
     else:
         response = PlainTextResponse(content=None, status_code=204)
     return response
@@ -65,15 +66,16 @@ async def email_report_route(request):
     Endpoint for reports, sends report via email
     """
     to = request.query_params.get('to')
+    file_name = request.path_params.get("file")
     report, no_rows =  await _execute_from_saved_query(request)
-    return await _mailer_response(report, no_rows, to)
+    return await _mailer_response(report, no_rows, to, file_name)
 
-async def _mailer_response(report, no_rows, to):
+async def _mailer_response(report, no_rows, to, file_name):
     """
     Wrapper for sending email
     """
     try:
-        _res = mailer.send(report, to)
+        _res = mailer.send(report, to, file_name)
     except Exception as e:
         error = f"Error: {str(e)}"
         response = PlainTextResponse(content=error, status_code=500)
@@ -102,7 +104,7 @@ async def _execute_from_saved_query(request):
         raise HTTPException(status_code=status_code, detail=str(e))
     else:
         data = {
-            "request": request,
+            **routes_utils.common_context_args(request),
             "query_url": query_url,
             "table": table,
             "duration": duration_ms,

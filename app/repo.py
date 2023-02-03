@@ -98,12 +98,13 @@ def list_commits():
     Function lists all commits present in current branch of the repo
     """
     commits = [
-        {"hash": "file", "short_hash": "file", "msg": "Current filesystem"},
+        {"hash": "file", "short_hash": "file", "msg": "Current filesystem", "author": "N/A"},
     ]
     for el in REPO.walk(REPO.head.target):
         commit_hash = str(el.id)
         commit = {
             "hash": commit_hash,
+            "author": el.author,
             "short_hash": _short_str(commit_hash),
             "msg": el.message.replace("\n", ""),
             "date": datetime.fromtimestamp(el.commit_time).isoformat(),
@@ -111,7 +112,7 @@ def list_commits():
         commits.append(commit)
     return commits
 
-def save(db, file, query, vega=None):
+def save(db, file, query, user, vega=None):
     """
     Save query into repo
     file refers to query file name
@@ -128,7 +129,7 @@ def save(db, file, query, vega=None):
         assert _write_file_content(vega_path, vega), "Writing file content failed"
         index.add(vega_path)
     index.write()
-    author = Signature(name='Gitbi', email="gitbi@gitbi.gitbi")
+    author = Signature(name=(user or'Gitbi'), email="gitbi@gitbi.gitbi")
     REPO.create_commit(
         REPO.head.name, # reference_name
         author, # author

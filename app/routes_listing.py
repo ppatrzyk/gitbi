@@ -14,8 +14,7 @@ async def home_route(request):
     try:
         state = request.path_params.get("state")
         data = {
-            "request": request,
-            "version": routes_utils.VERSION,
+            **routes_utils.common_context_args(request),
             "state": state,
             "readme": repo.get_readme(state),
             "databases": repo.list_sources(state),
@@ -47,8 +46,7 @@ async def db_route(request):
         raise HTTPException(status_code=status_code, detail=str(e))
     else:
         data = {
-            "request": request,
-            "version": routes_utils.VERSION,
+            **routes_utils.common_context_args(request),
             "queries": queries,
             "tables": tables,
             **request.path_params,

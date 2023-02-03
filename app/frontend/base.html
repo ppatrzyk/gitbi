@@ -17,7 +17,14 @@
     <nav>
         <ul>
           <li><a href="{{ request.app.url_path_for('home_default_route') }}"><strong>Gitbi</strong></a></li>
-          {% block header %}{% endblock %}
+        </ul>
+        <ul>
+          {% if state is not none %}
+          <li>State: {{ state|e }}</li>
+          {% endif %}
+          {% if user is not none %}
+          <li>User: {{ user|e }}</li>
+          {% endif %}
         </ul>
       </nav>
       {% block content %}{% endblock %}

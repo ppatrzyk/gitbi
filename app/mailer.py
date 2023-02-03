@@ -6,7 +6,7 @@ from email.mime.text import MIMEText
 import repo
 import smtplib
 
-def send(report, to):
+def send(report, to, file_name):
     """
     Main function for sending alerts/reports
     """
@@ -14,7 +14,7 @@ def send(report, to):
     smtp_user, smtp_pass, smtp_url, smtp_email = repo.get_email_params()
     url, port = smtp_url.split(":")
     msg = MIMEMultipart('alternative')
-    msg['Subject'] = "Gitbi report"
+    msg['Subject'] = f"Gitbi report: {file_name}"
     msg['From'] = smtp_email
     msg['To'] = to
     msg.attach(MIMEText("Requires html", 'plain'))

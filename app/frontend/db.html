@@ -1,10 +1,5 @@
 {% extends "base.html" %}
 {% block title %}DB: {{ db|e }}{% endblock %}
-{% block header %}
-    {% if state is not none %}
-    <li>{{ state }}</li>
-    {% endif %}
-{% endblock %}
 {% block content %}
     <h2>Details of db: {{ db|e }}</h2>
     <details open>

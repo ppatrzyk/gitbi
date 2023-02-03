@@ -14,7 +14,8 @@ async def save_route(request):
     try:
         form = await request.form()
         data = json.loads(form["data"])
-        data['file'] = data['file'].strip()
+        data["file"] = data["file"].strip()
+        data["user"] = routes_utils.common_context_args(request).get("user")
         repo.save(**request.path_params, **data)
         redirect_url = request.app.url_path_for(
             "saved_query_route",
@@ -44,7 +45,6 @@ async def query_route(request):
         request.state.query_data = {
             "query": request.query_params.get('query') or "",
             "vega": request.query_params.get('vega') or "",
-            "state": None,
             "file": "",
             "report_url": None,
             **request.path_params, # db
@@ -81,8 +81,7 @@ async def _query(request):
     - saved query
     """
     data = {
-        "request": request,
-        "version": routes_utils.VERSION,
+        **routes_utils.common_context_args(request),
         **request.state.query_data,
     }
     return routes_utils.TEMPLATES.TemplateResponse(name='query.html', context=data)

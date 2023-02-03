@@ -1,10 +1,5 @@
 {% extends "base.html" %}
 {% block title %}Home{% endblock %}
-{% block header %}
-    {% if state is not none %}
-    <li>{{ state|e }}</li>
-    {% endif %}
-{% endblock %}
 {% block content %}
     {% if readme is not none %}
     <div>{{ readme }}</div>
@@ -37,10 +32,11 @@
         <summary>Commits</summary>
         <figure>
             <table role="grid">
-                <tr><th>Commit</th><th>Date</th><th>Message</th></tr>
+                <tr><th>Commit</th><th>Author</th><th>Date</th><th>Message</th></tr>
                 {% for commit in commits %}
                 <tr>
                     <td><a href="{{ request.app.url_path_for('home_route', state=commit.hash) }}">{{ commit.short_hash|e }}</a></td>
+                    <td>{{ commit.author|e }}</td>
                     <td>{{ commit.date|e }}</td>
                     <td>{{ commit.msg|e }}</td>
                 </tr>

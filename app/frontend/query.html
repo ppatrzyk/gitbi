@@ -4,11 +4,6 @@
     <script src="{{ request.app.url_path_for('static', path='/js/simple-datatables.6.0.7.js') }}"></script>
 {% endblock %}
 {% block title %}Query{% endblock %}
-{% block header %}
-    {% if state is not none %}
-    <li>{{ state|e }}</li>
-    {% endif %}
-{% endblock %}
 {% block content %}
     <h2>Query db: {{ db|e }}</h2>
     <details open>
