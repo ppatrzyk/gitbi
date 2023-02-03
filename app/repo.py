@@ -35,6 +35,15 @@ def get_email_params():
     smtp_email = _read_env_var("GITBI_SMTP_EMAIL")
     return smtp_user, smtp_pass, smtp_url, smtp_email
 
+def get_auth():
+    """
+    Get authentication configuration
+    """
+    users_raw = _read_env_var("GITBI_AUTH")
+    users = tuple(entry.strip() for entry in users_raw.split(","))
+    assert users, "Empty user list"
+    return users
+
 def get_query(state, db, file):
     """
     Gets query content from the repo

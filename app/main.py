@@ -5,6 +5,7 @@ from starlette.applications import Starlette
 from starlette.exceptions import HTTPException
 from starlette.routing import Mount, Route
 from starlette.staticfiles import StaticFiles
+import auth
 import routes_execute, routes_listing, routes_query, routes_utils
 
 # Error types
@@ -43,8 +44,12 @@ exception_handlers = {
     HTTPException: server_error,
 }
 
+middleware = []
+middleware.extend(auth.AUTH)
+
 app = Starlette(
     debug=True,
     routes=routes,
-    exception_handlers=exception_handlers
+    exception_handlers=exception_handlers,
+    middleware=middleware
 )
