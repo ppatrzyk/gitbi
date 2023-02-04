@@ -45,6 +45,18 @@
     >
         Save query
     </div>
+    {% if file != "" %}
+    <div
+        role="button"
+        class="secondary"
+        hx-get="{{ request.app.url_path_for('delete_route', db=db, file=file) }}"
+        hx-trigger="click"
+        hx-target="#save-error"
+        hx-swap="innerHTML"
+    >
+        Delete query
+    </div>
+    {% endif %}
     <div
         role="button"
         class="secondary"

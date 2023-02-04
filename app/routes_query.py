@@ -7,6 +7,26 @@ import json
 import repo
 import routes_utils
 
+async def delete_route(request):
+    """
+    Delete query from repository
+    """
+    try:
+        user = routes_utils.common_context_args(request).get("user")
+        repo.delete(user=user, **request.path_params)
+        redirect_url = request.app.url_path_for(
+            "db_route",
+            db=request.path_params['db'],
+            state="HEAD"
+        )
+        headers = {"HX-Redirect": redirect_url}
+        response = PlainTextResponse(content="OK", headers=headers, status_code=200)
+    except Exception as e:
+        status_code = 404 if isinstance(e, RuntimeError) else 500
+        return routes_utils.partial_html_error(str(e), status_code)
+    else:
+        return response
+
 async def save_route(request):
     """
     Save query to repository
@@ -15,6 +35,9 @@ async def save_route(request):
         form = await request.form()
         data = json.loads(form["data"])
         data["file"] = data["file"].strip()
+        assert data["query"], "No query in POST data"
+        if "vega" not in data.keys():
+            data["vega"] = None
         data["user"] = routes_utils.common_context_args(request).get("user")
         repo.save(**request.path_params, **data)
         redirect_url = request.app.url_path_for(

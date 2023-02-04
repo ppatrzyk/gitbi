@@ -35,6 +35,7 @@ routes = [
     # routes query
     Route('/query/{db:str}', endpoint=routes_query.query_route, name="query_route"),
     Route('/query/{db:str}/{file:str}/{state:str}', endpoint=routes_query.saved_query_route, name="saved_query_route"),
+    Route('/delete/{db:str}/{file:str}', endpoint=routes_query.delete_route, name="delete_route"),
     Route('/save/{db:str}', endpoint=routes_query.save_route, methods=("POST", ), name="save_route"),
     # static
     Mount('/static', app=StaticFiles(directory=routes_utils.STATIC_DIR), name="static"),

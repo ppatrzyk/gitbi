@@ -112,7 +112,7 @@ def list_commits():
         commits.append(commit)
     return commits
 
-def save(db, file, query, user, vega=None):
+def save(user, db, file, query, vega):
     """
     Save query into repo
     file refers to query file name
@@ -120,24 +120,32 @@ def save(db, file, query, user, vega=None):
     path_obj = Path(file)
     assert file == path_obj.name, "Path passed"
     assert (path_obj.suffix in VALID_QUERY_EXTENSIONS), "Invalid query extension"
-    path = f"{db}/{file}"
-    index = REPO.index
-    assert _write_file_content(path, query), "Writing file content failed"
-    index.add(path)
+    query_path = f"{db}/{file}"
+    to_commit = [query_path, ]
+    assert _write_file_content(query_path, query), "Writing file content failed"
     if vega is not None:
-        vega_path = f"{path}.json"
+        vega_path = f"{query_path}.json"
+        to_commit.append(vega_path)
         assert _write_file_content(vega_path, vega), "Writing file content failed"
-        index.add(vega_path)
-    index.write()
-    author = Signature(name=(user or'Gitbi'), email="gitbi@gitbi.gitbi")
-    REPO.create_commit(
-        REPO.head.name, # reference_name
-        author, # author
-        author, # committer
-        f"[gitbi] DB {db}, saving {file}", # message
-        index.write_tree(), # tree
-        [REPO.head.target, ] # parents
-    )
+    _commit(user, "save", to_commit)
+    return True
+
+def delete(user, db, file):
+    """
+    Delete query from the repo
+    """
+    query_path = f"{db}/{file}"
+    vega_path = f"{query_path}.json"
+    to_commit = [query_path, ]
+    assert _remove_file(query_path), f"Cannot remove {query_path}"
+    try:
+        _remove_file(vega_path)
+    except:
+        pass
+    else:
+        to_commit.append(vega_path)
+    #TODO: if fails error not caught, not recoverable in Gitbi, one needs to checkout manually
+    _commit(user, "delete", to_commit)
     return True
 
 def _short_str(s):
@@ -161,8 +169,18 @@ def _write_file_content(path, content):
     """
     Change file contents on disk
     """
-    with open(os.path.join(DIR, path), "w") as f:
+    full_path = os.path.join(DIR, path)
+    with open(full_path, "w") as f:
         f.write(content)
+    return True
+
+def _remove_file(path):
+    """
+    Remove file from disk
+    """
+    full_path = os.path.join(DIR, path)
+    assert os.path.exists(full_path), f"no file {path}"
+    os.remove(full_path)
     return True
 
 def _get_file_content(state, path):
@@ -195,6 +213,33 @@ def _get_tree_objects_generator(tree, prefix=""):
             new_prefix = os.path.join(prefix, obj.name)
             for entry in _get_tree_objects_generator(obj, new_prefix):
                 yield entry
+
+def _commit(user, operation, files):
+    """
+    Commit given file to repo
+    """
+    assert files, "empty list passed"
+    files_msg = ", ".join(files)
+    index = REPO.index
+    for file in files:
+        match operation:
+            case "save":
+                index.add(file)
+            case "delete":
+                index.remove(file)
+            case operation:
+                raise ValueError(f"Bad operation: {operation}")
+    index.write()
+    author = Signature(name=(user or "Gitbi (no auth)"), email="gitbi@gitbi.gitbi")
+    REPO.create_commit(
+        REPO.head.name, # reference_name
+        author, # author
+        author, # committer
+        f"[gitbi] {operation} {files_msg}", # message
+        index.write_tree(), # tree
+        [REPO.head.target, ] # parents
+    )
+    return True
 
 def _read_env_var(key):
     """
