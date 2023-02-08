@@ -30,6 +30,24 @@ async def home_default_route(request):
     """
     return RedirectResponse(url="/home/HEAD/")
 
+async def tables_route(request):
+    """
+    Endpoint for getting table info
+    User by htmx
+    """
+    try:
+        tables = query.list_tables(request.path_params.get("db"))
+    except Exception as e:
+        status_code = 404 if isinstance(e, RuntimeError) else 500
+        return routes_utils.partial_html_error(str(e), status_code)
+    else:
+        data = {
+            **routes_utils.common_context_args(request),
+            "tables": tables,
+            **request.path_params,
+        }
+        return routes_utils.TEMPLATES.TemplateResponse(name='tables.html', context=data)
+
 async def db_route(request):
     """
     Endpoint for listing all db info: queries and tables

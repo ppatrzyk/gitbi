@@ -1,0 +1,8 @@
+{# partial html - this is used by htmx passing tables list #}
+
+<h3>{{ db }}</h3>
+<ul>
+    {% for table in tables %}
+    <li><a href="{{ request.app.url_path_for('query_route', db=db) }}?query=select * from {{ table }} limit 10;">{{ table|e }}</a></li>
+    {% endfor %}
+</ul>
