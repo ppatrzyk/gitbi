@@ -25,6 +25,9 @@
           {% if user is not none %}
           <li>User: {{ user|e }}</li>
           {% endif %}
+          <li><a hx-get="{{ request.app.url_path_for('commits_route') }}" hx-trigger="click" hx-swap="outerHTML">
+          Load commits
+          </a></li>
         </ul>
       </nav>
       {% block content %}{% endblock %}

@@ -18,11 +18,11 @@ async def home_route(request):
             "state": state,
             "readme": repo.get_readme(state),
             "databases": repo.list_sources(state),
-            "commits": repo.list_commits(),
         }
-        return routes_utils.TEMPLATES.TemplateResponse(name='index.html', context=data)
     except Exception as e:
         raise HTTPException(status_code=404, detail=str(e))
+    else:
+        return routes_utils.TEMPLATES.TemplateResponse(name='index.html', context=data)
 
 async def home_default_route(request):
     """
@@ -46,5 +46,18 @@ async def tables_route(request):
             "tables": tables,
             **request.path_params,
         }
-        return routes_utils.TEMPLATES.TemplateResponse(name='tables.html', context=data)
+        return routes_utils.TEMPLATES.TemplateResponse(name='partial_tables.html', context=data)
 
+async def commits_route(request):
+    """
+    Endpoint for getting commits list
+    """
+    try:
+        data = {
+            **routes_utils.common_context_args(request),
+            "commits": repo.list_commits(),
+        }
+    except Exception as e:
+        raise HTTPException(status_code=404, detail=str(e))
+    else:
+        return routes_utils.TEMPLATES.TemplateResponse(name='partial_commits.html', context=data)

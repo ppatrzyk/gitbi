@@ -102,11 +102,15 @@ def list_commits():
     ]
     for el in REPO.walk(REPO.head.target):
         commit_hash = str(el.id)
+        msg = el.message.replace("\n", "")
+        author = str(el.author)
         commit = {
             "hash": commit_hash,
-            "author": el.author,
             "short_hash": _short_str(commit_hash),
-            "msg": el.message.replace("\n", ""),
+            "msg": msg,
+            "short_msg": _short_str(msg),
+            "author": author,
+            "short_author": _short_str(author),
             "date": datetime.fromtimestamp(el.commit_time).isoformat(),
         }
         commits.append(commit)

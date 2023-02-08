@@ -38,7 +38,7 @@ async def execute_route(request):
             "duration": duration_ms,
         }
         headers = {"Gitbi-Row-Count": str(no_rows)}
-        return routes_utils.TEMPLATES.TemplateResponse(name='result.html', headers=headers, context=data)
+        return routes_utils.TEMPLATES.TemplateResponse(name='partial_result.html', headers=headers, context=data)
 
 async def report_route(request):
     """

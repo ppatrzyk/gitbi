@@ -32,20 +32,4 @@
     <div id="db-details-{{ db }}"></div>
     <br>
     {% endfor %}
-    <details>
-        <summary>Commits</summary>
-        <figure>
-            <table role="grid">
-                <tr><th>Commit</th><th>Author</th><th>Date</th><th>Message</th></tr>
-                {% for commit in commits %}
-                <tr>
-                    <td><a href="{{ request.app.url_path_for('home_route', state=commit.hash) }}">{{ commit.short_hash|e }}</a></td>
-                    <td>{{ commit.author|e }}</td>
-                    <td>{{ commit.date|e }}</td>
-                    <td>{{ commit.msg|e }}</td>
-                </tr>
-                {% endfor %}
-            </table>
-        </figure>
-    </details>
 {% endblock %}
