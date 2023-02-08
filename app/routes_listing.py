@@ -48,25 +48,3 @@ async def tables_route(request):
         }
         return routes_utils.TEMPLATES.TemplateResponse(name='tables.html', context=data)
 
-async def db_route(request):
-    """
-    Endpoint for listing all db info: queries and tables
-    """
-    try:
-        db = request.path_params.get("db")
-        databases = repo.list_sources(request.path_params.get("state"))
-        if db not in databases:
-            raise RuntimeError(f"db {db} not present in repo")
-        queries = databases[db]
-        tables = query.list_tables(db)
-    except Exception as e:
-        status_code = 404 if isinstance(e, RuntimeError) else 500
-        raise HTTPException(status_code=status_code, detail=str(e))
-    else:
-        data = {
-            **routes_utils.common_context_args(request),
-            "queries": queries,
-            "tables": tables,
-            **request.path_params,
-        }
-        return routes_utils.TEMPLATES.TemplateResponse(name='db.html', context=data)

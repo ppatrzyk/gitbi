@@ -11,9 +11,6 @@ def test_listing():
     assert client.get("/home/HEAD/", auth=("baduser", "badpass")).status_code == 401
     assert client.get("/home/HEAD/", auth=USER_HTTPX).status_code == 200
     assert client.get("/home/badstate", auth=USER_HTTPX).status_code == 404
-    assert client.get("/db/postgres/HEAD", auth=USER_HTTPX).status_code == 500
-    assert client.get("/db/sqlite/HEAD", auth=USER_HTTPX).status_code == 200
-    assert client.get("/db/baddb/HEAD", auth=USER_HTTPX).status_code == 404
     assert client.get("/badpath", auth=USER_HTTPX).status_code == 404
     assert client.get("/badpath").status_code == 401
 

@@ -30,7 +30,6 @@ routes = [
     Route('/report/{db:str}/{file:str}/{state:str}', endpoint=routes_execute.report_route, name="report_route"),
     # routes_listing
     Route("/", endpoint=routes_listing.home_default_route, name="home_default_route"),
-    Route("/db/{db:str}/{state:str}", endpoint=routes_listing.db_route, name="db_route"),
     Route("/home/{state:str}", endpoint=routes_listing.home_route, name="home_route"),
     Route("/tables/{db:str}", endpoint=routes_listing.tables_route, name="tables_route"),
     # routes query

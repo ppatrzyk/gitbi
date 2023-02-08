@@ -7,38 +7,31 @@
     <h1>Gitbi Home</h1>
     <p>[Readme file is missing]</p>
     {% endif %}
-    <details open>
-        <summary>Data Sources</summary>
-        <figure>
-        {% for db, files in databases.items() %}
-            <p>
-                <span class="db"><strong>{{ db|e }}</strong></span> | 
-                <a href="{{ request.app.url_path_for('db_route', state=state, db=db) }}">List tables and queries</a> | 
-                <a href="{{ request.app.url_path_for('query_route', db=db) }}">New query</a>
-            </p>
-            <details role="list">
-                <summary aria-haspopup="listbox">Queries</summary>
-                <ul role="listbox">
-                    {% for file in files %}
-                    <li><a href="{{ request.app.url_path_for('saved_query_route', state=state, db=db, file=file) }}">{{ file|e }}</a></li>
-                    {% endfor %}
-                </ul>
-            </details>
-            <div
-                role="button"
-                class="secondary"
-                hx-get="{{ request.app.url_path_for('tables_route', db=db) }}"
-                hx-trigger="click"
-                hx-target="#db-details"
-                hx-swap="innerHTML"
-            >
-                Show tables details
-            </div>
-            <br>
-        {% endfor %}
-        </figure>
+    <h2>Data Sources</h2>
+    {% for db, files in databases.items() %}
+    <p>
+        <span class="db"><strong>{{ db|e }}</strong></span> | 
+        <a
+            hx-get="{{ request.app.url_path_for('tables_route', db=db) }}"
+            hx-trigger="click"
+            hx-target="#db-details-{{ db }}"
+            hx-swap="innerHTML"
+        >
+            Load table info
+        </a> | 
+        <a href="{{ request.app.url_path_for('query_route', db=db) }}">New query</a>
+    </p>
+    <details>
+        <summary>Queries</summary>
+        <ul>
+            {% for file in files %}
+            <li><a href="{{ request.app.url_path_for('saved_query_route', state=state, db=db, file=file) }}">{{ file|e }}</a></li>
+            {% endfor %}
+        </ul>
     </details>
-    <div id="db-details"></div>
+    <div id="db-details-{{ db }}"></div>
+    <br>
+    {% endfor %}
     <details>
         <summary>Commits</summary>
         <figure>

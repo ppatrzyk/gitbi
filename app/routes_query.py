@@ -14,11 +14,7 @@ async def delete_route(request):
     try:
         user = routes_utils.common_context_args(request).get("user")
         repo.delete(user=user, **request.path_params)
-        redirect_url = request.app.url_path_for(
-            "db_route",
-            db=request.path_params['db'],
-            state="HEAD"
-        )
+        redirect_url = request.app.url_path_for("home_route", state="HEAD")
         headers = {"HX-Redirect": redirect_url}
         response = PlainTextResponse(content="OK", headers=headers, status_code=200)
     except Exception as e:
