@@ -11,16 +11,17 @@
     {% for db, files in databases.items() %}
     <p>
         <span class="db"><strong>{{ db|e }}</strong></span> | 
-        <a
-            hx-get="{{ request.app.url_path_for('tables_route', db=db) }}"
-            hx-trigger="click"
-            hx-target="#db-details-{{ db }}"
-            hx-swap="innerHTML"
-        >
-            Load table info
-        </a> | 
         <a href="{{ request.app.url_path_for('query_route', db=db) }}">New query</a>
     </p>
+    <a
+        class="hidden"
+        hx-get="{{ request.app.url_path_for('tables_route', db=db) }}"
+        hx-trigger="load"
+        hx-target="#db-details-{{ db }}"
+        hx-swap="beforeend"
+    >
+        Load table info
+    </a>
     <details>
         <summary>Queries</summary>
         <ul>
@@ -29,7 +30,9 @@
             {% endfor %}
         </ul>
     </details>
-    <div id="db-details-{{ db }}"></div>
+    <details id="db-details-{{ db }}">
+        <summary>Tables</summary>
+    </details>
     <br>
     {% endfor %}
 {% endblock %}

@@ -1,3 +1,6 @@
+.hidden {
+    display: none;
+}
 .footer {
     text-align: center;
     margin-top: 4rem;

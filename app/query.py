@@ -41,8 +41,34 @@ def list_tables(db):
     driver = DATABASES[db_type]
     query = TABLE_QUERIES[db_type]
     _col_names, rows = _execute_query(driver, conn_str, query)
-    tables = tuple(el[0] for el in rows)
+    tables = sorted(tuple(el[0] for el in rows))
     return tables
+
+def list_table_data_types(db, tables):
+    """
+    List columns and their data types for given tables in DB
+    """
+    db_type, conn_str = repo.get_db_params(db)
+    driver = DATABASES[db_type]
+    match db_type:
+        case "sqlite":
+            query = " union all ".join(f"select '{table}', name, type from pragma_table_info('{table}')" for table in tables)
+        case "postgres":
+            tables_joined = ', '.join(f"\'{table}\'" for table in tables)
+            query = f"""
+            select * from
+            (select concat(table_schema, '.', table_name) as table, column_name, data_type from information_schema.columns) as tables
+            where tables.table in ({tables_joined});
+            """
+        case "clickhouse":
+            query = "SELECT table, name, type FROM system.columns where database == currentDatabase();"
+        case other_db:
+            raise ValueError(f"Bad DB: {other_db}")
+    _col_names, rows = _execute_query(driver, conn_str, query)
+    data_types = {table: [] for table in tables}
+    for row in rows:
+        data_types[row[0]].append((row[1], row[2], ))
+    return data_types
 
 def execute(db, query, vega):
     """

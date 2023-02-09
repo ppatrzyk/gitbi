@@ -36,7 +36,9 @@ async def tables_route(request):
     User by htmx
     """
     try:
-        tables = query.list_tables(request.path_params.get("db"))
+        db = request.path_params.get("db")
+        tables = query.list_tables(db)
+        data_types = query.list_table_data_types(db, tables)
     except Exception as e:
         status_code = 404 if isinstance(e, RuntimeError) else 500
         return routes_utils.partial_html_error(str(e), status_code)
@@ -44,6 +46,7 @@ async def tables_route(request):
         data = {
             **routes_utils.common_context_args(request),
             "tables": tables,
+            "data_types": data_types,
             **request.path_params,
         }
         return routes_utils.TEMPLATES.TemplateResponse(name='partial_tables.html', context=data)
