@@ -41,7 +41,7 @@ def list_tables(db):
     driver = DATABASES[db_type]
     query = TABLE_QUERIES[db_type]
     _col_names, rows = _execute_query(driver, conn_str, query)
-    tables = sorted(tuple(el[0] for el in rows))
+    tables = sorted(el[0] for el in rows)
     return tables
 
 def list_table_data_types(db, tables):
@@ -51,6 +51,7 @@ def list_table_data_types(db, tables):
     db_type, conn_str = repo.get_db_params(db)
     driver = DATABASES[db_type]
     match db_type:
+        # Every query must return table with 3 cols: table_name, column_name, data_type
         case "sqlite":
             query = " union all ".join(f"select '{table}', name, type from pragma_table_info('{table}')" for table in tables)
         case "postgres":
