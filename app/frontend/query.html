@@ -6,6 +6,9 @@
 {% block title %}Query{% endblock %}
 {% block content %}
     <h2>Query db: {{ db|e }}</h2>
+    <details id="db-details">
+        <summary>Tables</summary>
+    </details>
     <details open>
         <summary>Query</summary>
         <figure><div id="query-editor" class="code-editor language-sql">{{ query }}</div></figure>
@@ -24,6 +27,15 @@
             Query file name
         </label>
     </div>
+    <a
+        class="hidden"
+        hx-get="{{ request.app.url_path_for('tables_route', db=db) }}"
+        hx-trigger="load"
+        hx-target="#db-details"
+        hx-swap="beforeend"
+    >
+        Load table info
+    </a>
     <div
         role="button"
         hx-post="{{ request.app.url_path_for('execute_route', db=db) }}"
