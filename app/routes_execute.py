@@ -31,7 +31,7 @@ async def execute_route(request):
         data = {
             **utils.common_context_args(request),
             "table": table,
-            "table_id": "results-table",
+            "table_ids": ["results-table", ],
             "vega": vega_viz,
             "vega_script": vega_script,
             "time": _get_time(),

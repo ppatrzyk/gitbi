@@ -39,6 +39,7 @@ async def tables_route(request):
         db = request.path_params.get("db")
         tables = query.list_tables(db)
         data_types = query.list_table_data_types(db, tables)
+        table_ids = [f"table-types-{table}" for table in tables]
     except Exception as e:
         status_code = 404 if isinstance(e, RuntimeError) else 500
         return utils.partial_html_error(str(e), status_code)
@@ -46,6 +47,7 @@ async def tables_route(request):
         data = {
             **utils.common_context_args(request),
             "tables": tables,
+            "table_ids": table_ids,
             "data_types": data_types,
             "tables_toc": (len(tables) > 1),
             **request.path_params,
@@ -60,7 +62,7 @@ async def commits_route(request):
         data = {
             **utils.common_context_args(request),
             "commits": repo.list_commits(),
-            "table_id": "commits-table",
+            "table_ids": ["commits-table", ],
         }
     except Exception as e:
         raise HTTPException(status_code=404, detail=str(e))
