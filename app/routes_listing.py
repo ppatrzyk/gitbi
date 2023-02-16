@@ -5,7 +5,7 @@ from starlette.exceptions import HTTPException
 from starlette.responses import RedirectResponse
 import query
 import repo
-import routes_utils
+import utils
 
 async def home_route(request):
     """
@@ -14,7 +14,7 @@ async def home_route(request):
     try:
         state = request.path_params.get("state")
         data = {
-            **routes_utils.common_context_args(request),
+            **utils.common_context_args(request),
             "state": state,
             "readme": repo.get_readme(state),
             "databases": repo.list_sources(state),
@@ -22,7 +22,7 @@ async def home_route(request):
     except Exception as e:
         raise HTTPException(status_code=404, detail=str(e))
     else:
-        return routes_utils.TEMPLATES.TemplateResponse(name='index.html', context=data)
+        return utils.TEMPLATES.TemplateResponse(name='index.html', context=data)
 
 async def home_default_route(request):
     """
@@ -41,15 +41,16 @@ async def tables_route(request):
         data_types = query.list_table_data_types(db, tables)
     except Exception as e:
         status_code = 404 if isinstance(e, RuntimeError) else 500
-        return routes_utils.partial_html_error(str(e), status_code)
+        return utils.partial_html_error(str(e), status_code)
     else:
         data = {
-            **routes_utils.common_context_args(request),
+            **utils.common_context_args(request),
             "tables": tables,
             "data_types": data_types,
+            "tables_toc": (len(tables) > 1),
             **request.path_params,
         }
-        return routes_utils.TEMPLATES.TemplateResponse(name='partial_tables.html', context=data)
+        return utils.TEMPLATES.TemplateResponse(name='partial_tables.html', context=data)
 
 async def commits_route(request):
     """
@@ -57,10 +58,11 @@ async def commits_route(request):
     """
     try:
         data = {
-            **routes_utils.common_context_args(request),
+            **utils.common_context_args(request),
             "commits": repo.list_commits(),
+            "table_id": "commits-table",
         }
     except Exception as e:
         raise HTTPException(status_code=404, detail=str(e))
     else:
-        return routes_utils.TEMPLATES.TemplateResponse(name='partial_commits.html', context=data)
+        return utils.TEMPLATES.TemplateResponse(name='partial_commits.html', context=data)

@@ -5,21 +5,21 @@ from starlette.exceptions import HTTPException
 from starlette.responses import HTMLResponse, PlainTextResponse, RedirectResponse
 import json
 import repo
-import routes_utils
+import utils
 
 async def delete_route(request):
     """
     Delete query from repository
     """
     try:
-        user = routes_utils.common_context_args(request).get("user")
+        user = utils.common_context_args(request).get("user")
         repo.delete(user=user, **request.path_params)
         redirect_url = request.app.url_path_for("home_route", state="HEAD")
         headers = {"HX-Redirect": redirect_url}
         response = PlainTextResponse(content="OK", headers=headers, status_code=200)
     except Exception as e:
         status_code = 404 if isinstance(e, RuntimeError) else 500
-        return routes_utils.partial_html_error(str(e), status_code)
+        return utils.partial_html_error(str(e), status_code)
     else:
         return response
 
@@ -34,7 +34,7 @@ async def save_route(request):
         assert data["query"], "No query in POST data"
         if "vega" not in data.keys():
             data["vega"] = None
-        data["user"] = routes_utils.common_context_args(request).get("user")
+        data["user"] = utils.common_context_args(request).get("user")
         repo.save(**request.path_params, **data)
         redirect_url = request.app.url_path_for(
             "saved_query_route",
@@ -46,7 +46,7 @@ async def save_route(request):
         response = PlainTextResponse(content="OK", headers=headers, status_code=200)
     except Exception as e:
         status_code = 404 if isinstance(e, RuntimeError) else 500
-        return routes_utils.partial_html_error(str(e), status_code)
+        return utils.partial_html_error(str(e), status_code)
     else:
         return response
 
@@ -100,7 +100,8 @@ async def _query(request):
     - saved query
     """
     data = {
-        **routes_utils.common_context_args(request),
+        **utils.common_context_args(request),
         **request.state.query_data,
+        "file_placeholder": "Enter file name",
     }
-    return routes_utils.TEMPLATES.TemplateResponse(name='query.html', context=data)
+    return utils.TEMPLATES.TemplateResponse(name='query.html', context=data)

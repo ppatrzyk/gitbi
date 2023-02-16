@@ -9,30 +9,26 @@
     {% endif %}
     <h2>Data Sources</h2>
     {% for db, files in databases.items() %}
-    <p>
-        <span class="db"><strong>{{ db|e }}</strong></span> | 
-        <a href="{{ request.app.url_path_for('query_route', db=db) }}">New query</a>
-    </p>
     <a
         class="hidden"
         hx-get="{{ request.app.url_path_for('tables_route', db=db) }}"
         hx-trigger="load"
         hx-target="#db-details-{{ db }}"
-        hx-swap="beforeend"
+        hx-swap="outerHTML"
     >
         Load table info
     </a>
+    <h4>{{ db|e }}</h4>
     <details>
         <summary>Queries</summary>
+        <a role="button" href="{{ request.app.url_path_for('query_route', db=db) }}">New query</a>
         <ul>
             {% for file in files %}
             <li><a href="{{ request.app.url_path_for('saved_query_route', state=state, db=db, file=file) }}">{{ file|e }}</a></li>
             {% endfor %}
         </ul>
     </details>
-    <details id="db-details-{{ db }}">
-        <summary>Tables</summary>
-    </details>
+    <div id="db-details-{{ db }}"></div>
     <br>
     {% endfor %}
 {% endblock %}

@@ -8,7 +8,7 @@ import json
 import mailer
 import query
 import repo
-import routes_utils
+import utils
 
 async def execute_route(request):
     """
@@ -26,11 +26,12 @@ async def execute_route(request):
         vega_script = request.app.url_path_for('static', path='/js/vega.all.min.js')
     except Exception as e:
         status_code = 404 if isinstance(e, RuntimeError) else 500
-        return routes_utils.partial_html_error(str(e), status_code)
+        return utils.partial_html_error(str(e), status_code)
     else:
         data = {
-            **routes_utils.common_context_args(request),
+            **utils.common_context_args(request),
             "table": table,
+            "table_id": "results-table",
             "vega": vega_viz,
             "vega_script": vega_script,
             "time": _get_time(),
@@ -38,7 +39,7 @@ async def execute_route(request):
             "duration": duration_ms,
         }
         headers = {"Gitbi-Row-Count": str(no_rows)}
-        return routes_utils.TEMPLATES.TemplateResponse(name='partial_result.html', headers=headers, context=data)
+        return utils.TEMPLATES.TemplateResponse(name='partial_result.html', headers=headers, context=data)
 
 async def report_route(request):
     """
@@ -104,7 +105,7 @@ async def _execute_from_saved_query(request):
         raise HTTPException(status_code=status_code, detail=str(e))
     else:
         data = {
-            **routes_utils.common_context_args(request),
+            **utils.common_context_args(request),
             "query_url": query_url,
             "table": table,
             "duration": duration_ms,
@@ -114,7 +115,7 @@ async def _execute_from_saved_query(request):
             **request.path_params,
         }
         headers = {"Gitbi-Row-Count": str(no_rows)}
-        report = routes_utils.TEMPLATES.TemplateResponse(name='report.html', headers=headers, context=data)
+        report = utils.TEMPLATES.TemplateResponse(name='report.html', headers=headers, context=data)
     return report, no_rows
 
 def _get_time():

@@ -1,14 +1,11 @@
 {% extends "base.html" %}
 {% block extendhead %}
     <link href="{{ request.app.url_path_for('static', path='/css/github.min.css') }}" rel="stylesheet">
-    <script src="{{ request.app.url_path_for('static', path='/js/simple-datatables.6.0.7.js') }}"></script>
 {% endblock %}
 {% block title %}Query{% endblock %}
 {% block content %}
     <h2>Query db: {{ db|e }}</h2>
-    <details id="db-details">
-        <summary>Tables</summary>
-    </details>
+    <div id="db-details-{{ db }}"></div>
     <details open>
         <summary>Query</summary>
         <figure><div id="query-editor" class="code-editor language-sql">{{ query }}</div></figure>
@@ -23,7 +20,7 @@
     </details>
     <div>
         <label for="file-name">
-            <input type="text" id="file-name" name="file-name" placeholder="{{ file }}" value="{{ file }}">
+            <input type="text" id="file-name" name="file-name" placeholder="{{ file_placeholder }}" value="{{ file }}">
             Query file name
         </label>
     </div>
@@ -31,8 +28,8 @@
         class="hidden"
         hx-get="{{ request.app.url_path_for('tables_route', db=db) }}"
         hx-trigger="load"
-        hx-target="#db-details"
-        hx-swap="beforeend"
+        hx-target="#db-details-{{ db }}"
+        hx-swap="outerHTML"
     >
         Load table info
     </a>

@@ -7,6 +7,7 @@ from markdown import markdown
 import os
 from pathlib import Path
 from pygit2 import Repository, Signature
+import utils
 
 DIR = os.environ["GITBI_REPO_DIR"]
 REPO = Repository(DIR)
@@ -97,24 +98,18 @@ def list_commits():
     """
     Function lists all commits present in current branch of the repo
     """
-    commits = [
-        {"hash": "file", "short_hash": "file", "msg": "Current filesystem", "author": "N/A"},
-    ]
+    headers = ("commit_hash", "author", "date", "message")
+    commits = [("file", "N/A", "now", "N/A", ), ]
     for el in REPO.walk(REPO.head.target):
-        commit_hash = str(el.id)
-        msg = el.message.replace("\n", "")
-        author = str(el.author)
-        commit = {
-            "hash": commit_hash,
-            "short_hash": _short_str(commit_hash),
-            "msg": msg,
-            "short_msg": _short_str(msg),
-            "author": author,
-            "short_author": _short_str(author),
-            "date": datetime.fromtimestamp(el.commit_time).isoformat(),
-        }
+        commit = (
+            str(el.id),
+            str(el.author),
+            datetime.fromtimestamp(el.commit_time).isoformat(),
+            el.message.replace("\n", ""),
+        )
         commits.append(commit)
-    return commits
+    table = utils.format_table("commits-table", headers, commits)
+    return table
 
 def save(user, db, file, query, vega):
     """
@@ -151,16 +146,6 @@ def delete(user, db, file):
     #TODO: if fails error not caught, not recoverable in Gitbi, one needs to checkout manually
     _commit(user, "delete", to_commit)
     return True
-
-def _short_str(s):
-    """
-    Make shorter version of string for presentation
-    """
-    if len(s) > 11:
-        short = f"{s[:4]}...{s[-4:]}"
-    else:
-        short = s
-    return short
 
 def _filter_queries(queries):
     """

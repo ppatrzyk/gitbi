@@ -1,12 +1,18 @@
 {# partial html - this is used by htmx passing tables list #}
-
-<ul>
-    {% for table in tables %}
-    <li><a href="{{ request.app.url_path_for('query_route', db=db) }}?query=select * from {{ table }} limit 10;">{{ table|e }}</a></li>
-    <ul>
-        {% for (column, data_type) in data_types[table] %}
-        <li>{{ column|e }} | {{ data_type|e }}</li>
+<details id="db-details-{{ db }}">
+    <summary>Tables in {{ db|e }}</summary>
+    {% if tables_toc %}
+    <h4>TOC</h4>
+    <ol>
+        {% for table in tables %}
+        <li><a href="#header-types-{{ table|e }}">{{ table|e }}</a></li>
         {% endfor %}
-    </ul>
+    </ol>
+    {% endif %}
+
+    {% for table in tables %}
+    <h4 id="header-types-{{ table|e }}">{{ table|e }}</h4>
+    <a role="button" href="{{ request.app.url_path_for('query_route', db=db) }}?query=select * from {{ table }} limit 10;">Query {{ table|e }}</a>
+    <figure>{{ data_types[table] }}</figure>
     {% endfor %}
-</ul>
+</details>

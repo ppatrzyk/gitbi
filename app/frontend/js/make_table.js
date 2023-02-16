@@ -1,10 +1,10 @@
-var table = document.getElementById("results-table");
+var table = document.getElementById("{{ table_id }}");
 var data_table = new simpleDatatables.DataTable(table, {
     perPageSelect: [10, 25, 50, 100],
     classes: {bottom: "grid", top: "grid", selector: "no-margin",},
     layout: {
-        top: "{select}{search}",
-        bottom: "{pager}{info}"
+        top: "{search}",
+        bottom: "{select}{info}{pager}"
     },
 });
 var search_button = document.getElementsByClassName("datatable-search")[0];

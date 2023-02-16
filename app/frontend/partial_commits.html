@@ -1,12 +1,11 @@
 {# partial html - this is used by htmx passing tables list #}
-
-<details role="list">
-    <summary aria-haspopup="listbox">Queries</summary>
-    <ul role="listbox">
-        {% for commit in commits %}
-        <li><a href="{{ request.app.url_path_for('home_route', state=commit.hash) }}">
-            {{ commit.short_hash|e }} | {{ commit.short_author|e }} | {{ commit.date|e }} | {{ commit.short_msg|e }}
-        </a></li>
-        {% endfor %}
-    </ul>
-</details>
+<div id="commits-section">
+    <h2>Go to commit</h2>
+    {{ commits }}
+    <script type="text/javascript">
+        {% include 'js/make_commit_links.js' %}
+    </script>
+    <script type="text/javascript">
+        {% include 'js/make_table.js' %}
+    </script>
+</div>

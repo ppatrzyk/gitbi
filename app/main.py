@@ -6,7 +6,8 @@ from starlette.exceptions import HTTPException
 from starlette.routing import Mount, Route
 from starlette.staticfiles import StaticFiles
 import auth
-import routes_execute, routes_listing, routes_query, routes_utils
+import routes_execute, routes_listing, routes_query
+import utils
 
 # Error types
 # 404 RuntimeError file not accessible
@@ -16,11 +17,11 @@ import routes_execute, routes_listing, routes_query, routes_utils
 async def server_error(request, exc):
     data = {
         "request": request,
-        "version": routes_utils.VERSION,
+        "version": utils.VERSION,
         "code": exc.status_code,
         "message": exc.detail
     }
-    return routes_utils.TEMPLATES.TemplateResponse(name='error.html', context=data, status_code=exc.status_code)
+    return utils.TEMPLATES.TemplateResponse(name='error.html', context=data, status_code=exc.status_code)
 
 routes = [
     # routes execute
@@ -39,7 +40,7 @@ routes = [
     Route('/delete/{db:str}/{file:str}', endpoint=routes_query.delete_route, name="delete_route"),
     Route('/save/{db:str}', endpoint=routes_query.save_route, methods=("POST", ), name="save_route"),
     # static
-    Mount('/static', app=StaticFiles(directory=routes_utils.STATIC_DIR), name="static"),
+    Mount('/static', app=StaticFiles(directory=utils.STATIC_DIR), name="static"),
 ]
 
 exception_handlers = {
