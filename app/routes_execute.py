@@ -18,13 +18,13 @@ async def execute_route(request):
     try:
         form = await request.form()
         data = json.loads(form["data"])
-        table, vega_viz, duration_ms, no_rows = query.execute(
+        col_names, rows, duration_ms = query.execute(
             db=request.path_params.get("db"),
-            query=data.get("query"),
-            vega=data.get("vega"),
-            interactive=True
+            query=data.get("query")
         )
-        vega_script = request.app.url_path_for('static', path='/js/vega.all.min.js')
+        table = utils.format_table("results-table", col_names, rows, True)
+        vega_viz = utils.format_vega(col_names, rows, data.get("vega"))
+        no_rows = len(rows)
     except Exception as e:
         status_code = 404 if isinstance(e, RuntimeError) else 500
         return utils.partial_html_error(str(e), status_code)
@@ -33,7 +33,6 @@ async def execute_route(request):
             **utils.common_context_args(request),
             "table": table,
             "vega": vega_viz,
-            "vega_script": vega_script,
             "time": _get_time(),
             "no_rows": no_rows,
             "duration": duration_ms,
@@ -95,12 +94,12 @@ async def _execute_from_saved_query(request):
     try:
         query_url = request.url_for("saved_query_route", **request.path_params)
         query_str, _vega_str = repo.get_query(**request.path_params)
-        table, _vega_viz, duration_ms, no_rows = query.execute(
+        col_names, rows, duration_ms = query.execute(
             db=request.path_params.get("db"),
-            query=query_str,
-            vega=None,
-            interactive=False,
+            query=query_str
         )
+        table = utils.format_table("results-table", col_names, rows, False)
+        no_rows = len(rows)
     except Exception as e:
         status_code = 404 if isinstance(e, RuntimeError) else 500
         raise HTTPException(status_code=status_code, detail=str(e))

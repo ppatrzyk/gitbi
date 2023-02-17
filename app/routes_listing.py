@@ -57,9 +57,11 @@ async def commits_route(request):
     Endpoint for getting commits list
     """
     try:
+        headers, commits = repo.list_commits()
+        table = utils.format_table("commits-table", headers, commits, True)
         data = {
             **utils.common_context_args(request),
-            "commits": repo.list_commits(),
+            "commits_table": table,
         }
     except Exception as e:
         raise HTTPException(status_code=404, detail=str(e))

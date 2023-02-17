@@ -4,15 +4,15 @@ from app.query import *
 
 def test_execute():
     with pytest.raises(NameError):
-        execute("baddb", "badquery", None)
+        execute("baddb", "badquery")
     with pytest.raises(ValueError):
-        execute("sqlite", "select badfunc();", None)
+        execute("sqlite", "select badfunc();")
     with pytest.raises(Exception):
-        execute("sqlite", "select badfunc();", "") # bad vega
+        execute("sqlite", "select badfunc();") # bad vega
     with pytest.raises(Exception):
-        execute("sqlite", "select badfunc();", ";alert") # bad vega
+        execute("sqlite", "select badfunc();") # bad vega
     with does_not_raise():
-        execute("sqlite", "select 1;", None)
+        execute("sqlite", "select 1;")
 
 def test_list_tables():
     assert list_tables("sqlite") == ["mytable", ]

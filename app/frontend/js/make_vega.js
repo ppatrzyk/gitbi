@@ -22,6 +22,6 @@ if (! vega_spec.hasOwnProperty("width")) {
 }
 var script_tag = document.createElement('script');
 script_tag.setAttribute("type", "text/javascript");
-script_tag.setAttribute("src", "{{ vega_script }}");
+script_tag.setAttribute("src", "{{ request.app.url_path_for('static', path='/js/vega.all.min.js') }}");
 script_tag.setAttribute("onload", `make_vega(vega_element, vega_spec)`);
 document.getElementsByTagName("head")[0].appendChild(script_tag);

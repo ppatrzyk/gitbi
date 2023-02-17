@@ -3,7 +3,6 @@ Functions to process SQL queries
 """
 from clickhouse_driver import dbapi as clickhouse
 from time import time
-import json
 import psycopg
 import os
 import repo
@@ -21,25 +20,14 @@ TABLE_QUERIES = {
     "postgres": "SELECT concat(schemaname, '.', tablename) FROM pg_catalog.pg_tables WHERE schemaname NOT IN ('pg_catalog', 'information_schema');",
     "clickhouse": "SELECT name FROM system.tables where database == currentDatabase();",
 }
-VEGA_DEFAULTS = {
-    "config": {
-        "font": "system-ui",
-        "axis": {"labelFontSize": 16, "titleFontSize": 20},
-        "legend": {"labelFontSize": 16},
-        "header": {"labelFontSize": 16},
-        "text": {"fontSize": 16},
-        "title": {"fontSize": 24},
-    },
-}
 
 def list_tables(db):
     """
     List tables in db
     """
-    db_type, conn_str = repo.get_db_params(db)
-    driver = DATABASES[db_type]
+    db_type, _conn_str = repo.get_db_params(db)
     query = TABLE_QUERIES[db_type]
-    _col_names, rows = _execute_query(driver, conn_str, query)
+    _col_names, rows, _duration_ms = execute(db, query)
     tables = sorted(el[0] for el in rows)
     return tables
 
@@ -47,8 +35,7 @@ def list_table_data_types(db, tables):
     """
     List columns and their data types for given tables in DB
     """
-    db_type, conn_str = repo.get_db_params(db)
-    driver = DATABASES[db_type]
+    db_type, _conn_str = repo.get_db_params(db)
     match db_type:
         # Every query must return table with 3 cols: table_name, column_name, data_type
         case "sqlite":
@@ -64,7 +51,7 @@ def list_table_data_types(db, tables):
             query = "SELECT table, name, type FROM system.columns where database == currentDatabase();"
         case other_db:
             raise ValueError(f"Bad DB: {other_db}")
-    _col_names, rows = _execute_query(driver, conn_str, query)
+    _col_names, rows, _duration_ms = execute(db, query)
     data_types = {table: [] for table in tables}
     for row in rows:
         data_types[row[0]].append((row[1], row[2], ))
@@ -72,7 +59,7 @@ def list_table_data_types(db, tables):
     data_types = {table: utils.format_table(f"table-types-{table}", headers, rows, True) for table, rows in data_types.items()}
     return data_types
 
-def execute(db, query, vega, interactive):
+def execute(db, query):
     """
     Executes query and returns formatted table
     """
@@ -81,25 +68,7 @@ def execute(db, query, vega, interactive):
     start = time()
     col_names, rows = _execute_query(driver, conn_str, query)
     duration_ms = round(1000*(time()-start))
-    table = utils.format_table("results-table", col_names, rows, interactive)
-    if vega is not None:
-        vega_viz = _format_vega(col_names, rows, vega)
-    else:
-        vega_viz = None
-    return table, vega_viz, duration_ms, len(rows)
-
-def _format_vega(col_names, rows, vega):
-    """
-    Joins passed vega lite specification with received data
-    """
-    try:
-        assert vega, "No vega specification"
-        vega = json.loads(vega)
-        data = tuple({col: row[i] for i, col in enumerate(col_names, start=0)} for row in rows)
-        vega = {**VEGA_DEFAULTS, "data": {"values": data}, **vega}
-    except Exception as e:
-        vega = {"error": str(e)}
-    return json.dumps(vega)
+    return col_names, rows, duration_ms
 
 def _execute_query(driver, conn_str, query):
     """

@@ -102,6 +102,5 @@ async def _query(request):
     data = {
         **utils.common_context_args(request),
         **request.state.query_data,
-        "file_placeholder": "Enter file name",
     }
     return utils.TEMPLATES.TemplateResponse(name='query.html', context=data)

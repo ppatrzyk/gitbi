@@ -12,6 +12,16 @@ APP_DIR = os.path.abspath(os.path.dirname(__file__))
 STATIC_DIR = os.path.join(APP_DIR, "frontend/static")
 TEMPLATE_DIR = os.path.join(APP_DIR, "frontend")
 TEMPLATES = Jinja2Templates(directory=TEMPLATE_DIR, autoescape=False)
+VEGA_DEFAULTS = {
+    "config": {
+        "font": "system-ui",
+        "axis": {"labelFontSize": 16, "titleFontSize": 20},
+        "legend": {"labelFontSize": 16},
+        "header": {"labelFontSize": 16},
+        "text": {"fontSize": 16},
+        "title": {"fontSize": 24},
+    },
+}
 
 def format_table(id, headers, rows, interactive):
     """
@@ -27,6 +37,19 @@ def format_table(id, headers, rows, interactive):
         data = {**data, "headers": headers, "rows": rows}
         response = TEMPLATES.TemplateResponse(name='partial_html_table.html', context=data)
     return response.body.decode()
+
+def format_vega(col_names, rows, vega):
+    """
+    Joins passed vega lite specification with received data
+    """
+    try:
+        assert vega, "No vega specification"
+        vega = json.loads(vega)
+        data = tuple({col: row[i] for i, col in enumerate(col_names, start=0)} for row in rows)
+        vega = {**VEGA_DEFAULTS, "data": {"values": data}, **vega}
+    except Exception as e:
+        vega = {"error": str(e)}
+    return json.dumps(vega)
 
 def _escape_tuple(t):
     """

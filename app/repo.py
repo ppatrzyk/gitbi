@@ -108,8 +108,7 @@ def list_commits():
             el.message.replace("\n", ""),
         )
         commits.append(commit)
-    table = utils.format_table("commits-table", headers, commits, True)
-    return table
+    return headers, commits
 
 def save(user, db, file, query, vega):
     """

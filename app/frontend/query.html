@@ -19,10 +19,8 @@
         <figure><div id="vega-editor" class="code-editor language-json">{{ vega }}</div></figure>
     </details>
     <div>
-        <label for="file-name">
-            <input type="text" id="file-name" name="file-name" placeholder="{{ file_placeholder }}" value="{{ file }}">
-            Query file name
-        </label>
+        <label for="file-name">Query file name</label>
+        <input type="text" id="file-name" name="file-name" placeholder="Enter file name" value="{{ file }}">
     </div>
     <a
         class="hidden"
@@ -41,7 +39,7 @@
         hx-target="#query-result"
         hx-swap="innerHTML"
     >
-        Trigger
+        Run
     </div>
     <div
         role="button"
