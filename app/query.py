@@ -69,10 +69,10 @@ def list_table_data_types(db, tables):
     for row in rows:
         data_types[row[0]].append((row[1], row[2], ))
     headers = ("column_name", "data_type", )
-    data_types = {table: utils.format_table(f"table-types-{table}", headers, rows) for table, rows in data_types.items()}
+    data_types = {table: utils.format_table(f"table-types-{table}", headers, rows, True) for table, rows in data_types.items()}
     return data_types
 
-def execute(db, query, vega):
+def execute(db, query, vega, interactive):
     """
     Executes query and returns formatted table
     """
@@ -81,7 +81,7 @@ def execute(db, query, vega):
     start = time()
     col_names, rows = _execute_query(driver, conn_str, query)
     duration_ms = round(1000*(time()-start))
-    table = utils.format_table("results-table", col_names, rows)
+    table = utils.format_table("results-table", col_names, rows, interactive)
     if vega is not None:
         vega_viz = _format_vega(col_names, rows, vega)
     else:

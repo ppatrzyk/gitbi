@@ -15,7 +15,4 @@
     <a role="button" href="{{ request.app.url_path_for('query_route', db=db) }}?query=select * from {{ table }} limit 10;">Query {{ table|e }}</a>
     <figure>{{ data_types[table] }}</figure>
     {% endfor %}
-    <script type="text/javascript">
-        {% include 'js/make_table.js' %}
-    </script>
 </details>

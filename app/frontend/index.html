@@ -11,7 +11,7 @@
     {% for db, files in databases.items() %}
     <a
         class="hidden"
-        hx-get="{{ request.app.url_path_for('tables_route', db=db) }}"
+        hx-get="{{ request.app.url_path_for('db_details_route', db=db) }}"
         hx-trigger="load"
         hx-target="#db-details-{{ db }}"
         hx-swap="outerHTML"

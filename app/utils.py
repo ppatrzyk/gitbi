@@ -1,8 +1,9 @@
 """
 common functions for all routes
 """
+import html
+import json
 import os
-from prettytable import PrettyTable
 from starlette.templating import Jinja2Templates
 from starlette.responses import HTMLResponse
 
@@ -12,20 +13,26 @@ STATIC_DIR = os.path.join(APP_DIR, "frontend/static")
 TEMPLATE_DIR = os.path.join(APP_DIR, "frontend")
 TEMPLATES = Jinja2Templates(directory=TEMPLATE_DIR, autoescape=False)
 
-def format_table(id, headers, rows):
+def format_table(id, headers, rows, interactive):
     """
     Format data into a html table
     """
-    try:
-        table = PrettyTable()
-        table.field_names = headers
-        table.add_rows(rows)
-        attrs = {"id": id, "role": "grid"}
-        table_formatted = "" if table is None else table.get_html_string(attributes=attrs)
-    except Exception as e:
-        table_formatted = f"<p>Formatting error: {str(e)}</p>"
-    return table_formatted
+    headers = _escape_tuple(headers)
+    rows = tuple(_escape_tuple(row) for row in rows)
+    data = {"request": None, "id": id}
+    if interactive:
+        data = {**data, "data_json": json.dumps({"headings": headers, "data": rows})}
+        response = TEMPLATES.TemplateResponse(name='partial_html_table_interactive.html', context=data)
+    else:
+        data = {**data, "headers": headers, "rows": rows}
+        response = TEMPLATES.TemplateResponse(name='partial_html_table.html', context=data)
+    return response.body.decode()
 
+def _escape_tuple(t):
+    """
+    Helper for escaping tuple of elements
+    """
+    return tuple(html.escape(el) if isinstance(el, str) else el for el in t)
 
 def partial_html_error(message, code):
     """

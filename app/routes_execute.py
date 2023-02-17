@@ -21,7 +21,8 @@ async def execute_route(request):
         table, vega_viz, duration_ms, no_rows = query.execute(
             db=request.path_params.get("db"),
             query=data.get("query"),
-            vega=data.get("vega")
+            vega=data.get("vega"),
+            interactive=True
         )
         vega_script = request.app.url_path_for('static', path='/js/vega.all.min.js')
     except Exception as e:
@@ -31,7 +32,6 @@ async def execute_route(request):
         data = {
             **utils.common_context_args(request),
             "table": table,
-            "table_ids": ["results-table", ],
             "vega": vega_viz,
             "vega_script": vega_script,
             "time": _get_time(),
@@ -94,11 +94,12 @@ async def _execute_from_saved_query(request):
     """
     try:
         query_url = request.url_for("saved_query_route", **request.path_params)
-        query_str, vega_str = repo.get_query(**request.path_params)
+        query_str, _vega_str = repo.get_query(**request.path_params)
         table, _vega_viz, duration_ms, no_rows = query.execute(
             db=request.path_params.get("db"),
             query=query_str,
-            vega=vega_str
+            vega=None,
+            interactive=False,
         )
     except Exception as e:
         status_code = 404 if isinstance(e, RuntimeError) else 500
