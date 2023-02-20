@@ -130,13 +130,21 @@ docker build -t pieca/gitbi:<version> .
 ## Acknowledgements
 
 Backend:
+- [clickhouse-driver](https://github.com/mymarilyn/clickhouse-driver)
+- [jinja](https://github.com/pallets/jinja/)
+- [markdown](https://github.com/Python-Markdown/markdown)
+- [psycopg](https://github.com/psycopg/psycopg)
 - [pygit2](https://github.com/libgit2/pygit2)
+- [sqlparse](https://github.com/andialbrecht/sqlparse)
 - [starlette](https://github.com/encode/starlette)
+- [uvicorn](https://github.com/encode/uvicorn)
 
 Frontend:
 - [codejar](https://github.com/antonmedv/codejar)
+- [Font Awesome](https://iconscout.com/contributors/font-awesome)
 - [highlight](https://github.com/highlightjs/highlight.js)
 - [htmx](https://github.com/bigskysoftware/htmx)
 - [pico](https://github.com/picocss/pico)
 - [simple-datatables](https://github.com/fiduswriter/simple-datatables)
+- [ubuntu font](https://ubuntu.com/legal/font-licence)
 - [vega](https://github.com/vega)

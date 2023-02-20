@@ -15,6 +15,8 @@ function query_format() {
     var data = {query: query_jar.toString(), file: file_name};
     if (include_vega) {
         data["vega"] = vega_jar.toString();
+    } else {
+        data["vega"] = false;
     }
     return JSON.stringify(data)
 }

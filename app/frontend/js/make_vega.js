@@ -13,7 +13,7 @@ function make_vega(vega_element, vega_spec) {
     )
 }
 var vega_element = "#vega-viz";
-var vega_spec = JSON.parse('{{ vega }}');
+var vega_spec = JSON.parse('{{ vega_viz }}');
 if (! vega_spec.hasOwnProperty("width")) {
     var result_el = document.getElementById("query-result")
     var width = Math.floor(result_el.offsetWidth-100)

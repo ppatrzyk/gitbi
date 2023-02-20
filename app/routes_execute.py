@@ -23,7 +23,11 @@ async def execute_route(request):
             query=data.get("query")
         )
         table = utils.format_table("results-table", col_names, rows, True)
-        vega_viz = utils.format_vega(col_names, rows, data.get("vega"))
+        vega = data.get("vega")
+        if not vega:
+            vega_viz = None
+        else:
+            vega_viz = utils.format_vega(col_names, rows, vega)
         no_rows = len(rows)
     except Exception as e:
         status_code = 404 if isinstance(e, RuntimeError) else 500
@@ -32,7 +36,7 @@ async def execute_route(request):
         data = {
             **utils.common_context_args(request),
             "table": table,
-            "vega": vega_viz,
+            "vega_viz": vega_viz,
             "time": _get_time(),
             "no_rows": no_rows,
             "duration": duration_ms,

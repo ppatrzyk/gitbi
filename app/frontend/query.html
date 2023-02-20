@@ -6,18 +6,20 @@
 {% block content %}
     <h2>Query db: {{ db|e }}</h2>
     <div id="db-details-{{ db }}"></div>
-    <details open>
-        <summary>Query</summary>
-        <figure><div id="query-editor" class="code-editor language-sql">{{ query }}</div></figure>
-    </details>
-    <details open>
-        <summary>Vega</summary>
-        <label for="include-vega">
-            <input type="checkbox" id="include-vega" name="include-vega" {% if vega %}checked{% endif %}>
-            Include vega chart
-        </label>
-        <figure><div id="vega-editor" class="code-editor language-json">{{ vega }}</div></figure>
-    </details>
+    <h4>Query</h4>
+    <figure>
+        <label for="query-editor">Query</label>
+        <div id="query-editor" class="code-editor language-sql">{{ query }}</div>
+    </figure>
+    <h4>Vega</h4>
+    <label for="include-vega">
+        <input type="checkbox" id="include-vega" name="include-vega" {% if vega %}checked{% endif %}>
+        Include vega chart
+    </label>
+    <figure>
+        <label for="vega-editor">Vega specs</label>
+        <div id="vega-editor" class="code-editor language-json">{{ vega }}</div>
+    </figure>
     <div>
         <label for="file-name">Query file name</label>
         <input type="text" id="file-name" name="file-name" placeholder="Enter file name" value="{{ file }}">

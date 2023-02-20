@@ -1,5 +1,6 @@
 {# partial html - this is used by htmx passing tables list #}
-<div id="commits-section">
-    <h2>Go to commit</h2>
+<details id="commits-section" class="nested-details" open>
+    <summary role="button">Go to commit</summary>
     {{ commits_table }}
-</div>
+    <script type="text/javascript">{% include 'js/make_commit_links.js' %}</script>
+</details>

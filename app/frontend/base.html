@@ -17,7 +17,7 @@
 <main class="container">
     <nav>
         <ul>
-          <li><a href="{{ request.app.url_path_for('home_default_route') }}"><strong>Gitbi</strong></a></li>
+          <li><a class="gitbi-logo" href="{{ request.app.url_path_for('home_default_route') }}">Gitbi</a></li>
         </ul>
         <ul>
           {% if state is not none %}
@@ -26,7 +26,7 @@
           {% if user is not none %}
           <li>User: {{ user|e }}</li>
           {% endif %}
-          <li><a hx-get="{{ request.app.url_path_for('commits_route') }}" hx-trigger="click" hx-target="#commits-section" hx-swap="outerHTML">
+          <li><a role="button" class="small-button" href="#" hx-get="{{ request.app.url_path_for('commits_route') }}" hx-trigger="click" hx-target="#commits-section" hx-swap="outerHTML">
           Load commits
           </a></li>
         </ul>

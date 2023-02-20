@@ -5,7 +5,7 @@
     Executed on {{ time|e }}
 </p>
 
-{% if vega is not none %}
+{% if vega_viz is not none %}
 <details open>
     <summary>Visualization</summary>
     <div id="vega-viz"></div>
@@ -17,5 +17,5 @@
 
 <details open>
     <summary>Table</summary>
-    <figure>{{ table }}</figure>
+    {{ table }}
 </details>
