@@ -1,11 +1,11 @@
 {# partial html - this is used to generate html table #}
 <figure><table id="{{ id }}" role="grid">
     <thead><tr>
-        {% for header in headers %}<th>{{ header|e }}</th>{% endfor %}
+        {% for header in headers %}<th>{{ header }}</th>{% endfor %}
     </tr></thead>
     <tbody>
         {% for row in rows %}
-            <tr>{% for entry in row %}<td>{{ entry|e }}</td>{% endfor %}</tr>
+            <tr>{% for entry in row %}<td>{{ entry }}</td>{% endfor %}</tr>
         {% endfor %}
     </tbody>
 </table></figure>

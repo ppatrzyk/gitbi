@@ -7,7 +7,6 @@ from markdown import markdown
 import os
 from pathlib import Path
 from pygit2 import Repository, Signature
-import utils
 
 DIR = os.environ["GITBI_REPO_DIR"]
 REPO = Repository(DIR)

@@ -2,7 +2,7 @@
 Routes for displaying and saving queries
 """
 from starlette.exceptions import HTTPException
-from starlette.responses import HTMLResponse, PlainTextResponse, RedirectResponse
+from starlette.responses import PlainTextResponse
 import json
 import repo
 import utils
