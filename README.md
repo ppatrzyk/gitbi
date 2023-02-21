@@ -1,13 +1,11 @@
 # gitbi
 
-**[DEVELOPMENT IN PROGRESS]**
-
 _Gitbi_ is a lightweight business intelligence application that reads configuration from a git repository. This design enables you to write and commit SQL queries and visualizations ([vega-lite](https://github.com/vega/vega-lite) specs) directly to git repo and have _Gitbi_ display them. Of course, if you wish to edit them via web interface, that's also possible.
 
 Test it now with sample db and config:
 
 ```
-docker run pieca/gitbi:0.5
+docker run -p 8000:8000 pieca/gitbi:0.5
 ```
 
 See full deployment example: [ppatrzyk/gitbi-example](https://github.com/ppatrzyk/gitbi-example).

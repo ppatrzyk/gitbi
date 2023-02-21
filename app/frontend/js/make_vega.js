@@ -20,8 +20,14 @@ if (! vega_spec.hasOwnProperty("width")) {
     vega_spec["width"] = width
     vega_spec["height"] = Math.floor(0.5*width)   
 }
-var script_tag = document.createElement('script');
-script_tag.setAttribute("type", "text/javascript");
-script_tag.setAttribute("src", "{{ request.app.url_path_for('static', path='/js/vega.all.min.js') }}");
-script_tag.setAttribute("onload", `make_vega(vega_element, vega_spec)`);
-document.getElementsByTagName("head")[0].appendChild(script_tag);
+var vega_script = document.getElementById('vega-import-script');
+if (typeof(vega_script) != 'undefined' && vega_script != null) {
+    make_vega(vega_element, vega_spec)
+} else {
+    var script_tag = document.createElement('script');
+    script_tag.setAttribute("id", "vega-import-script");
+    script_tag.setAttribute("type", "text/javascript");
+    script_tag.setAttribute("src", "{{ request.app.url_path_for('static', path='/js/vega.all.min.js') }}");
+    script_tag.setAttribute("onload", `make_vega(vega_element, vega_spec)`);
+    document.getElementsByTagName("head")[0].appendChild(script_tag);
+}
