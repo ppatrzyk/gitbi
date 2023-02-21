@@ -3,7 +3,6 @@ Routes for displaying and saving queries
 """
 from starlette.exceptions import HTTPException
 from starlette.responses import PlainTextResponse
-import json
 import repo
 import utils
 
@@ -29,12 +28,7 @@ async def save_route(request):
     """
     try:
         form = await request.form()
-        data = json.loads(form["data"])
-        data["file"] = data["file"].strip()
-        assert data["query"], "No query in POST data"
-        if "vega" not in data.keys():
-            data["vega"] = None
-        data["user"] = utils.common_context_args(request).get("user")
+        data = utils.parse_query_data(request, form)
         repo.save(**request.path_params, **data)
         redirect_url = request.app.url_path_for(
             "saved_query_route",

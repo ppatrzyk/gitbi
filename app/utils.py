@@ -23,6 +23,22 @@ VEGA_DEFAULTS = {
     },
 }
 
+def parse_query_data(request, form):
+    """
+    Parses and validates query data generated from query_format()
+    app/frontend/js/make_code_editor.js
+    vega: False or string
+    query: string
+    user: string
+    """
+    data = json.loads(form["data"])
+    data["file"] = data["file"].strip()
+    for key in ("query", "vega", ):
+        assert key in data.keys(), f"No {key} in POST data"
+        assert data[key] != "", f"Empty {key} string"
+    data["user"] = common_context_args(request).get("user")
+    return data
+
 def format_table(id, headers, rows, interactive):
     """
     Format data into a html table

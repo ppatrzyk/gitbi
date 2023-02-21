@@ -120,7 +120,7 @@ def save(user, db, file, query, vega):
     query_path = f"{db}/{file}"
     to_commit = [query_path, ]
     assert _write_file_content(query_path, query), "Writing file content failed"
-    if vega is not None:
+    if vega:
         vega_path = f"{query_path}.json"
         to_commit.append(vega_path)
         assert _write_file_content(vega_path, vega), "Writing file content failed"

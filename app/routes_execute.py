@@ -4,7 +4,6 @@ Routes for executing queries
 from starlette.exceptions import HTTPException
 from starlette.responses import PlainTextResponse
 from datetime import datetime
-import json
 import mailer
 import query
 import repo
@@ -17,7 +16,7 @@ async def execute_route(request):
     """
     try:
         form = await request.form()
-        data = json.loads(form["data"])
+        data = utils.parse_query_data(request, form)
         col_names, rows, duration_ms = query.execute(
             db=request.path_params.get("db"),
             query=data.get("query")
