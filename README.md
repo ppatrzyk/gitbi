@@ -5,7 +5,7 @@ _Gitbi_ is a lightweight business intelligence application that reads configurat
 Test it now with sample db and config:
 
 ```
-docker run -p 8000:8000 pieca/gitbi:0.5
+docker run -p 8000:8000 pieca/gitbi:latest
 ```
 
 See full deployment example: [ppatrzyk/gitbi-example](https://github.com/ppatrzyk/gitbi-example).

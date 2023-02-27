@@ -7,7 +7,7 @@ import os
 from starlette.templating import Jinja2Templates
 from starlette.responses import HTMLResponse
 
-VERSION = "0.5"
+VERSION = "0.6"
 APP_DIR = os.path.abspath(os.path.dirname(__file__))
 STATIC_DIR = os.path.join(APP_DIR, "frontend/static")
 TEMPLATE_DIR = os.path.join(APP_DIR, "frontend")
@@ -47,7 +47,8 @@ def format_table(id, headers, rows, interactive):
     rows = tuple(_escape_tuple(row) for row in rows)
     data = {"request": None, "id": id}
     if interactive:
-        data = {**data, "data_json": json.dumps({"headings": headers, "data": rows})}
+        data_json = json.dumps({"headings": headers, "data": rows}, default=str)
+        data = {**data, "data_json": data_json}
         response = TEMPLATES.TemplateResponse(name='partial_html_table_interactive.html', context=data)
     else:
         data = {**data, "headers": headers, "rows": rows}
@@ -65,7 +66,7 @@ def format_vega(col_names, rows, vega):
         vega = {**VEGA_DEFAULTS, "data": {"values": data}, **vega}
     except Exception as e:
         vega = {"error": str(e)}
-    return json.dumps(vega)
+    return json.dumps(vega, default=str)
 
 def _escape_tuple(t):
     """
