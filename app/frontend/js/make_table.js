@@ -1,5 +1,6 @@
 try {
     var data = JSON.parse(`{{ data_json }}`)
+    // TODO pass data for document to make it accessible by viz
     var table = document.getElementById("{{ id }}");
     var perPageSelect = (data.data.length <= 25) ? false :[10, 25, 50, 100];
     var data_table = new simpleDatatables.DataTable(table, {
@@ -27,6 +28,6 @@ try {
     });
     search_button.insertAdjacentElement('afterend', csv_button);
 } catch (error) {
-    console.error(`Failed to make table id={{ id }} interactive`);
+    console.error(`Failed to make interactive table id={{ id }}`);
     console.error(error);
 }

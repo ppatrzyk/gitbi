@@ -57,7 +57,6 @@ async def query_route(request):
     else:
         request.state.query_data = {
             "query": request.query_params.get('query') or "",
-            "vega": request.query_params.get('vega') or "",
             "file": "",
             "report_url": None,
             **request.path_params, # db
@@ -69,7 +68,7 @@ async def saved_query_route(request):
     Endpoint for saved query
     """
     try:
-        query_str, vega_str = repo.get_query(**request.path_params)
+        query_str, _viz = repo.get_query(**request.path_params)
         report_url = request.url_for("report_route", **request.path_params)
         email_alert_url = request.url_for("email_alert_route", **request.path_params)
         email_report_url = request.url_for("email_report_route", **request.path_params)
@@ -78,7 +77,7 @@ async def saved_query_route(request):
     else:
         request.state.query_data = {
             "query": query_str,
-            "vega": vega_str,
+            # TODO viz data
             "report_url": report_url,
             "email_alert_url": email_alert_url,
             "email_report_url": email_report_url,

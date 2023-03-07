@@ -1,6 +1,6 @@
 # gitbi
 
-_Gitbi_ is a lightweight business intelligence application that reads configuration from a git repository. This design enables you to write and commit SQL queries and visualizations ([vega-lite](https://github.com/vega/vega-lite) specs) directly to git repo and have _Gitbi_ display them. Of course, if you wish to edit them via web interface, that's also possible.
+_Gitbi_ is a lightweight business intelligence application that reads configuration from a git repository. This design enables you to write and commit SQL queries directly to git repo and have _Gitbi_ display them. Of course, if you wish to edit them via web interface, that's also possible.
 
 Test it now with sample db and config:
 
@@ -20,10 +20,7 @@ Repository needs to have the following structure:
 - directories in repo root refer to databases
 - files in each directory are queries/visualizations to be run against respective database
     - files ending with `.sql` are queries
-    - files `<query_file_name>.json` are read as [vega-lite](https://github.com/vega/vega-lite) specs[^1]
 - README.md file content will be displayed on _Gitbi_ main page
-
-[^1]: You should pass Vega-Lite [specification](https://vega.github.io/vega-lite/docs/spec.html) without `data` field. Data will be appended automatically by gitbi based on query result.
 
 ### Environment variables
 
@@ -145,4 +142,3 @@ Frontend:
 - [pico](https://github.com/picocss/pico)
 - [simple-datatables](https://github.com/fiduswriter/simple-datatables)
 - [ubuntu font](https://ubuntu.com/legal/font-licence)
-- [vega](https://github.com/vega)

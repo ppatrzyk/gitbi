@@ -38,7 +38,7 @@ def test_execute():
     assert client.post("/execute/sqlite/", data={}, auth=USER_HTTPX).status_code == 200
     assert client.post("/execute/sqlite/", data={"baddata": 666}, auth=USER_HTTPX).status_code == 200
     # htmx responses always return 200 even if there was an error
-    assert client.post("/execute/sqlite/", data={"data": json.dumps({"query": "select badfunc();", "vega": ""})}, auth=USER_HTTPX).status_code == 200
+    assert client.post("/execute/sqlite/", data={"data": json.dumps({"query": "select badfunc();"})}, auth=USER_HTTPX).status_code == 200
     assert client.post("/execute/sqlite/", data={"data": json.dumps({"query": "select 1;"})}, auth=USER_HTTPX).status_code == 200
     assert client.get("/report/sqlite/incorrectfile/HEAD", auth=USER_HTTPX).status_code == 404
     assert client.get("/report/sqlite/myquery.sql/HEAD", auth=USER_HTTPX).status_code == 200

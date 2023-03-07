@@ -49,12 +49,14 @@ def get_query(state, db, file):
     Gets query content from the repo
     """
     query_path = os.path.join(db, file)
+    # TODO rethink if this should work like vega (json) or sth else
     try:
-        vega_path = os.path.join(db, f"{file}.json")
-        vega = _get_file_content(state, vega_path)
+        viz_path = os.path.join(db, f"{file}.json")
+        viz_str = _get_file_content(state, viz_path)
     except:
-        vega = ""
-    return _get_file_content(state, query_path), vega
+        viz_str = ""
+    query_str = _get_file_content(state, query_path)
+    return query_str, viz_str
 
 def get_readme(state):
     """
@@ -109,7 +111,7 @@ def list_commits():
         commits.append(commit)
     return headers, commits
 
-def save(user, db, file, query, vega):
+def save(user, db, file, query, viz):
     """
     Save query into repo
     file refers to query file name
@@ -120,10 +122,11 @@ def save(user, db, file, query, vega):
     query_path = f"{db}/{file}"
     to_commit = [query_path, ]
     assert _write_file_content(query_path, query), "Writing file content failed"
-    if vega:
-        vega_path = f"{query_path}.json"
-        to_commit.append(vega_path)
-        assert _write_file_content(vega_path, vega), "Writing file content failed"
+    # TODO rethink how viz will be kept
+    if viz:
+        viz_path = f"{query_path}.json"
+        to_commit.append(viz_path)
+        assert _write_file_content(viz_path, viz), "Writing file content failed"
     _commit(user, "save", to_commit)
     return True
 
@@ -132,15 +135,15 @@ def delete(user, db, file):
     Delete query from the repo
     """
     query_path = f"{db}/{file}"
-    vega_path = f"{query_path}.json"
+    viz_path = f"{query_path}.json"
     to_commit = [query_path, ]
     assert _remove_file(query_path), f"Cannot remove {query_path}"
     try:
-        _remove_file(vega_path)
+        _remove_file(viz_path)
     except:
         pass
     else:
-        to_commit.append(vega_path)
+        to_commit.append(viz_path)
     #TODO: if fails error not caught, not recoverable in Gitbi, one needs to checkout manually
     _commit(user, "delete", to_commit)
     return True

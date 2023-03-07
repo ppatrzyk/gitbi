@@ -5,17 +5,12 @@
     Executed on {{ time|e }}
 </p>
 
-{% if vega_viz is not none %}
-<details open>
-    <summary>Visualization</summary>
-    <div id="vega-viz"></div>
-</details>
-<script type="text/javascript">
-{% include 'js/make_vega.js' %}
-</script>
-{% endif %}
-
 <details open>
     <summary>Table</summary>
     {{ table }}
+</details>
+
+<details open>
+    <summary>Visualization</summary>
+    <div>TODO viz here, include script if needed</div>
 </details>

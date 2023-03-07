@@ -22,11 +22,7 @@ async def execute_route(request):
             query=data.get("query")
         )
         table = utils.format_table("results-table", col_names, rows, True)
-        vega = data.get("vega")
-        if not vega:
-            vega_viz = None
-        else:
-            vega_viz = utils.format_vega(col_names, rows, vega)
+        # TODO get viz from data once available
         no_rows = len(rows)
     except Exception as e:
         status_code = 404 if isinstance(e, RuntimeError) else 500
@@ -35,7 +31,6 @@ async def execute_route(request):
         data = {
             **utils.common_context_args(request),
             "table": table,
-            "vega_viz": vega_viz,
             "time": _get_time(),
             "no_rows": no_rows,
             "duration": duration_ms,
@@ -96,7 +91,7 @@ async def _execute_from_saved_query(request):
     """
     try:
         query_url = request.url_for("saved_query_route", **request.path_params)
-        query_str, _vega_str = repo.get_query(**request.path_params)
+        query_str, _viz = repo.get_query(**request.path_params)
         col_names, rows, duration_ms = query.execute(
             db=request.path_params.get("db"),
             query=query_str

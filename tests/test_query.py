@@ -7,10 +7,6 @@ def test_execute():
         execute("baddb", "badquery")
     with pytest.raises(ValueError):
         execute("sqlite", "select badfunc();")
-    with pytest.raises(Exception):
-        execute("sqlite", "select badfunc();") # bad vega
-    with pytest.raises(Exception):
-        execute("sqlite", "select badfunc();") # bad vega
     with does_not_raise():
         execute("sqlite", "select 1;")
 
