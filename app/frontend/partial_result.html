@@ -4,13 +4,8 @@
     Returned {{ no_rows|e }} rows in {{ duration|e }}ms<br>
     Executed on {{ time|e }}
 </p>
-
 <details open>
     <summary>Table</summary>
+    {# table also contains js script that replaces current data in document #}
     {{ table }}
-</details>
-
-<details open>
-    <summary>Visualization</summary>
-    <div>TODO viz here, include script if needed</div>
 </details>

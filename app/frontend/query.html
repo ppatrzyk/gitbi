@@ -65,11 +65,20 @@
         Generate share link
     </div>
     <div id="save-error"></div>
-    <div id="query-result">
-        <p class="htmx-indicator" aria-busy="true">Running query...</p>
+    <div>
+        <div id="query-result">
+            <p class="htmx-indicator" aria-busy="true">Running query...</p>
+        </div>
+        <details open>
+            <summary>Visualization</summary>
+            <div>TODO viz here, include script if needed, data is exchanged by query result</div>
+        </details>
     </div>
     {% include 'partial_report_cron.html' %}
     <script type="module">
     {% include 'js/make_code_editor.js' %}
+    </script>
+    <script type="text/javascript">
+    {% include 'js/make_viz.js' %}
     </script>
 {% endblock %}
