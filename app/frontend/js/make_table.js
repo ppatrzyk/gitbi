@@ -1,9 +1,15 @@
 try {
-    document.data = JSON.parse(`{{ data_json }}`)
-    var table = document.getElementById("{{ id }}");
-    var perPageSelect = (document.data.data.length <= 25) ? false :[10, 25, 50, 100];
+    var table_id = `{{ id }}`;
+    var data = JSON.parse(`{{ data_json }}`)
+    // send new data to viz
+    const new_data = new CustomEvent("newdata", {detail: {data: data, id: table_id}});
+    var chart_el = document.getElementById('echart');
+    chart_el.dispatchEvent(new_data)
+    // generate table
+    var table = document.getElementById(table_id);
+    var perPageSelect = (data.data.length <= 25) ? false :[10, 25, 50, 100];
     var data_table = new simpleDatatables.DataTable(table, {
-        data: document.data,
+        data: data,
         perPage: 25,
         perPageSelect: perPageSelect,
         classes: {bottom: "grid", top: "grid", selector: "no-margin", input: "no-margin"},
@@ -27,6 +33,6 @@ try {
     });
     search_button.insertAdjacentElement('afterend', csv_button);
 } catch (error) {
-    console.error(`Failed to make interactive table id={{ id }}`);
+    console.error(`Failed to make interactive table id=${table_id}`);
     console.error(error);
 }
