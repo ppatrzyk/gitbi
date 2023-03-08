@@ -1,6 +1,7 @@
 {% extends "base.html" %}
 {% block extendhead %}
     <link href="{{ request.app.url_path_for('static', path='/css/github.min.css') }}" rel="stylesheet">
+    <script src="{{ request.app.url_path_for('static', path='/js/echarts.min.js') }}"></script>
 {% endblock %}
 {% block title %}Query{% endblock %}
 {% block content %}
@@ -71,7 +72,7 @@
         </div>
         <details open>
             <summary>Visualization</summary>
-            <div>TODO viz here, include script if needed, data is exchanged by query result</div>
+            <div id="echart"></div>
         </details>
     </div>
     {% include 'partial_report_cron.html' %}

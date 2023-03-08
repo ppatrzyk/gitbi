@@ -1,10 +1,9 @@
 try {
-    var data = JSON.parse(`{{ data_json }}`)
-    // TODO pass data for document to make it accessible by viz
+    document.data = JSON.parse(`{{ data_json }}`)
     var table = document.getElementById("{{ id }}");
-    var perPageSelect = (data.data.length <= 25) ? false :[10, 25, 50, 100];
+    var perPageSelect = (document.data.data.length <= 25) ? false :[10, 25, 50, 100];
     var data_table = new simpleDatatables.DataTable(table, {
-        data: data,
+        data: document.data,
         perPage: 25,
         perPageSelect: perPageSelect,
         classes: {bottom: "grid", top: "grid", selector: "no-margin", input: "no-margin"},

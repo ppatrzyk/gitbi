@@ -19,7 +19,8 @@ _Gitbi_ requires the following to run:
 Repository needs to have the following structure:
 - directories in repo root refer to databases
 - files in each directory are queries/visualizations to be run against respective database
-    - files ending with `.sql` are queries
+    - files with `.sql` extension are queries
+    - files with `.json` extension are saved visualizations
 - README.md file content will be displayed on _Gitbi_ main page
 
 ### Environment variables
@@ -136,6 +137,7 @@ Backend:
 
 Frontend:
 - [codejar](https://github.com/antonmedv/codejar)
+- [ECharts](https://github.com/apache/echarts)
 - [Font Awesome](https://iconscout.com/contributors/font-awesome)
 - [highlight](https://github.com/highlightjs/highlight.js)
 - [htmx](https://github.com/bigskysoftware/htmx)
