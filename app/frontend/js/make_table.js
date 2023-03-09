@@ -4,9 +4,8 @@ try {
     // send new data to viz
     // applicable only to table created from user running query
     if (table_id == 'results-table') {
-        const new_data = new CustomEvent("newdata", {detail: {data: data, id: table_id}});
+        var new_data = new CustomEvent("newdata", {detail: {data: data, id: table_id}});
         document.getElementById('echart').dispatchEvent(new_data);
-        document.getElementById('echart-options').dispatchEvent(new_data);
     }
     // generate table
     var table = document.getElementById(table_id);

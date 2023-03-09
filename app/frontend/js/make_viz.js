@@ -1,3 +1,9 @@
+var current_data = null;
+
+function array_ident(arr1, arr2) {
+    // https://stackoverflow.com/a/19746771
+    return (arr1.length === arr2.length && arr1.every((value, index) => value === arr2[index]))
+}
 function get_chart_options() {
     var chart_options = {
         type: document.getElementById('echart-options-type').value,
@@ -6,31 +12,36 @@ function get_chart_options() {
     }
     return chart_options
 }
-function update_chart_options(data) {
+function update_chart_options() {
     console.log('update_chart_options called');
-    // TODO don't update if headings indentical
     var select_ids = ['echart-options-xaxis', 'echart-options-yaxis'];
-    select_ids.forEach(id => {
-        var columns = data.headings.map((name) => {
-            var entry = document.createElement("option");
-            entry.setAttribute('value', name);
-            entry.innerText = name;
-            return entry
-        })
-        document.getElementById(id).replaceChildren(...columns);
-    });
+    document.getElementById(select_ids[0]).childNodes
+    var headings = Array.from(document.getElementById(select_ids[0]).getElementsByTagName('option')).map((node) => node.value)
+    if (!array_ident(headings, current_data.headings)) {
+        console.log('different headers, replacing')
+        select_ids.forEach(id => {
+            var columns = current_data.headings.map((name) => {
+                var entry = document.createElement("option");
+                entry.setAttribute('value', name);
+                entry.innerText = name;
+                return entry
+            })
+            document.getElementById(id).replaceChildren(...columns);
+        });
+    }
 }
-function make_viz(data) {
+function make_viz() {
     try {
         var chart_el = document.getElementById('echart');
         chart_el.style.width = `${chart_el.offsetWidth}px`;
         chart_el.style.height = `${Math.floor(chart_el.offsetWidth * 0.5)}px`;
         console.log('make_viz called');
-        console.log(data);
+        console.log(current_data);
         var chart_options = get_chart_options();
         console.log('chart_options')
         console.log(chart_options)
         // TODO read form on viz type, create chart options from it
+        // TODO maybe go back to reading default (saved) viz here - will be used on empty chart options
         var chart_options = {
             xAxis: {
                 type: 'category',
@@ -53,7 +64,8 @@ function make_viz(data) {
         console.error(error);
     }
 }
-document.getElementById('echart').addEventListener("newdata", (e) => make_viz(e.detail.data));
-document.getElementById('echart-options').addEventListener("newdata", (e) => update_chart_options(e.detail.data));
-// TODO onlick for this button does not work document.data undefined? other approach?
-// document.getElementById('echart-render').addEventListener('onclick', make_viz(document.data));
+document.getElementById('echart').addEventListener("newdata", (e) => {
+    current_data = e.detail.data;
+    update_chart_options();
+    make_viz();
+});
