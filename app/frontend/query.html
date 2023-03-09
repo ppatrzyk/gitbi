@@ -72,7 +72,34 @@
         </div>
         <details open>
             <summary>Visualization</summary>
+            <div id="echart-options" class="grid">
+                <label for="echart-options-type">
+                    Chart type
+                    <select id="echart-options-type">
+                        <option value="line" selected>Line</option>
+                        <option value="bar">Bar</option>
+                        <option value="scatter">Scatter</option>
+                    </select>
+                </label>
+                <label for="echart-options-xaxis">
+                    X axis
+                    <select id="echart-options-xaxis">
+                        <option value="som col" selected>som col</option>
+                        <option value="som col">other col</option>
+                    </select>
+                </label>
+                <label for="echart-options-yaxis">
+                    Y axis
+                    <select id="echart-options-yaxis">
+                        <option value="som col" selected>som col</option>
+                        <option value="som col">other col</option>
+                    </select>
+                </label>
+                <button id="echart-render" onclick="make_viz(document.data)">Render chart</button>
+            </div>
             <div id="echart"></div>
+            <p>TODO set defaults from saved viz (if exists)</p>
+            <code><pre>{{ viz }}</pre></code>
         </details>
     </div>
     {% include 'partial_report_cron.html' %}
