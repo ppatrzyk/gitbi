@@ -22,7 +22,6 @@ async def execute_route(request):
             query=data.get("query")
         )
         table = utils.format_table("results-table", col_names, rows, True)
-        # TODO get viz from data once available
         no_rows = len(rows)
     except Exception as e:
         status_code = 404 if isinstance(e, RuntimeError) else 500

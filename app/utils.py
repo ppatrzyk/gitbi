@@ -22,8 +22,7 @@ def parse_query_data(request, form):
     """
     data = json.loads(form["data"])
     data["file"] = data["file"].strip()
-    # TODO some viz config here
-    for key in ("query", ):
+    for key in ("query", "viz", ):
         assert key in data.keys(), f"No {key} in POST data"
         assert data[key] != "", f"Empty {key} string"
     data["user"] = common_context_args(request).get("user")

@@ -72,22 +72,23 @@
         </div>
         <details open>
             <summary>Visualization</summary>
-            <div id="echart-options" class="grid">
-                <label for="echart-options-type">
-                    Chart type
-                    <select id="echart-options-type">
-                        <option value="line" selected>Line</option>
-                        <option value="bar">Bar</option>
-                        <option value="scatter">Scatter</option>
-                    </select>
-                </label>
-                <label for="echart-options-xaxis">X axis<select id="echart-options-xaxis"></select></label>
-                <label for="echart-options-yaxis">Y axis<select id="echart-options-yaxis"></select></label>
-                <button id="echart-render" onclick="make_viz()">Render chart</button>
+            <div id="echart-note">No data available</div>
+            <div id="echart-chart" class="hidden">
+                <div id="echart-options" class="grid">
+                    <label for="echart-options-type">
+                        Chart type
+                        <select id="echart-options-type">
+                            <option value="line" selected>Line</option>
+                            <option value="bar">Bar</option>
+                            <option value="scatter">Scatter</option>
+                        </select>
+                    </label>
+                    <label for="echart-options-xaxis">X axis<select id="echart-options-xaxis"></select></label>
+                    <label for="echart-options-yaxis">Y axis<select id="echart-options-yaxis"></select></label>
+                    <button id="echart-render" onclick="make_viz()">Render chart</button>
+                </div>
+                <div id="echart"></div>
             </div>
-            <div id="echart"></div>
-            <p>TODO set defaults from saved viz (if exists)</p>
-            <code><pre>{{ viz }}</pre></code>
         </details>
     </div>
     {% include 'partial_report_cron.html' %}

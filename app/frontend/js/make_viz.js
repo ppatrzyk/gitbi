@@ -1,4 +1,11 @@
 var current_data = null;
+var initial_viz = true;
+var saved_viz;
+try {
+    saved_viz = JSON.parse(`{{ viz }}`);
+} catch (_e) {
+    saved_viz = null;
+}
 
 function array_ident(arr1, arr2) {
     // https://stackoverflow.com/a/19746771
@@ -12,10 +19,10 @@ function get_chart_options() {
     }
     return chart_options
 }
+window.get_chart_options = get_chart_options;
 function update_chart_options() {
     console.log('update_chart_options called');
     var select_ids = ['echart-options-xaxis', 'echart-options-yaxis'];
-    document.getElementById(select_ids[0]).childNodes
     var headings = Array.from(document.getElementById(select_ids[0]).getElementsByTagName('option')).map((node) => node.value)
     if (!array_ident(headings, current_data.headings)) {
         console.log('different headers, replacing')
@@ -29,41 +36,57 @@ function update_chart_options() {
             document.getElementById(id).replaceChildren(...columns);
         });
     }
+    if (initial_viz) {
+        initial_viz = false;
+        console.log("initial render")
+        console.log(saved_viz)
+        if (saved_viz !== null) {
+            document.getElementById('echart-options-type').value = saved_viz.type;
+            document.getElementById('echart-options-xaxis').value = saved_viz.xaxis;
+            document.getElementById('echart-options-yaxis').value = saved_viz.yaxis;
+        }
+    }
 }
 function make_viz() {
     try {
+        console.log('make_viz called');
+        console.log(current_data);
+        if (current_data === null || current_data.data.length === 0) {
+            document.getElementById('echart-note').classList.remove("hidden");
+            document.getElementById('echart-chart').classList.add("hidden");
+            throw new Error('no data available');
+        } else {
+            document.getElementById('echart-note').classList.add("hidden");
+            document.getElementById('echart-chart').classList.remove("hidden");
+        }
         var chart_el = document.getElementById('echart');
         chart_el.style.width = `${chart_el.offsetWidth}px`;
         chart_el.style.height = `${Math.floor(chart_el.offsetWidth * 0.5)}px`;
-        console.log('make_viz called');
-        console.log(current_data);
         var chart_options = get_chart_options();
         console.log('chart_options')
         console.log(chart_options)
-        // TODO read form on viz type, create chart options from it
-        // TODO maybe go back to reading default (saved) viz here - will be used on empty chart options
-        var chart_options = {
-            xAxis: {
-                type: 'category',
-                data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
-            },
-            yAxis: {
-                type: 'value'
-            },
+        // TODO add groupby column
+        var x_index = current_data.headings.indexOf(chart_options.xaxis);
+        var y_index = current_data.headings.indexOf(chart_options.yaxis);
+        var data = current_data.data.map((r) => [r[x_index], r[y_index]]);
+        console.log('data fromatted')
+        console.log(data)
+        // TODO handle time
+        var echarts_conf = {
+            xAxis: {type: (typeof(data[0][0]) === 'string' ? "category" : "value")},
+            yAxis: {type: (typeof(data[0][1]) === 'string' ? "category" : "value")},
             series: [
-                {
-                data: [150, 230, 224, 218, 135, 147, 260],
-                type: 'line'
-                }
+                {data: data, type: chart_options.type}
             ]
         };
         var chart = echarts.init(chart_el);
-        chart.setOption(chart_options);
+        chart.setOption(echarts_conf);
     } catch (error) {
         console.error(`Failed to draw chart`);
         console.error(error);
     }
 }
+window.make_viz = make_viz;
 document.getElementById('echart').addEventListener("newdata", (e) => {
     current_data = e.detail.data;
     update_chart_options();

@@ -49,7 +49,6 @@ def get_query(state, db, file):
     Gets query content from the repo
     """
     query_path = os.path.join(db, file)
-    # TODO rethink if this should work like vega (json) or sth else
     try:
         viz_path = os.path.join(db, f"{file}.json")
         viz_str = _get_file_content(state, viz_path)
@@ -120,13 +119,10 @@ def save(user, db, file, query, viz):
     assert file == path_obj.name, "Path passed"
     assert (path_obj.suffix in VALID_QUERY_EXTENSIONS), "Invalid query extension"
     query_path = f"{db}/{file}"
-    to_commit = [query_path, ]
-    assert _write_file_content(query_path, query), "Writing file content failed"
-    # TODO rethink how viz will be kept
-    if viz:
-        viz_path = f"{query_path}.json"
-        to_commit.append(viz_path)
-        assert _write_file_content(viz_path, viz), "Writing file content failed"
+    viz_path = f"{query_path}.json"
+    to_commit = [query_path, viz_path, ]
+    assert _write_file_content(query_path, query), "Writing query content failed"
+    assert _write_file_content(viz_path, viz), "Writing viz content failed"
     _commit(user, "save", to_commit)
     return True
 
