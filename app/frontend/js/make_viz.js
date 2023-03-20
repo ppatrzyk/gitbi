@@ -16,18 +16,20 @@ function get_chart_options() {
         type: document.getElementById('echart-options-type').value,
         xaxis: document.getElementById('echart-options-xaxis').value,
         yaxis: document.getElementById('echart-options-yaxis').value,
+        group: document.getElementById('echart-options-group').value,
     }
     return chart_options
 }
 window.get_chart_options = get_chart_options;
 function update_chart_options() {
     console.log('update_chart_options called');
-    var select_ids = ['echart-options-xaxis', 'echart-options-yaxis'];
+    var select_ids = ['echart-options-xaxis', 'echart-options-yaxis', 'echart-options-group', ];
     var headings = Array.from(document.getElementById(select_ids[0]).getElementsByTagName('option')).map((node) => node.value)
-    if (!array_ident(headings, current_data.headings)) {
+    var new_headings = ['_NONE', ].concat(current_data.headings);
+    if (!array_ident(headings, new_headings)) {
         console.log('different headers, replacing')
         select_ids.forEach(id => {
-            var columns = current_data.headings.map((name) => {
+            var columns = new_headings.map((name) => {
                 var entry = document.createElement("option");
                 entry.setAttribute('value', name);
                 entry.innerText = name;
@@ -35,15 +37,21 @@ function update_chart_options() {
             })
             document.getElementById(id).replaceChildren(...columns);
         });
-    }
-    if (initial_viz) {
-        initial_viz = false;
-        console.log("initial render")
-        console.log(saved_viz)
-        if (saved_viz !== null) {
-            document.getElementById('echart-options-type').value = saved_viz.type;
-            document.getElementById('echart-options-xaxis').value = saved_viz.xaxis;
-            document.getElementById('echart-options-yaxis').value = saved_viz.yaxis;
+        if (initial_viz) {
+            initial_viz = false;
+            console.log("initial render")
+            console.log(saved_viz)
+            if (saved_viz !== null) {
+                document.getElementById('echart-options-type').value = saved_viz.type;
+                document.getElementById('echart-options-xaxis').value = saved_viz.xaxis;
+                document.getElementById('echart-options-yaxis').value = saved_viz.yaxis;
+                document.getElementById('echart-options-group').value = saved_viz.group;
+            }
+        } else {
+            select_ids.forEach(id => {
+                document.getElementById(id).value = "_NONE";
+            })
+            document.getElementById('echart-options-type').value = "line"
         }
     }
 }
@@ -60,24 +68,45 @@ function make_viz() {
             document.getElementById('echart-chart').classList.remove("hidden");
         }
         var chart_el = document.getElementById('echart');
+        // chart_el.replaceChildren();
         chart_el.style.width = `${chart_el.offsetWidth}px`;
         chart_el.style.height = `${Math.floor(chart_el.offsetWidth * 0.5)}px`;
         var chart_options = get_chart_options();
         console.log('chart_options')
         console.log(chart_options)
-        // TODO add groupby column
         var x_index = current_data.headings.indexOf(chart_options.xaxis);
         var y_index = current_data.headings.indexOf(chart_options.yaxis);
-        var data = current_data.data.map((r) => [r[x_index], r[y_index]]);
+        if (chart_options.group === '_NONE') {
+            var data = current_data.data.map(r => [r[x_index], r[y_index]]);
+            var series = [{data: data, type: chart_options.type, name: `${chart_options.xaxis} x ${chart_options.yaxis}`}];
+        } else {
+            var group_index = current_data.headings.indexOf(chart_options.group);
+            var series = {};
+            current_data.data.forEach(r => {
+                if (series[r[group_index]] === undefined) {
+                    series[r[group_index]] = {data: [[r[x_index], r[y_index]], ], type: chart_options.type, name: chart_options.group};
+                } else {
+                    series[r[group_index]].data.push([r[x_index], r[y_index]]);
+                }
+            });
+            series = Object.keys(series).map(k => {
+                var entry = series[k];
+                entry['name'] = k;
+                return entry;
+            })
+        }
+        var x_type = (typeof(series[0].data[0][0]) === 'string' ? "category" : "value");
+        var y_type = (typeof(series[0].data[0][1]) === 'string' ? "category" : "value");
         console.log('data fromatted')
-        console.log(data)
+        console.log(series)
         // TODO handle time
         var echarts_conf = {
-            xAxis: {type: (typeof(data[0][0]) === 'string' ? "category" : "value")},
-            yAxis: {type: (typeof(data[0][1]) === 'string' ? "category" : "value")},
-            series: [
-                {data: data, type: chart_options.type}
-            ]
+            legend: {show: true, },
+            toolbox: {show: true, },
+            tooltip: {show: true, triggerOn: "mousemove", },
+            xAxis: {type: x_type},
+            yAxis: {type: y_type},
+            series: series,
         };
         var chart = echarts.init(chart_el);
         chart.setOption(echarts_conf);
