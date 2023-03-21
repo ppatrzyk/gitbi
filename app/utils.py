@@ -1,6 +1,8 @@
 """
 common functions for all routes
 """
+import datetime
+import decimal
 import html
 import json
 import os
@@ -32,8 +34,8 @@ def format_table(id, headers, rows, interactive):
     """
     Format data into a html table
     """
-    headers = _escape_tuple(headers)
-    rows = tuple(_escape_tuple(row) for row in rows)
+    headers = _process_row(headers)
+    rows = tuple(_process_row(row) for row in rows)
     data = {"request": None, "id": id}
     if interactive:
         data_json = json.dumps({"headings": headers, "data": rows}, default=str)
@@ -44,11 +46,24 @@ def format_table(id, headers, rows, interactive):
         response = TEMPLATES.TemplateResponse(name='partial_html_table.html', context=data)
     return response.body.decode()
 
-def _escape_tuple(t):
+def _data_convert(el):
     """
-    Helper for escaping tuple of elements
+    Convert complex types such that it can be passed to json.dumps
     """
-    return tuple(html.escape(el) if isinstance(el, str) else el for el in t)
+    match type(el):
+        case decimal.Decimal:
+            return float(el)
+        case datetime.datetime:
+            return datetime.datetime.isoformat(el)
+        case _:
+            return el
+
+def _process_row(t):
+    """
+    Helper for escaping tu_process_rowple of elements
+    """
+    converted = (_data_convert(el) for el in t)
+    return tuple(html.escape(el) if isinstance(el, str) else el for el in converted)
 
 def partial_html_error(message, code):
     """

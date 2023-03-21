@@ -22,12 +22,10 @@ function get_chart_options() {
 }
 window.get_chart_options = get_chart_options;
 function update_chart_options() {
-    console.log('update_chart_options called');
     var select_ids = ['echart-options-xaxis', 'echart-options-yaxis', 'echart-options-group', ];
     var headings = Array.from(document.getElementById(select_ids[0]).getElementsByTagName('option')).map((node) => node.value)
     var new_headings = ['_NONE', ].concat(current_data.headings);
     if (!array_ident(headings, new_headings)) {
-        console.log('different headers, replacing')
         select_ids.forEach(id => {
             var columns = new_headings.map((name) => {
                 var entry = document.createElement("option");
@@ -39,8 +37,6 @@ function update_chart_options() {
         });
         if (initial_viz) {
             initial_viz = false;
-            console.log("initial render")
-            console.log(saved_viz)
             if (saved_viz !== null) {
                 document.getElementById('echart-options-type').value = saved_viz.type;
                 document.getElementById('echart-options-xaxis').value = saved_viz.xaxis;
@@ -57,8 +53,6 @@ function update_chart_options() {
 }
 function make_viz() {
     try {
-        console.log('make_viz called');
-        console.log(current_data);
         if (current_data === null || current_data.data.length === 0) {
             document.getElementById('echart-note').classList.remove("hidden");
             document.getElementById('echart-chart').classList.add("hidden");
@@ -68,17 +62,17 @@ function make_viz() {
             document.getElementById('echart-chart').classList.remove("hidden");
         }
         var chart_el = document.getElementById('echart');
-        // chart_el.replaceChildren();
+        chart_el.replaceChildren();
+        chart_el.removeAttribute('_echarts_instance_')
         chart_el.style.width = `${chart_el.offsetWidth}px`;
         chart_el.style.height = `${Math.floor(chart_el.offsetWidth * 0.5)}px`;
         var chart_options = get_chart_options();
-        console.log('chart_options')
-        console.log(chart_options)
         var x_index = current_data.headings.indexOf(chart_options.xaxis);
         var y_index = current_data.headings.indexOf(chart_options.yaxis);
+        var title = `${chart_options.xaxis} x ${chart_options.yaxis}`;
         if (chart_options.group === '_NONE') {
             var data = current_data.data.map(r => [r[x_index], r[y_index]]);
-            var series = [{data: data, type: chart_options.type, name: `${chart_options.xaxis} x ${chart_options.yaxis}`}];
+            var series = [{data: data, type: chart_options.type, name: title}];
         } else {
             var group_index = current_data.headings.indexOf(chart_options.group);
             var series = {};
@@ -97,15 +91,14 @@ function make_viz() {
         }
         var x_type = (typeof(series[0].data[0][0]) === 'string' ? "category" : "value");
         var y_type = (typeof(series[0].data[0][1]) === 'string' ? "category" : "value");
-        console.log('data fromatted')
-        console.log(series)
-        // TODO handle time
         var echarts_conf = {
             legend: {show: true, },
-            toolbox: {show: true, },
+            toolbox: {show: true, feature: {saveAsImage: {show: true}}},
             tooltip: {show: true, triggerOn: "mousemove", },
-            xAxis: {type: x_type},
-            yAxis: {type: y_type},
+            title: {show: true, text: title},
+            textStyle: {fontFamily: 'Ubuntu'},
+            xAxis: {type: x_type, name: chart_options.xaxis, nameLocation: 'middle'},
+            yAxis: {type: y_type, name: chart_options.yaxis, nameLocation: 'middle'},
             series: series,
         };
         var chart = echarts.init(chart_el);
