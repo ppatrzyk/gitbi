@@ -6,6 +6,11 @@ try {
 } catch (_e) {
     saved_viz = null;
 }
+const axis_opts = {
+    nameLocation: 'middle',
+    min: function (value) {return value.min - ((value.max-value.min)*0.1);},
+    max: function (value) {return value.max + ((value.max-value.min)*0.1);},
+}
 
 function array_ident(arr1, arr2) {
     // https://stackoverflow.com/a/19746771
@@ -47,7 +52,7 @@ function update_chart_options() {
             select_ids.forEach(id => {
                 document.getElementById(id).value = "_NONE";
             })
-            document.getElementById('echart-options-type').value = "line"
+            document.getElementById('echart-options-type').value = "scatter"
         }
     }
 }
@@ -83,11 +88,7 @@ function make_viz() {
                     series[r[group_index]].data.push([r[x_index], r[y_index]]);
                 }
             });
-            series = Object.keys(series).map(k => {
-                var entry = series[k];
-                entry['name'] = k;
-                return entry;
-            })
+            series = Object.keys(series).map(k => {return Object.assign({}, series[k], {name: k})})
         }
         var x_type = (typeof(series[0].data[0][0]) === 'string' ? "category" : "value");
         var y_type = (typeof(series[0].data[0][1]) === 'string' ? "category" : "value");
@@ -97,8 +98,8 @@ function make_viz() {
             tooltip: {show: true, triggerOn: "mousemove", },
             title: {show: true, text: title},
             textStyle: {fontFamily: 'Ubuntu'},
-            xAxis: {type: x_type, name: chart_options.xaxis, nameLocation: 'middle'},
-            yAxis: {type: y_type, name: chart_options.yaxis, nameLocation: 'middle'},
+            xAxis: Object.assign({}, {type: x_type, name: chart_options.xaxis}, axis_opts),
+            yAxis: Object.assign({}, {type: y_type, name: chart_options.yaxis}, axis_opts),
             series: series,
         };
         var chart = echarts.init(chart_el);

@@ -78,15 +78,15 @@
                     <label for="echart-options-type">
                         Chart type
                         <select id="echart-options-type">
+                            <option value="scatter">Scatter</option>
                             <option value="line" selected>Line</option>
                             <option value="bar">Bar</option>
-                            <option value="scatter">Scatter</option>
                         </select>
                     </label>
                     <label for="echart-options-xaxis">X axis<select id="echart-options-xaxis"></select></label>
                     <label for="echart-options-yaxis">Y axis<select id="echart-options-yaxis"></select></label>
                     <label for="echart-options-group">Group<select id="echart-options-group"></select></label>
-                    <button id="echart-render" onclick="make_viz()">Render chart</button>
+                    <button id="echart-render" class="secondary" onclick="make_viz()">Render chart</button>
                 </div>
                 <div id="echart"></div>
             </div>
