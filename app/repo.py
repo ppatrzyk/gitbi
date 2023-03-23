@@ -57,6 +57,13 @@ def get_query(state, db, file):
     query_str = _get_file_content(state, query_path)
     return query_str, viz_str
 
+def get_dashboard(state, file):
+    """
+    Get dashboard content from repo
+    """
+    # TODO
+    return f"todo dashboard config {file}"
+
 def get_readme(state):
     """
     Gets readme content from the repo
@@ -84,15 +91,22 @@ def list_sources(state):
                 for path in (Path(el) for el in _get_tree_objects_generator(commit.tree)):
                     if len(path.parts) == 2:
                         db = str(path.parent)
-                        file = str(path.name)
+                        query = str(path.name)
                         try:
-                            sources[db].add(file)
+                            sources[db].add(query)
                         except:
-                            sources[db] = set((file, ))
+                            sources[db] = set((query, ))
     except Exception as e:
         raise RuntimeError(f"Sources at state {state} cannot be listed: {str(e)}")
     else:
         return OrderedDict((db, _filter_queries(queries)) for db, queries in sorted(sources.items()))
+
+def list_dashboards(state):
+    """
+    List dasboards in repo
+    """
+    # TODO
+    return ["d1", "d2", ]
 
 def list_commits():
     """

@@ -1,6 +1,6 @@
 {# partial html - this is used by htmx passing tables list #}
 <details class="nested-details" id="db-details-{{ db }}">
-    <summary role="button">Show tables in {{ db|e }}</summary>
+    <summary role="button">Tables in {{ db|e }}</summary>
     {% if tables_toc %}
     <h4>TOC</h4>
     <ol>
@@ -17,7 +17,7 @@
     </h4>
     <a class="nested-details" role="button" href="{{ request.app.url_path_for('query_route', db=db) }}?query=select * from {{ table }} limit 10;">New query</a>
     <details class="nested-details">
-        <summary role="button" class="secondary">Show columns in {{ table|e }}</summary>
+        <summary role="button" class="secondary">Columns in {{ table|e }}</summary>
         {{ data_types[table] }}
     </details>
     {% endfor %}

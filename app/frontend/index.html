@@ -7,8 +7,13 @@
     <h1>Gitbi Home</h1>
     <p>[Readme file is missing]</p>
     {% endif %}
+    <h2>Dashboards</h2>
+    {% for dashboard in dashboards %}
+    <a role="button" class="secondary nested-details" href="{{ request.app.url_path_for('dashboard_route', state=state, file=dashboard) }}">{{ dashboard|e }}</a>
+    {% endfor %}
+    <p>todo form for creating dashboards here</p>
     <h2>Data Sources</h2>
-    {% for db, files in databases.items() %}
+    {% for db, queries in databases.items() %}
     <a
         class="hidden"
         hx-get="{{ request.app.url_path_for('db_details_route', db=db) }}"
@@ -23,14 +28,11 @@
             <img class="icon" src="data:image/svg+xml;utf8;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxNzkyIiBoZWlnaHQ9IjE3OTIiPjxwYXRoIGQ9Ik04OTYgNzY4cTIzNyAwIDQ0My00M3QzMjUtMTI3djE3MHEwIDY5LTEwMyAxMjh0LTI4MCA5My41LTM4NSAzNC41LTM4NS0zNC41VDIzMSA4OTYgMTI4IDc2OFY1OThxMTE5IDg0IDMyNSAxMjd0NDQzIDQzem0wIDc2OHEyMzcgMCA0NDMtNDN0MzI1LTEyN3YxNzBxMCA2OS0xMDMgMTI4dC0yODAgOTMuNS0zODUgMzQuNS0zODUtMzQuNS0yODAtOTMuNS0xMDMtMTI4di0xNzBxMTE5IDg0IDMyNSAxMjd0NDQzIDQzem0wLTM4NHEyMzcgMCA0NDMtNDN0MzI1LTEyN3YxNzBxMCA2OS0xMDMgMTI4dC0yODAgOTMuNS0zODUgMzQuNS0zODUtMzQuNS0yODAtOTMuNS0xMDMtMTI4Vjk4MnExMTkgODQgMzI1IDEyN3Q0NDMgNDN6TTg5NiAwcTIwOCAwIDM4NSAzNC41dDI4MCA5My41IDEwMyAxMjh2MTI4cTAgNjktMTAzIDEyOHQtMjgwIDkzLjVUODk2IDY0MHQtMzg1LTM0LjVUMjMxIDUxMiAxMjggMzg0VjI1NnEwLTY5IDEwMy0xMjh0MjgwLTkzLjVUODk2IDB6Ii8+PC9zdmc+" alt="">
             {{ db|e }}
         </h3></header>
-        <a class="nested-details" role="button" href="{{ request.app.url_path_for('query_route', db=db) }}">New query</a>
         <details class="nested-details">
-            <summary role="button">Show queries in {{ db|e }}</summary>
-            {% for file in files %}
-            <h4 class="no-margin">
-                <img class="icon" src="data:image/svg+xml;utf8;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxNzkyIiBoZWlnaHQ9IjE3OTIiPjxwYXRoIGQ9Ik0xNTk2IDM4MHEyOCAyOCA0OCA3NnQyMCA4OHYxMTUycTAgNDAtMjggNjh0LTY4IDI4SDIyNHEtNDAgMC02OC0yOHQtMjgtNjhWOTZxMC00MCAyOC02OHQ2OC0yOGg4OTZxNDAgMCA4OCAyMHQ3NiA0OHptLTQ0NC0yNDR2Mzc2aDM3NnEtMTAtMjktMjItNDFsLTMxMy0zMTNxLTEyLTEyLTQxLTIyem0zODQgMTUyOFY2NDBoLTQxNnEtNDAgMC02OC0yOHQtMjgtNjhWMTI4SDI1NnYxNTM2aDEyODB6TTYwOCA3NjhxOC0xMSAyMS0xMi41dDI0IDYuNWw1MSAzOHExMSA4IDEyLjUgMjF0LTYuNSAyNGwtMTgyIDI0MyAxODIgMjQzcTggMTEgNi41IDI0dC0xMi41IDIxbC01MSAzOHEtMTEgOC0yNCA2LjV0LTIxLTEyLjVsLTIyNi0zMDFxLTE0LTE5IDAtMzh6bTgwMiAzMDFxMTQgMTkgMCAzOGwtMjI2IDMwMXEtOCAxMS0yMSAxMi41dC0yNC02LjVsLTUxLTM4cS0xMS04LTEyLjUtMjF0Ni41LTI0bDE4Mi0yNDMtMTgyLTI0M3EtOC0xMS02LjUtMjR0MTIuNS0yMWw1MS0zOHExMS04IDI0LTYuNXQyMSAxMi41em0tNjIwIDQ2MXEtMTMtMi0yMC41LTEzdC01LjUtMjRsMTM4LTgzMXEyLTEzIDEzLTIwLjV0MjQtNS41bDYzIDEwcTEzIDIgMjAuNSAxM3Q1LjUgMjRsLTEzOCA4MzFxLTIgMTMtMTMgMjAuNXQtMjQgNS41eiIvPjwvc3ZnPg==" alt="">
-                <a href="{{ request.app.url_path_for('saved_query_route', state=state, db=db, file=file) }}">{{ file|e }}</a>
-            </h4>
+            <summary role="button">Queries in {{ db|e }}</summary>
+            <a class="nested-details" role="button" href="{{ request.app.url_path_for('query_route', db=db) }}">New query</a>
+            {% for query in queries %}
+            <a role="button" class="secondary nested-details" href="{{ request.app.url_path_for('saved_query_route', state=state, db=db, file=query) }}">{{ query|e }}</a>
             {% endfor %}
         </details>
         <div id="db-details-{{ db }}"></div>

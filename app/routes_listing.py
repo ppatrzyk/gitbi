@@ -18,6 +18,7 @@ async def home_route(request):
             "state": state,
             "readme": repo.get_readme(state),
             "databases": repo.list_sources(state),
+            "dashboards": repo.list_dashboards(state),
         }
     except Exception as e:
         raise HTTPException(status_code=404, detail=str(e))
