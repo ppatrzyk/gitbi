@@ -8,10 +8,38 @@
     <p>[Readme file is missing]</p>
     {% endif %}
     <h2>Dashboards</h2>
+    <details class="nested-details">
+        <summary role="button">New dashboard</summary>
+        <fieldset id="dashboard-choices">
+            {% for db, queries in databases.items() %}
+                {% for query in queries %}
+                <label for="{{ db|e }}-{{ query|e }}">
+                    <input type="checkbox" id="{{ db|e }}/{{ query|e }}" name="{{ db|e }}/{{ query|e }}">
+                    <span><strong>{{ db|e }}</strong>: {{ query|e }}</span>
+                </label>
+                {% endfor %}
+            {% endfor %}
+        </fieldset>
+        <div>
+            <label for="dashboard-file-name">Dashboard file name</label>
+            <input type="text" id="dashboard-file-name" name="dashboard-file-name" placeholder="Enter file name">
+        </div>
+        <div
+            role="button"
+            class="secondary"
+            hx-post="{{ request.app.url_path_for('dashboard_save_route') }}"
+            hx-vals="js:{data: dashboard_format()}"
+            hx-trigger="click"
+            hx-target="#save-error"
+            hx-swap="innerHTML"
+        >
+            Save dashboard
+        </div>
+        <div id="save-error"></div>
+    </details>
     {% for dashboard in dashboards %}
     <a role="button" class="secondary nested-details" href="{{ request.app.url_path_for('dashboard_route', state=state, file=dashboard) }}">{{ dashboard|e }}</a>
     {% endfor %}
-    <p>todo form for creating dashboards here</p>
     <h2>Data Sources</h2>
     {% for db, queries in databases.items() %}
     <a
@@ -38,4 +66,7 @@
         <div id="db-details-{{ db }}"></div>
       </article>
     {% endfor %}
+    <script type="text/javascript">
+        {% include 'js/make_dashboard_form.js' %}
+    </script>
 {% endblock %}

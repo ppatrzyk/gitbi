@@ -38,7 +38,7 @@
     <div
         role="button"
         class="secondary"
-        hx-post="{{ request.app.url_path_for('save_route', db=db) }}"
+        hx-post="{{ request.app.url_path_for('query_save_route', db=db) }}"
         hx-vals="js:{data: query_format()}"
         hx-trigger="click"
         hx-target="#save-error"
@@ -50,7 +50,7 @@
     <div
         role="button"
         class="secondary"
-        hx-get="{{ request.app.url_path_for('delete_route', db=db, file=file) }}"
+        hx-get="{{ request.app.url_path_for('query_delete_route', db=db, file=file) }}"
         hx-trigger="click"
         hx-target="#save-error"
         hx-swap="innerHTML"

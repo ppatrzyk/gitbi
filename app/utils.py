@@ -19,14 +19,25 @@ def parse_query_data(request, form):
     """
     Parses and validates query data generated from query_format()
     app/frontend/js/make_code_editor.js
-    query: string
-    user: string
+    query, user, viz: string
     """
     data = json.loads(form["data"])
     data["file"] = data["file"].strip()
     for key in ("query", "viz", ):
         assert key in data.keys(), f"No {key} in POST data"
         assert data[key] != "", f"Empty {key} string"
+    data["user"] = common_context_args(request).get("user")
+    return data
+
+def parse_dashboard_data(request, form):
+    """
+    Parses and validates query data generated from dashboard_format()
+    app/frontend/js/make_dashboard_form.js
+    """
+    data = json.loads(form["data"])
+    data["file"] = data["file"].strip()
+    assert data["queries"], "zero queries chosen"
+    data["queries"] = tuple(el.split('/') for el in data["queries"])
     data["user"] = common_context_args(request).get("user")
     return data
 

@@ -124,7 +124,21 @@ def list_commits():
         commits.append(commit)
     return headers, commits
 
-def save(user, db, file, query, viz):
+def save_dashboard(user, file, queries):
+    """
+    Save dashboard config into repo
+    """
+    # TODO
+    return True
+
+def delete_dashboard(user, file):
+    """
+    Save dashboard config into repo
+    """
+    # TODO
+    return True
+
+def save_query(user, db, file, query, viz):
     """
     Save query into repo
     file refers to query file name
@@ -140,7 +154,7 @@ def save(user, db, file, query, viz):
     _commit(user, "save", to_commit)
     return True
 
-def delete(user, db, file):
+def delete_query(user, db, file):
     """
     Delete query from the repo
     """

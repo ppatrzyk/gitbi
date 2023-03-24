@@ -6,7 +6,7 @@ from starlette.exceptions import HTTPException
 from starlette.routing import Mount, Route
 from starlette.staticfiles import StaticFiles
 import auth
-import routes_execute, routes_listing, routes_query
+import routes_dashboard, routes_execute, routes_listing, routes_query
 import utils
 
 # Error types
@@ -35,11 +35,14 @@ routes = [
     Route("/dbdetails/{db:str}", endpoint=routes_listing.db_details_route, name="db_details_route"),
     Route("/commits/", endpoint=routes_listing.commits_route, name="commits_route"),
     # routes query
+    Route('/query/delete/{db:str}/{file:str}', endpoint=routes_query.delete_route, name="query_delete_route"),
+    Route('/query/save/{db:str}', endpoint=routes_query.save_route, methods=("POST", ), name="query_save_route"),
     Route('/query/{db:str}', endpoint=routes_query.query_route, name="query_route"),
     Route('/query/{db:str}/{file:str}/{state:str}', endpoint=routes_query.saved_query_route, name="saved_query_route"),
-    Route('/dashboard/{file:str}/{state:str}', endpoint=routes_query.dashboard_route, name="dashboard_route"),
-    Route('/delete/{db:str}/{file:str}', endpoint=routes_query.delete_route, name="delete_route"),
-    Route('/save/{db:str}', endpoint=routes_query.save_route, methods=("POST", ), name="save_route"),
+    # routes dashboard
+    Route('/dashboard/delete/{file:str}', endpoint=routes_dashboard.delete_route, name="dashboard_delete_route"),
+    Route('/dashboard/save', endpoint=routes_dashboard.save_route, methods=("POST", ), name="dashboard_save_route"),
+    Route('/dashboard/{file:str}/{state:str}', endpoint=routes_dashboard.dashboard_route, name="dashboard_route"),
     # static
     Mount('/static', app=StaticFiles(directory=utils.STATIC_DIR), name="static"),
 ]

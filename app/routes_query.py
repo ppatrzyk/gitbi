@@ -12,7 +12,7 @@ async def delete_route(request):
     """
     try:
         user = utils.common_context_args(request).get("user")
-        repo.delete(user=user, **request.path_params)
+        repo.delete_query(user=user, **request.path_params)
         redirect_url = request.app.url_path_for("home_route", state="HEAD")
         headers = {"HX-Redirect": redirect_url}
         response = PlainTextResponse(content="OK", headers=headers, status_code=200)
@@ -29,7 +29,7 @@ async def save_route(request):
     try:
         form = await request.form()
         data = utils.parse_query_data(request, form)
-        repo.save(**request.path_params, **data)
+        repo.save_query(**request.path_params, **data)
         redirect_url = request.app.url_path_for(
             "saved_query_route",
             db=request.path_params['db'],
@@ -43,17 +43,6 @@ async def save_route(request):
         return utils.partial_html_error(str(e), status_code)
     else:
         return response
-
-async def dashboard_route(request):
-    """
-    Show dashboard
-    """
-    dashboard_conf = repo.get_dashboard(**request.path_params)
-    data = {
-        **utils.common_context_args(request),
-        "dashboard_conf": dashboard_conf,
-    }
-    return utils.TEMPLATES.TemplateResponse(name='dashboard.html', context=data)
 
 async def query_route(request):
     """
