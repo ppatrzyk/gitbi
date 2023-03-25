@@ -29,6 +29,7 @@ routes = [
     Route('/email/report/{db:str}/{file:str}/{state:str}', endpoint=routes_execute.email_report_route, name="email_report_route"),
     Route('/execute/{db:str}', endpoint=routes_execute.execute_route, methods=("POST", ), name="execute_route"),
     Route('/report/{db:str}/{file:str}/{state:str}', endpoint=routes_execute.report_route, name="report_route"),
+    Route('/dashboard-entry/{db:str}/{file:str}/{state:str}', endpoint=routes_execute.dashboard_entry_route, name="dashboard_entry_route"),
     # routes_listing
     Route("/", endpoint=routes_listing.home_default_route, name="home_default_route"),
     Route("/home/{state:str}", endpoint=routes_listing.home_route, name="home_route"),
@@ -39,7 +40,6 @@ routes = [
     Route('/query/save/{db:str}', endpoint=routes_query.save_route, methods=("POST", ), name="query_save_route"),
     Route('/query/{db:str}', endpoint=routes_query.query_route, name="query_route"),
     Route('/query/{db:str}/{file:str}/{state:str}', endpoint=routes_query.saved_query_route, name="saved_query_route"),
-    Route('/dashboard/query/{db:str}/{file:str}/{state:str}', endpoint=routes_query.dashboard_entry_route, name="dashboard_entry_route"),
     # routes dashboard
     Route('/dashboard/delete/{file:str}', endpoint=routes_dashboard.delete_route, name="dashboard_delete_route"),
     Route('/dashboard/save', endpoint=routes_dashboard.save_route, methods=("POST", ), name="dashboard_save_route"),

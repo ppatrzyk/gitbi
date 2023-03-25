@@ -44,16 +44,6 @@ async def save_route(request):
     else:
         return response
 
-async def dashboard_entry_route(request):
-    """
-    Single entry in dashboard
-    """
-    data = {
-        **utils.common_context_args(request),
-        **request.path_params,
-    }
-    return utils.TEMPLATES.TemplateResponse(name='partial_dashboard_entry.html', context=data)
-
 async def query_route(request):
     """
     Endpoint for empty query

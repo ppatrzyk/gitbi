@@ -82,6 +82,27 @@ async def _mailer_response(report, no_rows, to, file_name):
         response = PlainTextResponse(content="OK", status_code=200)
     return response
 
+async def dashboard_entry_route(request):
+    """
+    Single entry in dashboard - execute from saved query
+    """
+    query_str, viz = repo.get_query(**request.path_params)
+    col_names, rows, _duration_ms = query.execute(
+        db=request.path_params.get("db"),
+        query=query_str
+    )
+    table_id = utils.random_id()
+    echart_id = utils.random_id()
+    table = utils.format_table(table_id, echart_id, col_names, rows, True)
+    data = {
+        **utils.common_context_args(request),
+        **request.path_params,
+        "table": table,
+        "viz": viz,
+        "echart_id": echart_id,
+    }
+    return utils.TEMPLATES.TemplateResponse(name='partial_dashboard_entry.html', context=data)
+
 async def _execute_from_saved_query(request):
     """
     Execute saved query, common logic for reports and alerts

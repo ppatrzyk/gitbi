@@ -1,5 +1,8 @@
 {% extends "base.html" %}
 {% block title %}Dashboard | {{ file }}{% endblock %}
+{% block extendhead %}
+    <script src="{{ request.app.url_path_for('static', path='/js/echarts.min.js') }}"></script>
+{% endblock %}
 {% block content %}
     <h1>{{ file }}</h1>
         <div

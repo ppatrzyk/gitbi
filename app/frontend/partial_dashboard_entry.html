@@ -1,5 +1,12 @@
 {# partial html - this is used by htmx inserting one query into dashboard #}
-<details>
+<details open>
     <summary>{{ db }} --- {{ file }} at {{ state }}</summary>
-    <p>TODO</p>
+    {{ table }}
+    <div id="{{ echart_id }}"></div>
+    <script type="text/javascript">
+        {% include 'js/make_viz.js' %}
+        var chart_options = JSON.parse(`{{ viz }}`);
+        var chart_el = document.getElementById(`{{ echart_id }}`);
+        create_viz(data, chart_options, chart_el);
+    </script>
 </details>
