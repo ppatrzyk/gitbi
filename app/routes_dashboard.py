@@ -10,8 +10,10 @@ async def dashboard_route(request):
     Show dashboard
     """
     dashboard_conf = repo.get_dashboard(**request.path_params)
+    dashboard_conf = tuple(el + [utils.random_id(), ] for el in dashboard_conf)
     data = {
         **utils.common_context_args(request),
+        **request.path_params,
         "dashboard_conf": dashboard_conf,
     }
     return utils.TEMPLATES.TemplateResponse(name='dashboard.html', context=data)

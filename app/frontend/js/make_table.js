@@ -3,7 +3,7 @@ try {
     var data = JSON.parse(`{{ data_json }}`)
     // send new data to viz
     // applicable only to table created from user running query
-    if (table_id == 'results-table') {
+    if (table_id.startsWith('results-table')) {
         var new_data = new CustomEvent("newdata", {detail: {data: data, id: table_id}});
         document.getElementById('echart').dispatchEvent(new_data);
     }

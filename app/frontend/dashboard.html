@@ -1,6 +1,28 @@
 {% extends "base.html" %}
-{% block title %}Dashboard{% endblock %}
+{% block title %}Dashboard | {{ file }}{% endblock %}
 {% block content %}
-<h1>TODO dashboard</h1>
-<p>{{ dashboard_conf|e }}</p>
+    <h1>{{ file }}</h1>
+        <div
+        role="button"
+        class="secondary"
+        hx-get="{{ request.app.url_path_for('dashboard_delete_route', file=file) }}"
+        hx-trigger="click"
+        hx-target="#delete-error"
+        hx-swap="innerHTML"
+    >
+        Delete this dashboard
+    </div>
+    <div id="delete-error"></div>
+    {% for db, query, id in dashboard_conf %}
+    <a
+        class="hidden"
+        hx-get="{{ request.app.url_path_for('dashboard_entry_route', db=db, file=query, state=state) }}"
+        hx-trigger="load"
+        hx-target="#{{ id }}"
+        hx-swap="outerHTML"
+    >
+        Load table info
+    </a>
+    <div id="{{ id }}"></div>
+    {% endfor %}
 {% endblock %}

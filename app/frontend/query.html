@@ -3,7 +3,7 @@
     <link href="{{ request.app.url_path_for('static', path='/css/github.min.css') }}" rel="stylesheet">
     <script src="{{ request.app.url_path_for('static', path='/js/echarts.min.js') }}"></script>
 {% endblock %}
-{% block title %}Query{% endblock %}
+{% block title %}Query | {{ file }}{% endblock %}
 {% block content %}
     <h2>Query db: {{ db|e }}</h2>
     <div id="db-details-{{ db }}"></div>

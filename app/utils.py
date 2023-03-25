@@ -8,6 +8,7 @@ import json
 import os
 from starlette.templating import Jinja2Templates
 from starlette.responses import HTMLResponse
+import uuid
 
 VERSION = "0.7"
 APP_DIR = os.path.abspath(os.path.dirname(__file__))
@@ -36,8 +37,9 @@ def parse_dashboard_data(request, form):
     """
     data = json.loads(form["data"])
     data["file"] = data["file"].strip()
+    assert data["file"] != "", "Empty file name"
     assert data["queries"], "zero queries chosen"
-    data["queries"] = tuple(el.split('/') for el in data["queries"])
+    data["queries"] = json.dumps(tuple(el.split('/') for el in data["queries"]))
     data["user"] = common_context_args(request).get("user")
     return data
 
@@ -56,6 +58,12 @@ def format_table(id, headers, rows, interactive):
         data = {**data, "headers": headers, "rows": rows}
         response = TEMPLATES.TemplateResponse(name='partial_html_table.html', context=data)
     return response.body.decode()
+
+def random_id():
+    """
+    Random id for html element
+    """
+    return f"id-{str(uuid.uuid4())}"
 
 def _data_convert(el):
     """

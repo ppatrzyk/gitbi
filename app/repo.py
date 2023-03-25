@@ -3,6 +3,7 @@ Functions to interact with config repository
 """
 from collections import OrderedDict
 from datetime import datetime
+import json
 from markdown import markdown
 import os
 from pathlib import Path
@@ -12,6 +13,11 @@ DIR = os.environ["GITBI_REPO_DIR"]
 REPO = Repository(DIR)
 VALID_DB_TYPES = ("sqlite", "postgres", "clickhouse", )
 VALID_QUERY_EXTENSIONS = (".sql", )
+DASHBOARDS_DIR = "_dashboards"
+DASHBOARDS_FULL_PATH = os.path.join(DIR, DASHBOARDS_DIR)
+if not os.path.exists(DASHBOARDS_FULL_PATH):
+    os.makedirs(DASHBOARDS_FULL_PATH)
+QUERIES_EXCLUDE = (".git", DASHBOARDS_DIR, )
 
 def get_db_params(db):
     """
@@ -61,8 +67,9 @@ def get_dashboard(state, file):
     """
     Get dashboard content from repo
     """
-    # TODO
-    return f"todo dashboard config {file}"
+    path = os.path.join(DASHBOARDS_DIR, file)
+    raw_dashboard = _get_file_content(state, path)
+    return json.loads(raw_dashboard)
 
 def get_readme(state):
     """
@@ -83,30 +90,42 @@ def list_sources(state):
     try:
         match state:
             case 'file':
-                db_dirs = {db_dir for db_dir in os.scandir(DIR) if db_dir.is_dir() and db_dir.name != ".git"}
+                db_dirs = {db_dir for db_dir in os.scandir(DIR) if db_dir.is_dir() and db_dir.name not in QUERIES_EXCLUDE}
                 sources = {db_dir.name: set(el.name for el in os.scandir(db_dir) if el.is_file()) for db_dir in db_dirs}
             case hash:
                 commit = REPO.revparse_single(hash)
                 sources = dict()
                 for path in (Path(el) for el in _get_tree_objects_generator(commit.tree)):
-                    if len(path.parts) == 2:
+                    if len(path.parts) == 2: #files in 1st-level folder, all other ignored
                         db = str(path.parent)
                         query = str(path.name)
-                        try:
-                            sources[db].add(query)
-                        except:
-                            sources[db] = set((query, ))
+                        if db not in QUERIES_EXCLUDE:
+                            try:
+                                sources[db].add(query)
+                            except:
+                                sources[db] = set((query, ))
+        sources = OrderedDict((db, _filter_queries(queries)) for db, queries in sorted(sources.items()))
     except Exception as e:
         raise RuntimeError(f"Sources at state {state} cannot be listed: {str(e)}")
     else:
-        return OrderedDict((db, _filter_queries(queries)) for db, queries in sorted(sources.items()))
+        return sources
 
 def list_dashboards(state):
     """
     List dasboards in repo
     """
-    # TODO
-    return ["d1", "d2", ]
+    try:
+        match state:
+            case 'file':
+                dashboards = tuple(el.name for el in os.scandir(DASHBOARDS_FULL_PATH) if el.is_file())
+            case hash:
+                commit = REPO.revparse_single(hash)
+                repo_paths = (Path(el) for el in _get_tree_objects_generator(commit.tree))
+                dashboards = tuple(path.name for path in repo_paths if (len(path.parts) == 2 and str(path.parent) == DASHBOARDS_DIR))
+    except Exception as e:
+        raise RuntimeError(f"Dashboards at state {state} cannot be listed: {str(e)}")
+    else:
+        return dashboards
 
 def list_commits():
     """
@@ -128,14 +147,20 @@ def save_dashboard(user, file, queries):
     """
     Save dashboard config into repo
     """
-    # TODO
+    path_obj = Path(file)
+    assert file == path_obj.name, "Path passed"
+    path = f"{DASHBOARDS_DIR}/{file}"
+    assert _write_file_content(path, queries), "Writing query content failed"
+    _commit(user, "save", (path, ))
     return True
 
 def delete_dashboard(user, file):
     """
-    Save dashboard config into repo
+    Delete dashboard config
     """
-    # TODO
+    path = f"{DASHBOARDS_DIR}/{file}"
+    assert _remove_file(path), f"Cannot remove {path}"
+    _commit(user, "delete", (path, ))
     return True
 
 def save_query(user, db, file, query, viz):

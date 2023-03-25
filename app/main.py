@@ -39,6 +39,7 @@ routes = [
     Route('/query/save/{db:str}', endpoint=routes_query.save_route, methods=("POST", ), name="query_save_route"),
     Route('/query/{db:str}', endpoint=routes_query.query_route, name="query_route"),
     Route('/query/{db:str}/{file:str}/{state:str}', endpoint=routes_query.saved_query_route, name="saved_query_route"),
+    Route('/dashboard/query/{db:str}/{file:str}/{state:str}', endpoint=routes_query.dashboard_entry_route, name="dashboard_entry_route"),
     # routes dashboard
     Route('/dashboard/delete/{file:str}', endpoint=routes_dashboard.delete_route, name="dashboard_delete_route"),
     Route('/dashboard/save', endpoint=routes_dashboard.save_route, methods=("POST", ), name="dashboard_save_route"),
