@@ -22,7 +22,7 @@ async def execute_route(request):
             query=data.get("query")
         )
         table_id = f"results-table-{utils.random_id()}"
-        table = utils.format_table(table_id, col_names, rows, True)
+        table = utils.format_table(table_id, data["echart_id"], col_names, rows, True)
         no_rows = len(rows)
     except Exception as e:
         status_code = 404 if isinstance(e, RuntimeError) else 500
@@ -97,7 +97,7 @@ async def _execute_from_saved_query(request):
             query=query_str
         )
         table_id = f"results-table-{utils.random_id()}"
-        table = utils.format_table(table_id, col_names, rows, False)
+        table = utils.format_table(table_id, utils.random_id(), col_names, rows, False)
         no_rows = len(rows)
     except Exception as e:
         status_code = 404 if isinstance(e, RuntimeError) else 500

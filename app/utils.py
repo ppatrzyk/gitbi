@@ -24,7 +24,7 @@ def parse_query_data(request, form):
     """
     data = json.loads(form["data"])
     data["file"] = data["file"].strip()
-    for key in ("query", "viz", ):
+    for key in ("query", "viz", "echart_id", ):
         assert key in data.keys(), f"No {key} in POST data"
         assert data[key] != "", f"Empty {key} string"
     data["user"] = common_context_args(request).get("user")
@@ -43,13 +43,13 @@ def parse_dashboard_data(request, form):
     data["user"] = common_context_args(request).get("user")
     return data
 
-def format_table(id, headers, rows, interactive):
+def format_table(table_id, echart_id, headers, rows, interactive):
     """
     Format data into a html table
     """
     headers = _process_row(headers)
     rows = tuple(_process_row(row) for row in rows)
-    data = {"request": None, "id": id}
+    data = {"request": None, "table_id": table_id, "echart_id": echart_id}
     if interactive:
         data_json = json.dumps({"headings": headers, "data": rows}, default=str)
         data = {**data, "data_json": data_json}

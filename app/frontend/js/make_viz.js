@@ -1,3 +1,4 @@
+var chart_id = `{{ echart_id }}`
 var current_data = null;
 var initial_viz = true;
 var saved_viz;
@@ -66,7 +67,7 @@ function make_viz() {
             document.getElementById('echart-note').classList.add("hidden");
             document.getElementById('echart-chart').classList.remove("hidden");
         }
-        var chart_el = document.getElementById('echart');
+        var chart_el = document.getElementById(chart_id);
         chart_el.replaceChildren();
         chart_el.removeAttribute('_echarts_instance_')
         chart_el.style.width = `${chart_el.offsetWidth}px`;
@@ -110,7 +111,7 @@ function make_viz() {
     }
 }
 window.make_viz = make_viz;
-document.getElementById('echart').addEventListener("newdata", (e) => {
+document.getElementById(chart_id).addEventListener("newdata", (e) => {
     current_data = e.detail.data;
     update_chart_options();
     make_viz();
