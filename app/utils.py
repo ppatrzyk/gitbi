@@ -19,7 +19,7 @@ TEMPLATES = Jinja2Templates(directory=TEMPLATE_DIR, autoescape=False)
 def parse_query_data(request, form):
     """
     Parses and validates query data generated from query_format()
-    app/frontend/js/make_code_editor.js
+    app/frontend/js/code_editor.js
     query, user, viz: string
     """
     data = json.loads(form["data"])
@@ -33,7 +33,7 @@ def parse_query_data(request, form):
 def parse_dashboard_data(request, form):
     """
     Parses and validates query data generated from dashboard_format()
-    app/frontend/js/make_dashboard_form.js
+    app/frontend/js/dashboard_creation.js
     """
     data = json.loads(form["data"])
     data["file"] = data["file"].strip()

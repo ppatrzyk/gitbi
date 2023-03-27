@@ -13,6 +13,7 @@ DIR = os.environ["GITBI_REPO_DIR"]
 REPO = Repository(DIR)
 VALID_DB_TYPES = ("sqlite", "postgres", "clickhouse", )
 VALID_QUERY_EXTENSIONS = (".sql", )
+VALID_DASHBOARD_EXTENSIONS = (".json", )
 DASHBOARDS_DIR = "_dashboards"
 DASHBOARDS_FULL_PATH = os.path.join(DIR, DASHBOARDS_DIR)
 if not os.path.exists(DASHBOARDS_FULL_PATH):
@@ -104,7 +105,7 @@ def list_sources(state):
                                 sources[db].add(query)
                             except:
                                 sources[db] = set((query, ))
-        sources = OrderedDict((db, _filter_queries(queries)) for db, queries in sorted(sources.items()))
+        sources = OrderedDict((db, _filter_extension(queries, VALID_QUERY_EXTENSIONS)) for db, queries in sorted(sources.items()))
     except Exception as e:
         raise RuntimeError(f"Sources at state {state} cannot be listed: {str(e)}")
     else:
@@ -122,6 +123,7 @@ def list_dashboards(state):
                 commit = REPO.revparse_single(hash)
                 repo_paths = (Path(el) for el in _get_tree_objects_generator(commit.tree))
                 dashboards = tuple(path.name for path in repo_paths if (len(path.parts) == 2 and str(path.parent) == DASHBOARDS_DIR))
+        dashboards = _filter_extension(dashboards, VALID_DASHBOARD_EXTENSIONS)
     except Exception as e:
         raise RuntimeError(f"Dashboards at state {state} cannot be listed: {str(e)}")
     else:
@@ -149,6 +151,7 @@ def save_dashboard(user, file, queries):
     """
     path_obj = Path(file)
     assert file == path_obj.name, "Path passed"
+    assert (path_obj.suffix in VALID_DASHBOARD_EXTENSIONS), f"Extension not in {str(VALID_DASHBOARD_EXTENSIONS)}"
     path = f"{DASHBOARDS_DIR}/{file}"
     assert _write_file_content(path, queries), "Writing query content failed"
     _commit(user, "save", (path, ))
@@ -170,7 +173,7 @@ def save_query(user, db, file, query, viz):
     """
     path_obj = Path(file)
     assert file == path_obj.name, "Path passed"
-    assert (path_obj.suffix in VALID_QUERY_EXTENSIONS), "Invalid query extension"
+    assert (path_obj.suffix in VALID_QUERY_EXTENSIONS), f"Extension not in {str(VALID_QUERY_EXTENSIONS)}"
     query_path = f"{db}/{file}"
     viz_path = f"{query_path}.json"
     to_commit = [query_path, viz_path, ]
@@ -197,12 +200,11 @@ def delete_query(user, db, file):
     _commit(user, "delete", to_commit)
     return True
 
-def _filter_queries(queries):
+def _filter_extension(files, valid_ext):
     """
-    Filter which query files are valid
+    Filter file list based on extension
     """
-    queries = tuple(sorted(q for q in queries if Path(q).suffix in VALID_QUERY_EXTENSIONS))
-    return queries
+    return tuple(sorted(f for f in files if Path(f).suffix in valid_ext))
 
 def _write_file_content(path, content):
     """

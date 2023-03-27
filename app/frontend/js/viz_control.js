@@ -52,8 +52,6 @@ function update_chart_options() {
         }
     }
 }
-// create_viz function
-{% include 'js/make_viz.js' %}
 function make_viz() {
     // this function wraps viz creation for query page
     try {

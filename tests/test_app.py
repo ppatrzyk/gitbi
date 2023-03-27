@@ -5,7 +5,6 @@ from . import USER_HTTPX
 
 client = TestClient(app)
 
-
 def test_listing():
     assert client.get("/home/HEAD/").status_code == 401
     assert client.get("/home/HEAD/", auth=("baduser", "badpass")).status_code == 401
@@ -44,3 +43,11 @@ def test_execute():
     assert client.get("/report/sqlite/myquery.sql/HEAD", auth=USER_HTTPX).status_code == 200
     assert client.get("/email/report/sqlite/incorrectfile/HEAD", auth=USER_HTTPX).status_code == 404
     assert client.get("/email/report/sqlite/myquery.sql/HEAD", auth=USER_HTTPX).status_code == 500
+
+def test_dashboard():
+    assert client.get("/dashboard/test_dashboard.json/HEAD").status_code == 401
+    assert client.get("/dashboard/test_dashboard.json/HEAD", auth=USER_HTTPX).status_code == 200
+    assert client.get("/dashboard/test_dashboard.json/file", auth=USER_HTTPX).status_code == 200
+    assert client.get("/dashboard/test_dashboard.json/67aa8bd9b58e0ed496a440812bea4719a1361f10", auth=USER_HTTPX).status_code == 404
+    assert client.get("/dashboard/bad_spec.json/HEAD", auth=USER_HTTPX).status_code == 500
+    assert client.get("/dashboard/nonexistent/HEAD", auth=USER_HTTPX).status_code == 404

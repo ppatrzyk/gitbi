@@ -1,12 +1,18 @@
 {# partial html - this is used by htmx inserting one query into dashboard #}
 <details open>
-    <summary>{{ db }} --- {{ file }} at {{ state }}</summary>
-    {{ table }}
-    <div id="{{ echart_id }}"></div>
-    <script type="text/javascript">
-        {% include 'js/make_viz.js' %}
-        var chart_options = JSON.parse(`{{ viz }}`);
-        var chart_el = document.getElementById(`{{ echart_id }}`);
-        create_viz(data, chart_options, chart_el);
-    </script>
+    <summary role="button">{{ db|e }}/{{ file|e }}</summary>
+    <p>Executed on {{ time|e }}</p>
+    <details class="nested-details">
+        <summary role="button" class="secondary">Table</summary>
+        {{ table }}
+    </details>
+    <details class="nested-details" open>
+        <summary role="button" class="secondary">Visualization</summary>
+        <div id="{{ echart_id }}"></div>
+        <script type="text/javascript">
+            var chart_options = JSON.parse(`{{ viz }}`);
+            var chart_el = document.getElementById(`{{ echart_id }}`);
+            create_viz(data, chart_options, chart_el);
+        </script>
+    </details>
 </details>

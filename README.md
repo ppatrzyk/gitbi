@@ -20,8 +20,9 @@ Repository needs to have the following structure:
 - directories in repo root refer to databases
 - files in each directory are queries/visualizations to be run against respective database
     - files with `.sql` extension are queries
-    - files with `.json` extension are saved visualizations
-- README.md file content will be displayed on _Gitbi_ main page
+    - (optional) files with `.json` extension are saved visualizations
+- (optional) special directory `_dashboards` contain dashboard specifications (`.json` format)
+- (optional) README.md file content will be displayed on _Gitbi_ main page
 
 ### Environment variables
 
@@ -50,6 +51,8 @@ Assume you have repository with the following structure:
 
 ```
 repo
+├── _dashboards
+│   └── my_dashboard.json
 ├── db1
 │   ├── query1.sql
 │   ├── query2.sql
@@ -62,7 +65,7 @@ repo
 └── README.md
 ```
 
-There are 2 databases named _db1_ and _db2_. _db1_ has 2 queries, one of them has also visualization; _db2_ has 3 queries, 1 with added visualization.
+There are 2 databases named _db1_ and _db2_. _db1_ has 2 queries, one of them has also visualization; _db2_ has 3 queries, 1 with added visualization. There is also one dashboard called _my_dashboard.json_.
 
 For configuration you'd need to set the following environment variables:
 

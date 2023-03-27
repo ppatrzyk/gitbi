@@ -100,6 +100,7 @@ async def dashboard_entry_route(request):
         "table": table,
         "viz": viz,
         "echart_id": echart_id,
+        "time": _get_time(),
     }
     return utils.TEMPLATES.TemplateResponse(name='partial_dashboard_entry.html', context=data)
 

@@ -40,9 +40,4 @@ function create_viz(current_data, chart_options, chart_el) {
     };
     var chart = echarts.init(chart_el);
     chart.setOption(echarts_conf);
-    console.log('called')
-    console.log(current_data)
-    console.log(chart_options)
-    console.log(series)
-    console.log(chart_el.style.width)
 }
