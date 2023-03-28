@@ -50,7 +50,7 @@ async def query_route(request):
     """
     try:
         db = request.path_params.get("db")
-        if db not in repo.list_sources("HEAD").keys():
+        if db not in repo.list_sources("file").keys():
             raise RuntimeError(f"db {db} not present in repo")
     except RuntimeError as e:
         raise HTTPException(status_code=404, detail=str(e))

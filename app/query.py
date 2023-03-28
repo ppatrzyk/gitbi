@@ -3,6 +3,7 @@ Functions to process SQL queries
 """
 from clickhouse_driver import dbapi as clickhouse
 from time import time
+import duckdb
 import psycopg
 import os
 import repo
@@ -14,11 +15,7 @@ DATABASES = {
     "sqlite": sqlite3,
     "postgres": psycopg,
     "clickhouse": clickhouse,
-}
-TABLE_QUERIES = {
-    "sqlite": "SELECT tbl_name FROM sqlite_master where type='table';",
-    "postgres": "SELECT concat(schemaname, '.', tablename) FROM pg_catalog.pg_tables WHERE schemaname NOT IN ('pg_catalog', 'information_schema');",
-    "clickhouse": "SELECT name FROM system.tables where database == currentDatabase();",
+    "duckdb": duckdb,
 }
 
 def list_tables(db):
@@ -26,7 +23,15 @@ def list_tables(db):
     List tables in db
     """
     db_type, _conn_str = repo.get_db_params(db)
-    query = TABLE_QUERIES[db_type]
+    match db_type:
+        case "sqlite" | "duckdb":
+            query = "SELECT tbl_name FROM sqlite_master where type='table';"
+        case "postgres":
+            query = "SELECT concat(schemaname, '.', tablename) FROM pg_catalog.pg_tables WHERE schemaname NOT IN ('pg_catalog', 'information_schema');"
+        case "clickhouse":
+            query = "SELECT name FROM system.tables where database == currentDatabase();"
+        case other_db:
+            raise ValueError(f"Bad DB: {other_db}")
     _col_names, rows, _duration_ms = execute(db, query)
     tables = sorted(el[0] for el in rows)
     return tables
@@ -38,7 +43,7 @@ def list_table_data_types(db, tables):
     db_type, _conn_str = repo.get_db_params(db)
     match db_type:
         # Every query must return table with 3 cols: table_name, column_name, data_type
-        case "sqlite":
+        case "sqlite" | "duckdb":
             query = " union all ".join(f"select '{table}', name, type from pragma_table_info('{table}')" for table in tables)
         case "postgres":
             tables_joined = ', '.join(f"\'{table}\'" for table in tables)

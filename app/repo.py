@@ -11,7 +11,7 @@ from pygit2 import Repository, Signature
 
 DIR = os.environ["GITBI_REPO_DIR"]
 REPO = Repository(DIR)
-VALID_DB_TYPES = ("sqlite", "postgres", "clickhouse", )
+VALID_DB_TYPES = ("sqlite", "postgres", "clickhouse", "duckdb", )
 VALID_QUERY_EXTENSIONS = (".sql", )
 VALID_DASHBOARD_EXTENSIONS = (".json", )
 DASHBOARDS_DIR = "_dashboards"
@@ -92,7 +92,7 @@ def list_sources(state):
         match state:
             case 'file':
                 db_dirs = {db_dir for db_dir in os.scandir(DIR) if db_dir.is_dir() and db_dir.name not in QUERIES_EXCLUDE}
-                sources = {db_dir.name: set(el.name for el in os.scandir(db_dir) if el.is_file()) for db_dir in db_dirs}
+                sources = {db_dir.name: list_file_names(db_dir) for db_dir in db_dirs}
             case hash:
                 commit = REPO.revparse_single(hash)
                 sources = dict()
@@ -118,7 +118,7 @@ def list_dashboards(state):
     try:
         match state:
             case 'file':
-                dashboards = tuple(el.name for el in os.scandir(DASHBOARDS_FULL_PATH) if el.is_file())
+                dashboards = list_file_names(DASHBOARDS_FULL_PATH)
             case hash:
                 commit = REPO.revparse_single(hash)
                 repo_paths = (Path(el) for el in _get_tree_objects_generator(commit.tree))
@@ -199,6 +199,12 @@ def delete_query(user, db, file):
     #TODO: if fails error not caught, not recoverable in Gitbi, one needs to checkout manually
     _commit(user, "delete", to_commit)
     return True
+
+def list_file_names(dir):
+    """
+    List file names in given directory
+    """
+    return tuple(el.name for el in os.scandir(dir) if el.is_file())
 
 def _filter_extension(files, valid_ext):
     """

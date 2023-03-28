@@ -41,9 +41,10 @@ Following database types are supported:
 
 Type (value of GITBI\_<DB\_NAME>\_TYPE) | Connection string format (GITBI\_<DB\_NAME>\_CONN)
 --- | ---
-clickhouse | clickhouse://[login]:[password]@[host]:[port]/[database]
-postgres | postgresql://[userspec@][hostspec][/dbname][?paramspec]
-sqlite | path to db file
+clickhouse | `clickhouse://[login]:[password]@[host]:[port]/[database]`
+duckdb | path to db file (or `:memory:`)
+postgres | `postgresql://[userspec@][hostspec][/dbname][?paramspec]`
+sqlite | path to db file (or `:memory:`)
 
 ### Example
 
@@ -130,6 +131,7 @@ docker build -t pieca/gitbi:<version> .
 
 Backend:
 - [clickhouse-driver](https://github.com/mymarilyn/clickhouse-driver)
+- [duckdb](https://github.com/duckdb/duckdb/tree/master/tools/pythonpkg)
 - [jinja](https://github.com/pallets/jinja/)
 - [markdown](https://github.com/Python-Markdown/markdown)
 - [psycopg](https://github.com/psycopg/psycopg)
