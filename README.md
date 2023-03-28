@@ -1,6 +1,8 @@
 # gitbi
 
-_Gitbi_ is a lightweight business intelligence application that reads configuration from a git repository. This design enables you to write and commit SQL queries directly to git repo and have _Gitbi_ display them. Of course, if you wish to edit them via web interface, that's also possible.
+_Gitbi_ is a lightweight business intelligence application that uses git repo as a "DB" for saved queries and other configuration (visualizations, dashboards). This design enables you either to write your queries via web interface _or_ directly commit to git repo and have _Gitbi_ display latest changes.
+
+You can write queries using either SQL or [PRQL](https://github.com/PRQL/prql). Currently supported DBs: clickhouse, duckdb (query csv files), postgresql, sqlite.
 
 Test it now with sample db and config:
 
@@ -134,6 +136,7 @@ Backend:
 - [duckdb](https://github.com/duckdb/duckdb/tree/master/tools/pythonpkg)
 - [jinja](https://github.com/pallets/jinja/)
 - [markdown](https://github.com/Python-Markdown/markdown)
+- [prql](https://github.com/PRQL/prql/tree/main/bindings/prql-python)
 - [psycopg](https://github.com/psycopg/psycopg)
 - [pygit2](https://github.com/libgit2/pygit2)
 - [sqlparse](https://github.com/andialbrecht/sqlparse)

@@ -6,6 +6,7 @@ import decimal
 import html
 import json
 import os
+from pathlib import Path
 from starlette.templating import Jinja2Templates
 from starlette.responses import HTMLResponse
 import uuid
@@ -24,7 +25,7 @@ def parse_query_data(request, form):
     """
     data = json.loads(form["data"])
     data["file"] = data["file"].strip()
-    for key in ("query", "viz", "echart_id", ):
+    for key in ("query", "viz", "echart_id", "file", ):
         assert key in data.keys(), f"No {key} in POST data"
         assert data[key] != "", f"Empty {key} string"
     data["user"] = common_context_args(request).get("user")
@@ -42,6 +43,13 @@ def parse_dashboard_data(request, form):
     data["queries"] = json.dumps(tuple(el.split('/') for el in data["queries"]))
     data["user"] = common_context_args(request).get("user")
     return data
+
+def get_lang(file):
+    """
+    Establish query language based on file extension
+    """
+    suffix = Path(file).suffix
+    return suffix[1:]
 
 def format_table(table_id, echart_id, headers, rows, interactive):
     """

@@ -19,7 +19,8 @@ async def execute_route(request):
         data = utils.parse_query_data(request, form)
         col_names, rows, duration_ms = query.execute(
             db=request.path_params.get("db"),
-            query=data.get("query")
+            query=data.get("query"),
+            lang=utils.get_lang(data.get("file"))
         )
         table_id = f"results-table-{utils.random_id()}"
         table = utils.format_table(table_id, data["echart_id"], col_names, rows, True)
@@ -86,10 +87,11 @@ async def dashboard_entry_route(request):
     """
     Single entry in dashboard - execute from saved query
     """
-    query_str, viz = repo.get_query(**request.path_params)
+    query_str, viz, lang = repo.get_query(**request.path_params)
     col_names, rows, _duration_ms = query.execute(
         db=request.path_params.get("db"),
-        query=query_str
+        query=query_str,
+        lang=lang
     )
     table_id = utils.random_id()
     echart_id = utils.random_id()
@@ -113,10 +115,11 @@ async def _execute_from_saved_query(request):
     """
     try:
         query_url = request.url_for("saved_query_route", **request.path_params)
-        query_str, _viz = repo.get_query(**request.path_params)
+        query_str, _viz, lang = repo.get_query(**request.path_params)
         col_names, rows, duration_ms = query.execute(
             db=request.path_params.get("db"),
-            query=query_str
+            query=query_str,
+            lang=lang
         )
         table_id = f"results-table-{utils.random_id()}"
         table = utils.format_table(table_id, utils.random_id(), col_names, rows, False)

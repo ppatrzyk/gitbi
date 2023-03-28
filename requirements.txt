@@ -16,6 +16,7 @@ Markdown==3.4.1
 MarkupSafe==2.1.2
 packaging==23.0
 pluggy==1.0.0
+prql-python==0.6.1
 psycopg==3.1.8
 psycopg-binary==3.1.8
 pycparser==2.21

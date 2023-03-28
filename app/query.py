@@ -4,8 +4,9 @@ Functions to process SQL queries
 from clickhouse_driver import dbapi as clickhouse
 from time import time
 import duckdb
-import psycopg
 import os
+import prql_python as prql
+import psycopg
 import repo
 import sqlite3
 import sqlparse
@@ -32,7 +33,7 @@ def list_tables(db):
             query = "SELECT name FROM system.tables where database == currentDatabase();"
         case other_db:
             raise ValueError(f"Bad DB: {other_db}")
-    _col_names, rows, _duration_ms = execute(db, query)
+    _col_names, rows, _duration_ms = execute(db, query, "sql")
     tables = sorted(el[0] for el in rows)
     return tables
 
@@ -56,7 +57,7 @@ def list_table_data_types(db, tables):
             query = "SELECT table, name, type FROM system.columns where database == currentDatabase();"
         case other_db:
             raise ValueError(f"Bad DB: {other_db}")
-    _col_names, rows, _duration_ms = execute(db, query)
+    _col_names, rows, _duration_ms = execute(db, query, "sql")
     data_types = {table: [] for table in tables}
     for row in rows:
         data_types[row[0]].append((row[1], row[2], ))
@@ -64,23 +65,25 @@ def list_table_data_types(db, tables):
     data_types = {table: utils.format_table(utils.random_id(), utils.random_id(), headers, rows, True) for table, rows in data_types.items()}
     return data_types
 
-def execute(db, query):
+def execute(db, query, lang):
     """
     Executes query and returns formatted table
     """
     db_type, conn_str = repo.get_db_params(db)
     driver = DATABASES[db_type]
     start = time()
+    if lang == "prql":
+        query = prql.compile(query)
     col_names, rows = _execute_query(driver, conn_str, query)
     duration_ms = round(1000*(time()-start))
     return col_names, rows, duration_ms
 
 def _execute_query(driver, conn_str, query):
     """
-    Executes query against DB using suitable driver
+    Executes SQL query against DB using suitable driver
     """
     try:
-        if driver == sqlite3:
+        if driver in (sqlite3, duckdb, ) and conn_str != ":memory:":
             assert os.path.exists(conn_str), f"No sqlite DB at {conn_str}"
         conn = driver.connect(conn_str)
         cursor = conn.cursor()

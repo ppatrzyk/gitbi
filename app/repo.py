@@ -8,11 +8,12 @@ from markdown import markdown
 import os
 from pathlib import Path
 from pygit2 import Repository, Signature
+import utils
 
 DIR = os.environ["GITBI_REPO_DIR"]
 REPO = Repository(DIR)
 VALID_DB_TYPES = ("sqlite", "postgres", "clickhouse", "duckdb", )
-VALID_QUERY_EXTENSIONS = (".sql", )
+VALID_QUERY_EXTENSIONS = (".sql", ".prql", )
 VALID_DASHBOARD_EXTENSIONS = (".json", )
 DASHBOARDS_DIR = "_dashboards"
 DASHBOARDS_FULL_PATH = os.path.join(DIR, DASHBOARDS_DIR)
@@ -55,6 +56,8 @@ def get_query(state, db, file):
     """
     Gets query content from the repo
     """
+    assert Path(file).suffix in VALID_QUERY_EXTENSIONS, "Bad query extension"
+    lang = utils.get_lang(file)
     query_path = os.path.join(db, file)
     try:
         viz_path = os.path.join(db, f"{file}.json")
@@ -62,12 +65,13 @@ def get_query(state, db, file):
     except:
         viz_str = ""
     query_str = _get_file_content(state, query_path)
-    return query_str, viz_str
+    return query_str, viz_str, lang
 
 def get_dashboard(state, file):
     """
     Get dashboard content from repo
     """
+    assert Path(file).suffix in VALID_DASHBOARD_EXTENSIONS, "Bad dashboard extension"
     path = os.path.join(DASHBOARDS_DIR, file)
     raw_dashboard = _get_file_content(state, path)
     return json.loads(raw_dashboard)
