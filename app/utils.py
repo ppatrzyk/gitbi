@@ -55,15 +55,16 @@ def format_table(table_id, echart_id, headers, rows, interactive):
     """
     Format data into a html table
     """
-    headers = _process_row(headers)
-    rows = tuple(_process_row(row) for row in rows)
+    dtypes = tuple(_data_convert(el)[1] for el in rows[0])
+    headers = tuple(_data_convert(el)[0] for el in headers)
+    rows = tuple(tuple(_data_convert(el)[0] for el in row) for row in rows)
     data = {"request": None, "table_id": table_id, "echart_id": echart_id}
     if interactive:
-        data_json = json.dumps({"headings": headers, "data": rows}, default=str)
+        data_json = json.dumps({"headings": headers, "data": rows, "dtypes": dtypes}, default=str)
         data = {**data, "data_json": data_json}
         response = TEMPLATES.TemplateResponse(name='partial_html_table_interactive.html', context=data)
     else:
-        data = {**data, "headers": headers, "rows": rows}
+        data = {**data, "headers": headers, "data": rows}
         response = TEMPLATES.TemplateResponse(name='partial_html_table.html', context=data)
     return response.body.decode()
 
@@ -76,21 +77,24 @@ def random_id():
 def _data_convert(el):
     """
     Convert complex types such that it can be passed to json.dumps
+    Data type names determined for echarts
+    https://echarts.apache.org/en/option.html#xAxis.type
     """
-    match type(el):
-        case decimal.Decimal:
-            return float(el)
-        case datetime.datetime:
-            return datetime.datetime.isoformat(el)
+    match el:
+        case decimal.Decimal() | float():
+            el = float(el)
+            dtype = "value"
+        case int():
+            dtype = "value"
+        case datetime.datetime():
+            el = datetime.datetime.isoformat(el)
+            dtype = "time"
         case _:
-            return el
-
-def _process_row(t):
-    """
-    Helper for escaping tu_process_rowple of elements
-    """
-    converted = (_data_convert(el) for el in t)
-    return tuple(html.escape(el) if isinstance(el, str) else el for el in converted)
+            el = str(el)
+            dtype = "category"
+    if isinstance(el, str):
+        el = html.escape(el)
+    return el, dtype
 
 def partial_html_error(message, code):
     """

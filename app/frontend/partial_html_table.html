@@ -4,7 +4,7 @@
         {% for header in headers %}<th>{{ header }}</th>{% endfor %}
     </tr></thead>
     <tbody>
-        {% for row in rows %}
+        {% for row in data %}
             <tr>{% for entry in row %}<td>{{ entry }}</td>{% endfor %}</tr>
         {% endfor %}
     </tbody>
