@@ -17,13 +17,14 @@ function get_chart_options() {
         type: document.getElementById('echart-options-type').value,
         xaxis: document.getElementById('echart-options-xaxis').value,
         yaxis: document.getElementById('echart-options-yaxis').value,
+        zaxis: document.getElementById('echart-options-zaxis').value,
         group: document.getElementById('echart-options-group').value,
     }
     return chart_options
 }
 window.get_chart_options = get_chart_options;
 function update_chart_options() {
-    var select_ids = ['echart-options-xaxis', 'echart-options-yaxis', 'echart-options-group', ];
+    var select_ids = ['echart-options-xaxis', 'echart-options-yaxis', 'echart-options-zaxis','echart-options-group', ];
     var headings = Array.from(document.getElementById(select_ids[0]).getElementsByTagName('option')).map((node) => node.value)
     var new_headings = ['_NONE', ].concat(current_data.headings);
     if (!array_ident(headings, new_headings)) {
@@ -42,6 +43,7 @@ function update_chart_options() {
                 document.getElementById('echart-options-type').value = saved_viz.type;
                 document.getElementById('echart-options-xaxis').value = saved_viz.xaxis;
                 document.getElementById('echart-options-yaxis').value = saved_viz.yaxis;
+                document.getElementById('echart-options-zaxis').value = saved_viz.zaxis;
                 document.getElementById('echart-options-group').value = saved_viz.group;
             }
         } else {
@@ -69,6 +71,7 @@ function make_viz() {
     } catch (error) {
         console.error(`Failed to draw chart`);
         console.error(error);
+        // TODO maybe show this error to user, insert child to echart el
     }
 }
 window.make_viz = make_viz;
