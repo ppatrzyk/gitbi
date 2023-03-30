@@ -2,6 +2,9 @@
 {% block extendhead %}
     <link href="{{ request.app.url_path_for('static', path='/css/github.min.css') }}" rel="stylesheet">
     <script src="{{ request.app.url_path_for('static', path='/js/echarts.min.js') }}"></script>
+    <script type="module">
+        {% include 'js/code_editor.js' %}
+    </script>
 {% endblock %}
 {% block title %}Query | {{ file }}{% endblock %}
 {% block content %}
@@ -95,11 +98,8 @@
         </details>
     </div>
     {% include 'partial_report_cron.html' %}
-    <script type="module">
-    {% include 'js/code_editor.js' %}
-    </script>
     <script type="text/javascript">
-    {% include 'js/viz.js' %}
-    {% include 'js/viz_control.js' %}
+        {% include 'js/viz.js' %}
+        {% include 'js/viz_control.js' %}
     </script>
 {% endblock %}

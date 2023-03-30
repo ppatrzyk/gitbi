@@ -64,14 +64,13 @@ function create_viz(current_data, chart_options, chart_el) {
             echarts_conf.series.forEach(el => el['label'] = {show: true});
             in_range = {color: ['rgb(252, 255, 164)', 'rgb(249, 142, 9)', 'rgb(188, 55, 84)', 'rgb(87, 16, 110)', 'rgb(0, 0, 4)']};
         } else if (['line', 'scatter'].includes(chart_options.type)) {
-            in_range = {symbolSize: [30, 100]}
+            in_range = {symbolSize: [10, 60]}
         } else {
             throw new Error('z axis does not make sense for this chart type');
         }
         var z_data = series.map(el => el.data).flat().map(el => el[2])
         echarts_conf['visualMap'] = {min: Math.min(...z_data), max: Math.max(...z_data) , type: 'continuous', dimension: 2, inRange: in_range};
     }
-    console.log(echarts_conf)
     var chart = echarts.init(chart_el);
     chart.setOption(echarts_conf);
 }

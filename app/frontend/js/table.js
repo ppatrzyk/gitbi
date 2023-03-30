@@ -1,11 +1,9 @@
-try {
-    var table_id = `{{ table_id }}`;
-    var data = JSON.parse(`{{ data_json }}`)
-    // send new data to viz
-    // applicable only to table created from user running query
+function create_table(table_id, echart_id, data) {
     if (table_id.startsWith('results-table')) {
+        // send new data to viz
+        // applicable only to table created from user running query
         var new_data = new CustomEvent("newdata", {detail: {data: data, id: table_id}});
-        document.getElementById(`{{ echart_id }}`).dispatchEvent(new_data);
+        document.getElementById(echart_id).dispatchEvent(new_data);
     }
     // generate table
     var table = document.getElementById(table_id);
@@ -34,7 +32,4 @@ try {
         })
     });
     search_button.insertAdjacentElement('afterend', csv_button);
-} catch (error) {
-    console.error(`Failed to make interactive table id=${table_id}`);
-    console.error(error);
 }

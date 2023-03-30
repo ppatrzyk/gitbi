@@ -22,7 +22,6 @@ async def dashboard_route(request):
         status_code = 404 if isinstance(e, RuntimeError) else 500
         raise HTTPException(status_code=status_code, detail=str(e))
     else:
-        
         return utils.TEMPLATES.TemplateResponse(name='dashboard.html', context=data)
 
 async def delete_route(request):
@@ -37,7 +36,8 @@ async def delete_route(request):
         response = PlainTextResponse(content="OK", headers=headers, status_code=200)
     except Exception as e:
         status_code = 404 if isinstance(e, RuntimeError) else 500
-        return utils.partial_html_error(str(e), status_code)
+        data = {"request": request, "code": status_code, "message": str(e)}
+        return utils.TEMPLATES.TemplateResponse(name='partial_error.html', context=data)
     else:
         return response
 
@@ -59,6 +59,7 @@ async def save_route(request):
         response = PlainTextResponse(content="OK", headers=headers, status_code=200)
     except Exception as e:
         status_code = 404 if isinstance(e, RuntimeError) else 500
-        return utils.partial_html_error(str(e), status_code)
+        data = {"request": request, "code": status_code, "message": str(e)}
+        return utils.TEMPLATES.TemplateResponse(name='partial_error.html', context=data)
     else:
         return response

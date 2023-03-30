@@ -96,14 +96,6 @@ def _data_convert(el):
         el = html.escape(el)
     return el, dtype
 
-def partial_html_error(message, code):
-    """
-    Creates successful (200) reponse for htmx (with error msg)
-    even if endpoint actually failed
-    """
-    error_msg = f"<h3>Error {code}</h3><p>{message}</p>"
-    return HTMLResponse(content=error_msg, status_code=200)
-
 def common_context_args(request):
     """
     Return context args common for all endpoints

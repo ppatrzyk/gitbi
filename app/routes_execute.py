@@ -27,7 +27,8 @@ async def execute_route(request):
         no_rows = len(rows)
     except Exception as e:
         status_code = 404 if isinstance(e, RuntimeError) else 500
-        return utils.partial_html_error(str(e), status_code)
+        data = {"request": request, "code": status_code, "message": str(e)}
+        return utils.TEMPLATES.TemplateResponse(name='partial_error.html', context=data)
     else:
         data = {
             **utils.common_context_args(request),

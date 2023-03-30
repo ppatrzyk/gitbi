@@ -71,10 +71,9 @@ function make_viz() {
     } catch (error) {
         console.error(`Failed to draw chart`);
         console.error(error);
-        // TODO maybe show this error to user, insert child to echart el
+        create_error(chart_id, error)
     }
 }
-window.make_viz = make_viz;
 document.getElementById(chart_id).addEventListener("newdata", (e) => {
     current_data = e.detail.data;
     update_chart_options();

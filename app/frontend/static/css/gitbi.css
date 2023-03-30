@@ -12,6 +12,9 @@
 .hidden {
     display: none;
 }
+.error {
+    background: rgba(255,20,20,0.3);
+}
 .footer {
     text-align: center;
     margin-top: 4rem;
