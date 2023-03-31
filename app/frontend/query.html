@@ -9,7 +9,6 @@
 {% block title %}Query | {{ file }}{% endblock %}
 {% block content %}
     <h2>Query db: {{ db|e }}</h2>
-    <div id="db-details-{{ db }}"></div>
     <h4>Query</h4>
     <figure>
         <label for="query-editor">Query</label>
@@ -18,63 +17,66 @@
     <div>
         <label for="file-name">Query file name</label>
         <input type="text" id="file-name" name="file-name" placeholder="Enter file name" value="{{ file }}">
+        <small>Query name must have <em>.sql</em> or <em>.prql</em> extension</small>
     </div>
-    <a
-        class="hidden"
-        hx-get="{{ request.app.url_path_for('db_details_route', db=db) }}"
-        hx-trigger="load"
-        hx-target="#db-details-{{ db }}"
-        hx-swap="outerHTML"
-    >
-        Load table info
-    </a>
-    <div
-        role="button"
-        hx-post="{{ request.app.url_path_for('execute_route', db=db) }}"
-        hx-vals="js:{data: query_format()}"
-        hx-trigger="click"
-        hx-target="#query-result"
-        hx-swap="innerHTML"
-    >
-        Run
-    </div>
-    <div
-        role="button"
-        class="secondary"
-        hx-post="{{ request.app.url_path_for('query_save_route', db=db) }}"
-        hx-vals="js:{data: query_format()}"
-        hx-trigger="click"
-        hx-target="#save-error"
-        hx-swap="innerHTML"
-    >
-        Save query
-    </div>
-    {% if delete_button %}
-    <div
-        role="button"
-        class="secondary"
-        hx-get="{{ request.app.url_path_for('query_delete_route', db=db, file=file) }}"
-        hx-trigger="click"
-        hx-target="#save-error"
-        hx-swap="innerHTML"
-    >
-        Delete query
-    </div>
-    {% endif %}
-    <div
-        role="button"
-        class="secondary"
-        onclick="generate_link()"
-    >
-        Generate share link
+    <div class="grid">
+        <div
+            role="button"
+            hx-post="{{ request.app.url_path_for('execute_route', db=db) }}"
+            hx-vals="js:{data: query_format()}"
+            hx-trigger="click"
+            hx-target="#query-result"
+            hx-swap="innerHTML"
+        >
+            Run
+        </div>
+        <div
+            role="button"
+            class="secondary"
+            hx-post="{{ request.app.url_path_for('query_save_route', db=db) }}"
+            hx-vals="js:{data: query_format()}"
+            hx-trigger="click"
+            hx-target="#save-error"
+            hx-swap="innerHTML"
+        >
+            Save query
+        </div>
+        {% if file != "" %}
+        <div
+            role="button"
+            class="secondary"
+            hx-get="{{ request.app.url_path_for('query_delete_route', db=db, file=file) }}"
+            hx-trigger="click"
+            hx-target="#save-error"
+            hx-swap="innerHTML"
+        >
+            Delete query
+        </div>
+        {% endif %}
+        <div
+            role="button"
+            class="secondary"
+            onclick="generate_link()"
+        >
+            Generate share link
+        </div>
     </div>
     <div id="save-error"></div>
+    <br>
     <div>
+        <h4>Result</h4>
+        <details open>
+            <summary role="button">Table</summary>
+            <div id="query-result">
+                <p>No data available</p>
+                <p class="htmx-indicator" aria-busy="true">Running query...</p>
+            </div>
+        </details>
         <div id="query-result">
             <p class="htmx-indicator" aria-busy="true">Running query...</p>
         </div>
         <details open>
-            <summary>Visualization</summary>
+            <summary role="button">Visualization</summary>
             <div id="echart-note">No data available</div>
             <div id="echart-chart" class="hidden">
                 <div id="echart-options" class="grid">
@@ -91,12 +93,22 @@
                     <label for="echart-options-yaxis">Y axis<select id="echart-options-yaxis"></select></label>
                     <label for="echart-options-zaxis">Z axis<select id="echart-options-zaxis"></select></label>
                     <label for="echart-options-group">Group<select id="echart-options-group"></select></label>
-                    <button id="echart-render" class="secondary" onclick="make_viz()">Render chart</button>
                 </div>
+                <button id="echart-render" class="secondary" onclick="make_viz()">Render chart</button>
                 <div id="{{ echart_id }}"></div>
             </div>
         </details>
     </div>
+    <div id="db-details-{{ db }}"></div>
+    <a
+        class="hidden"
+        hx-get="{{ request.app.url_path_for('db_details_route', db=db) }}"
+        hx-trigger="load"
+        hx-target="#db-details-{{ db }}"
+        hx-swap="outerHTML"
+    >
+        Load table info
+    </a>
     {% include 'partial_report_cron.html' %}
     <script type="text/javascript">
         {% include 'js/viz.js' %}

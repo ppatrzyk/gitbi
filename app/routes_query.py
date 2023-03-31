@@ -59,8 +59,7 @@ async def query_route(request):
     else:
         request.state.query_data = {
             "query": request.query_params.get('query') or "",
-            "file": "new_query.sql",
-            "delete_button": False,
+            "file": "",
             "report_url": None,
             **request.path_params, # db
         }
@@ -81,7 +80,6 @@ async def saved_query_route(request):
         request.state.query_data = {
             "query": query_str,
             "viz": viz_str,
-            "delete_button": True,
             "report_url": report_url,
             "email_alert_url": email_alert_url,
             "email_report_url": email_report_url,

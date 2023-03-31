@@ -1,11 +1,7 @@
 {# partial html - this is used by htmx passing result #}
-<h2>Result</h2>
 <p>
     Returned {{ no_rows|e }} rows in {{ duration|e }}ms<br>
     Executed on {{ time|e }}
 </p>
-<details open>
-    <summary>Table</summary>
-    {# table also contains js script that replaces current data in document #}
-    {{ table }}
-</details>
+{# table also contains js script that replaces current data in document #}
+{{ table }}
