@@ -58,12 +58,9 @@ def list_table_data_types(db, tables):
         case other_db:
             raise ValueError(f"Bad DB: {other_db}")
     _col_names, rows, _duration_ms = execute(db, query, "sql")
-    data_types = {table: [] for table in tables}
-    for row in rows:
-        data_types[row[0]].append((row[1], row[2], ))
-    headers = ("column_name", "data_type", )
-    data_types = {table: utils.format_table(utils.random_id(), utils.random_id(), headers, rows, True) for table, rows in data_types.items()}
-    return data_types
+    col_names = ("table", "column", "type", )
+    table = utils.format_table(utils.random_id(), utils.random_id(), col_names, rows, True)
+    return table
 
 def execute(db, query, lang):
     """

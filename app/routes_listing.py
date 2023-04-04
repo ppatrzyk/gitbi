@@ -13,12 +13,14 @@ async def home_route(request):
     """
     try:
         state = request.path_params.get("state")
+        databases = repo.list_sources(state)
         data = {
             **utils.common_context_args(request),
             "state": state,
             "readme": repo.get_readme(state),
-            "databases": repo.list_sources(state),
+            "databases": databases,
             "dashboards": repo.list_dashboards(state),
+            "db_toc": (len(databases.keys()) > 1),
         }
     except Exception as e:
         raise HTTPException(status_code=404, detail=str(e))
@@ -39,7 +41,7 @@ async def db_details_route(request):
     try:
         db = request.path_params.get("db")
         tables = query.list_tables(db)
-        data_types = query.list_table_data_types(db, tables)
+        data_docs = query.list_table_data_types(db, tables)
     except Exception as e:
         status_code = 404 if isinstance(e, RuntimeError) else 500
         data = {"request": request, "code": status_code, "message": str(e)}
@@ -47,9 +49,8 @@ async def db_details_route(request):
     else:
         data = {
             **utils.common_context_args(request),
+            "data_docs": data_docs,
             "tables": tables,
-            "data_types": data_types,
-            "tables_toc": (len(tables) > 1),
             **request.path_params,
         }
         return utils.TEMPLATES.TemplateResponse(name='partial_db_details.html', context=data)

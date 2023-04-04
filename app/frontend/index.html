@@ -7,66 +7,71 @@
     <h1>Gitbi Home</h1>
     <p>[Readme file is missing]</p>
     {% endif %}
-    <h2>Dashboards</h2>
-    <details class="nested-details">
-        <summary role="button">New dashboard</summary>
-        <fieldset id="dashboard-choices">
-            {% for db, queries in databases.items() %}
-                {% for query in queries %}
-                <label for="{{ db|e }}-{{ query|e }}">
-                    <input type="checkbox" id="{{ db|e }}/{{ query|e }}" name="{{ db|e }}/{{ query|e }}">
-                    <span><strong>{{ db|e }}</strong>: {{ query|e }}</span>
-                </label>
-                {% endfor %}
-            {% endfor %}
-        </fieldset>
-        <div>
-            <label for="dashboard-file-name">Dashboard file name</label>
-            <input type="text" id="dashboard-file-name" name="dashboard-file-name" placeholder="Enter file name">
-            <small>Dashboard name must have <em>.json</em> extension</small>
-        </div>
-        <div
-            role="button"
-            class="secondary"
-            hx-post="{{ request.app.url_path_for('dashboard_save_route') }}"
-            hx-vals="js:{data: dashboard_format()}"
-            hx-trigger="click"
-            hx-target="#save-error"
-            hx-swap="innerHTML"
-        >
-            Save dashboard
-        </div>
-        <div id="save-error"></div>
-    </details>
-    {% for dashboard in dashboards %}
-    <a role="button" class="secondary nested-details" href="{{ request.app.url_path_for('dashboard_route', state=state, file=dashboard) }}">{{ dashboard|e }}</a>
-    {% endfor %}
-    <h2>Data Sources</h2>
-    {% for db, queries in databases.items() %}
-    <a
-        class="hidden"
-        hx-get="{{ request.app.url_path_for('db_details_route', db=db) }}"
-        hx-trigger="load"
-        hx-target="#db-details-{{ db }}"
-        hx-swap="outerHTML"
-    >
-        Load table info
-    </a>
     <article>
-        <header><h3 class="no-margin">
-            <img class="icon" src="data:image/svg+xml;utf8;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxNzkyIiBoZWlnaHQ9IjE3OTIiPjxwYXRoIGQ9Ik04OTYgNzY4cTIzNyAwIDQ0My00M3QzMjUtMTI3djE3MHEwIDY5LTEwMyAxMjh0LTI4MCA5My41LTM4NSAzNC41LTM4NS0zNC41VDIzMSA4OTYgMTI4IDc2OFY1OThxMTE5IDg0IDMyNSAxMjd0NDQzIDQzem0wIDc2OHEyMzcgMCA0NDMtNDN0MzI1LTEyN3YxNzBxMCA2OS0xMDMgMTI4dC0yODAgOTMuNS0zODUgMzQuNS0zODUtMzQuNS0yODAtOTMuNS0xMDMtMTI4di0xNzBxMTE5IDg0IDMyNSAxMjd0NDQzIDQzem0wLTM4NHEyMzcgMCA0NDMtNDN0MzI1LTEyN3YxNzBxMCA2OS0xMDMgMTI4dC0yODAgOTMuNS0zODUgMzQuNS0zODUtMzQuNS0yODAtOTMuNS0xMDMtMTI4Vjk4MnExMTkgODQgMzI1IDEyN3Q0NDMgNDN6TTg5NiAwcTIwOCAwIDM4NSAzNC41dDI4MCA5My41IDEwMyAxMjh2MTI4cTAgNjktMTAzIDEyOHQtMjgwIDkzLjVUODk2IDY0MHQtMzg1LTM0LjVUMjMxIDUxMiAxMjggMzg0VjI1NnEwLTY5IDEwMy0xMjh0MjgwLTkzLjVUODk2IDB6Ii8+PC9zdmc+" alt="">
-            {{ db|e }}
-        </h3></header>
+        <header><h3 class="no-margin">Dashboards</h3></header>
+        {% for dashboard in dashboards %}
+        <a role="button" class="small-button" href="{{ request.app.url_path_for('dashboard_route', state=state, file=dashboard) }}">{{ dashboard|e }}</a>
+        {% endfor %}
         <details class="nested-details">
-            <summary role="button">Queries in {{ db|e }}</summary>
-            <a class="nested-details" role="button" href="{{ request.app.url_path_for('query_route', db=db) }}">New query</a>
-            {% for query in queries %}
-            <a role="button" class="secondary nested-details" href="{{ request.app.url_path_for('saved_query_route', state=state, db=db, file=query) }}">{{ query|e }}</a>
-            {% endfor %}
+            <summary role="button">New dashboard</summary>
+            <fieldset id="dashboard-choices">
+                {% for db, queries in databases.items() %}
+                    {% for query in queries %}
+                    <label for="{{ db|e }}-{{ query|e }}">
+                        <input type="checkbox" id="{{ db|e }}/{{ query|e }}" name="{{ db|e }}/{{ query|e }}">
+                        <span><strong>{{ db|e }}</strong>: {{ query|e }}</span>
+                    </label>
+                    {% endfor %}
+                {% endfor %}
+            </fieldset>
+            <div>
+                <label for="dashboard-file-name">Dashboard file name</label>
+                <input type="text" id="dashboard-file-name" name="dashboard-file-name" placeholder="Enter file name">
+                <small>Dashboard name must have <em>.json</em> extension</small>
+            </div>
+            <div
+                role="button"
+                class="secondary"
+                hx-post="{{ request.app.url_path_for('dashboard_save_route') }}"
+                hx-vals="js:{data: dashboard_format()}"
+                hx-trigger="click"
+                hx-target="#save-error"
+                hx-swap="innerHTML"
+            >
+                Save dashboard
+            </div>
+            <div id="save-error"></div>
         </details>
+    </article>
+    <article>
+        <header><h3 class="no-margin">Data Sources</h3></header>
+        {% if db_toc %}
+        <h4>TOC</h4>
+        <ol>
+            {% for db, _queries in databases.items() %}
+            <li><a href="#section-{{ db|e }}">{{ db|e }}</a></li>
+            {% endfor %}
+        </ol>
+        {% endif %}
+        {% for db, queries in databases.items() %}
+        <a
+            class="hidden"
+            hx-get="{{ request.app.url_path_for('db_details_route', db=db) }}"
+            hx-trigger="load"
+            hx-target="#db-details-{{ db }}"
+            hx-swap="outerHTML"
+        >
+            Load table info
+        </a>
+        <h3 id="section-{{ db|e }}">{{ db|e }}</h3>
+        <h4>Queries</h4>
+        <a class="small-button" role="button" href="{{ request.app.url_path_for('query_route', db=db) }}">New query</a>
+        {% for query in queries %}
+        <a role="button" class="small-button" href="{{ request.app.url_path_for('saved_query_route', state=state, db=db, file=query) }}">{{ query|e }}</a>
+        {% endfor %}
         <div id="db-details-{{ db }}"></div>
-      </article>
-    {% endfor %}
+        {% endfor %}
+    </article>
     <script type="text/javascript">
         {% include 'js/dashboard_creation.js' %}
     </script>

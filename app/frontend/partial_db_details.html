@@ -1,24 +1,9 @@
 {# partial html - this is used by htmx passing tables list #}
+<h4>Tables</h4>
+{% for table in tables %}
+<a class="small-button" role="button" href="{{ request.app.url_path_for('query_route', db=db) }}?query=select * from {{ table }} limit 10;">{{ table }}</a>
+{% endfor %}
 <details class="nested-details" id="db-details-{{ db }}">
-    <summary role="button">Tables in {{ db|e }}</summary>
-    {% if tables_toc %}
-    <h4>TOC</h4>
-    <ol>
-        {% for table in tables %}
-        <li><a href="#header-types-{{ table|e }}">{{ table|e }}</a></li>
-        {% endfor %}
-    </ol>
-    {% endif %}
-
-    {% for table in tables %} 
-    <h4 id="header-types-{{ table|e }}">
-        <img class="icon" src="data:image/svg+xml;utf8;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxNzkyIiBoZWlnaHQ9IjE3OTIiPjxwYXRoIGQ9Ik0yMjQgMTUzNmg2MDhWMzg0SDE5MnYxMTIwcTAgMTMgOS41IDIyLjV0MjIuNSA5LjV6bTEzNzYtMzJWMzg0SDk2MHYxMTUyaDYwOHExMyAwIDIyLjUtOS41dDkuNS0yMi41em0xMjgtMTIxNnYxMjE2cTAgNjYtNDcgMTEzdC0xMTMgNDdIMjI0cS02NiAwLTExMy00N3QtNDctMTEzVjI4OHEwLTY2IDQ3LTExM3QxMTMtNDdoMTM0NHE2NiAwIDExMyA0N3Q0NyAxMTN6Ii8+PC9zdmc+" alt="">
-        {{ table|e }}
-    </h4>
-    <a class="nested-details" role="button" href="{{ request.app.url_path_for('query_route', db=db) }}?query=select * from {{ table }} limit 10;">New query</a>
-    <details class="nested-details">
-        <summary role="button" class="secondary">Columns in {{ table|e }}</summary>
-        {{ data_types[table] }}
-    </details>
-    {% endfor %}
+    <summary role="button">Data docs</summary>
+    {{ data_docs }}
 </details>
