@@ -143,7 +143,7 @@ def list_commits():
         commit = (
             str(el.id),
             str(el.author),
-            datetime.fromtimestamp(el.commit_time).isoformat(),
+            datetime.fromtimestamp(el.commit_time).astimezone().strftime("%Y-%m-%d %H:%M:%S %Z"),
             el.message.replace("\n", ""),
         )
         commits.append(commit)

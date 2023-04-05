@@ -38,6 +38,7 @@
 .small-button {
     padding: 8px;
     border-radius: 18px;
+    margin-bottom: 5px;
 }
 .sources-list {
     margin-top: 1rem;

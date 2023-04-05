@@ -33,7 +33,7 @@
           {% if user is not none %}
           <li>User: {{ user|e }}</li>
           {% endif %}
-          <li><a role="button" class="small-button" href="#" hx-get="{{ request.app.url_path_for('commits_route') }}" hx-trigger="click" hx-target="#commits-section" hx-swap="outerHTML">
+          <li><a href="#" hx-get="{{ request.app.url_path_for('commits_route') }}" hx-trigger="click" hx-target="#commits-section" hx-swap="outerHTML">
           Show commits
           </a></li>
         </ul>

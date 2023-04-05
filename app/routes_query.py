@@ -30,7 +30,13 @@ async def save_route(request):
     try:
         form = await request.form()
         data = utils.parse_query_data(request, form)
-        repo.save_query(**request.path_params, **data)
+        repo.save_query(
+            user=utils.common_context_args(request).get("user"),
+            db=request.path_params["db"],
+            file=data["file"],
+            query=data["query"],
+            viz=data["viz"],
+        )
         redirect_url = request.app.url_path_for(
             "saved_query_route",
             db=request.path_params['db'],

@@ -48,7 +48,6 @@ async def save_route(request):
     try:
         form = await request.form()
         data = utils.parse_dashboard_data(request, form)
-        print(data)
         repo.save_dashboard(**request.path_params, **data)
         redirect_url = request.app.url_path_for(
             "dashboard_route",

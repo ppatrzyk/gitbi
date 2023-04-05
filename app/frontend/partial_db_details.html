@@ -1,10 +1,12 @@
 {# partial html - this is used by htmx passing tables list #}
 <details id="db-details-{{ db }}">
     <summary role="button">Data docs</summary>
-    <h4>Tables</h4>
-    {% for table in tables %}
-    <a class="secondary small-button" role="button" target="_blank" href="{{ request.app.url_path_for('query_route', db=db) }}?query=select * from {{ table }} limit 10;">{{ table }}</a>
-    {% endfor %}
+    <h4 class="no-margin">Tables</h4>
+    <div class="sources-list">
+        {% for table in tables %}
+        <a class="secondary small-button" role="button" target="_blank" href="{{ request.app.url_path_for('query_route', db=db) }}?query=select * from {{ table }} limit 10;">{{ table }}</a>
+        {% endfor %}
+    </div>
     <h4>Columns</h4>
     {{ data_docs }}
 </details>

@@ -8,7 +8,6 @@ import json
 import os
 from pathlib import Path
 from starlette.templating import Jinja2Templates
-from starlette.responses import HTMLResponse
 import uuid
 
 VERSION = "0.7"
