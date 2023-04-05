@@ -1,25 +1,25 @@
 {# partial html - this is used by htmx inserting one query into dashboard #}
+<hgroup>
+    <h4>{{ db|e }}/{{ file|e }}</h4>
+    <h5>Executed on {{ time|e }}</h5>
+</hgroup>
+<details>
+    <summary role="button" class="secondary">Table</summary>
+    {{ table }}
+</details>
 <details open>
-    <summary role="button">{{ db|e }}/{{ file|e }}</summary>
-    <p>Executed on {{ time|e }}</p>
-    <details class="nested-details">
-        <summary role="button" class="secondary">Table</summary>
-        {{ table }}
-    </details>
-    <details class="nested-details" open>
-        <summary role="button" class="secondary">Visualization</summary>
-        <div id="{{ echart_id }}"></div>
-        <script type="text/javascript">
-            try {
-                var chart_id = `{{ echart_id }}`;
-                var chart_options = JSON.parse(`{{ viz }}`);
-                var chart_el = document.getElementById(chart_id);
-                create_viz(data, chart_options, chart_el);
-            } catch (error) {
-                console.error(`Failed to draw chart`);
-                console.error(error);
-                create_error(chart_id, error)
-            }
-        </script>
-    </details>
+    <summary role="button" class="secondary">Visualization</summary>
+    <div id="{{ echart_id }}"></div>
+    <script type="text/javascript">
+        try {
+            var chart_id = `{{ echart_id }}`;
+            var chart_options = JSON.parse(`{{ viz }}`);
+            var chart_el = document.getElementById(chart_id);
+            create_viz(data, chart_options, chart_el);
+        } catch (error) {
+            console.error(`Failed to draw chart`);
+            console.error(error);
+            create_error(chart_id, error)
+        }
+    </script>
 </details>

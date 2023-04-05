@@ -35,18 +35,13 @@
 .no-margin {
     margin: 0 !important;
 }
-.nested-details {
-    margin-left: 5%;
-    margin-right: 5%;
-    margin-bottom: 1rem;
-    width: 90%;
-}
-.nested-details summary {
-    text-align: center !important;
-}
 .small-button {
-    padding: 5px;
+    padding: 8px;
     border-radius: 18px;
+}
+.sources-list {
+    margin-top: 1rem;
+    margin-bottom: 1rem;
 }
 .gitbi-logo {
     font-variant-caps: all-small-caps;
