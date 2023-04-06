@@ -42,22 +42,29 @@ def list_table_data_types(db, tables):
     List columns and their data types for given tables in DB
     """
     db_type, _conn_str = repo.get_db_params(db)
-    match db_type:
-        # Every query must return table with 3 cols: table_name, column_name, data_type
-        case "sqlite" | "duckdb":
-            query = " union all ".join(f"select '{table}', name, type from pragma_table_info('{table}')" for table in tables)
-        case "postgres":
-            tables_joined = ', '.join(f"\'{table}\'" for table in tables)
-            query = f"""
-            select * from
-            (select concat(table_schema, '.', table_name) as table, column_name, data_type from information_schema.columns) as tables
-            where tables.table in ({tables_joined});
-            """
-        case "clickhouse":
-            query = "SELECT table, name, type FROM system.columns where database == currentDatabase();"
-        case other_db:
-            raise ValueError(f"Bad DB: {other_db}")
-    _col_names, rows, _duration_ms = execute(db, query, "sql")
+    if tables:
+        match db_type:
+            # Every query must return table with 3 cols: table_name, column_name, data_type
+            case "sqlite" | "duckdb":
+                query = " union all ".join(f"select '{table}', name, type from pragma_table_info('{table}')" for table in tables)
+            case "postgres":
+                tables_joined = ', '.join(f"\'{table}\'" for table in tables)
+                query = f"""
+                select * from
+                (select concat(table_schema, '.', table_name) as table, column_name, data_type from information_schema.columns) as tables
+                where tables.table in ({tables_joined});
+                """
+            case "clickhouse":
+                tables_joined = ', '.join(f"\'{table}\'" for table in tables)
+                query = f"""
+                SELECT table, name, type FROM system.columns
+                where database == currentDatabase() and table in ({tables_joined});
+                """
+            case other_db:
+                raise ValueError(f"Bad DB: {other_db}")
+        _col_names, rows, _duration_ms = execute(db, query, "sql")
+    else:
+        rows = tuple()
     col_names = ("table", "column", "type", )
     table = utils.format_table(utils.random_id(), utils.random_id(), col_names, rows, True)
     return table
@@ -81,7 +88,7 @@ def _execute_query(driver, conn_str, query):
     """
     try:
         if driver in (sqlite3, duckdb, ) and conn_str != ":memory:":
-            assert os.path.exists(conn_str), f"No sqlite DB at {conn_str}"
+            assert os.path.exists(conn_str), f"No DB file at path: {conn_str}"
         conn = driver.connect(conn_str)
         cursor = conn.cursor()
         statements = (sqlparse.format(s, strip_comments=True).strip() for s in sqlparse.split(query))

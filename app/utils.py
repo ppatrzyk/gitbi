@@ -54,7 +54,10 @@ def format_table(table_id, echart_id, headers, rows, interactive):
     """
     Format data into a html table
     """
-    dtypes = tuple(_data_convert(el)[1] for el in rows[0])
+    if rows:
+        dtypes = tuple(_data_convert(el)[1] for el in rows[0])
+    else:
+        dtypes = tuple(None for _ in headers)
     headers = tuple(_data_convert(el)[0] for el in headers)
     rows = tuple(tuple(_data_convert(el)[0] for el in row) for row in rows)
     data = {"request": None, "table_id": table_id, "echart_id": echart_id}

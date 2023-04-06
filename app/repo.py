@@ -303,6 +303,6 @@ def _read_env_var(key):
             file_key = f"{key}_FILE"
             value_file = os.environ[file_key]
             value = _get_file_content('file', value_file)
-        except:
-            raise NameError(f"Neither {key} nor valid {file_key} was set")
+        except Exception as e:
+            raise NameError(f"Neither {key} nor valid {file_key} was set: {str(e)}")
     return value

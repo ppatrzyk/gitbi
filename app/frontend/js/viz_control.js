@@ -57,6 +57,8 @@ function update_chart_options() {
 function make_viz() {
     // this function wraps viz creation for query page
     try {
+        var chart_el = document.getElementById(chart_id);
+        var chart_options = get_chart_options();
         if (current_data === null || current_data.data.length === 0) {
             document.getElementById('echart-note').classList.remove("hidden");
             document.getElementById('echart-chart').classList.add("hidden");
@@ -64,10 +66,8 @@ function make_viz() {
         } else {
             document.getElementById('echart-note').classList.add("hidden");
             document.getElementById('echart-chart').classList.remove("hidden");
+            create_viz(current_data, chart_options, chart_el);
         }
-        var chart_el = document.getElementById(chart_id);
-        var chart_options = get_chart_options();
-        create_viz(current_data, chart_options, chart_el);
     } catch (error) {
         console.error(`Failed to draw chart`);
         console.error(error);
