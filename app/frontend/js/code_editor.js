@@ -7,7 +7,7 @@ var query_editor = document.getElementById("query-editor");
 window.query_jar = CodeJar(query_editor, hljs.highlightElement);
 function query_format() {
     var file_name = document.getElementById("file-name").value.trim();
-    var data = {query: query_jar.toString(), viz: JSON.stringify(window.get_chart_options()), file: file_name, echart_id: `{{ echart_id }}`};
+    var data = {query: query_jar.toString(), viz: JSON.stringify(window.get_chart_options()), file: file_name, echart_id: '{{ echart_id }}'};
     return JSON.stringify(data)
 }
 window.query_format = query_format;

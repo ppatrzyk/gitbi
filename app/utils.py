@@ -3,14 +3,13 @@ common functions for all routes
 """
 import datetime
 import decimal
-import html
 import json
 import os
 from pathlib import Path
 from starlette.templating import Jinja2Templates
 import uuid
 
-VERSION = "0.7"
+VERSION = "0.8"
 APP_DIR = os.path.abspath(os.path.dirname(__file__))
 STATIC_DIR = os.path.join(APP_DIR, "frontend/static")
 TEMPLATE_DIR = os.path.join(APP_DIR, "frontend")
@@ -94,8 +93,6 @@ def _data_convert(el):
         case _:
             el = str(el)
             dtype = "category"
-    if isinstance(el, str):
-        el = html.escape(el)
     return el, dtype
 
 def common_context_args(request):

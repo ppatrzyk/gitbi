@@ -12,8 +12,8 @@
     <div id="{{ echart_id }}"></div>
     <script type="text/javascript">
         try {
-            var chart_id = `{{ echart_id }}`;
-            var chart_options = JSON.parse(`{{ viz }}`);
+            var chart_id = '{{ echart_id }}';
+            var chart_options = JSON.parse('{{ viz }}');
             var chart_el = document.getElementById(chart_id);
             create_viz(data, chart_options, chart_el);
         } catch (error) {

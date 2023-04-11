@@ -12,10 +12,10 @@
     <script src="{{ request.app.url_path_for('static', path='/js/htmx.min.js') }}"></script>
     <script src="{{ request.app.url_path_for('static', path='/js/simple-datatables.7.1.2.js') }}"></script>
     <script type="text/javascript">
-      {% include 'js/table.js' %}
+      {% include 'js/utils.js' %}
     </script>
     <script type="text/javascript">
-      {% include 'js/error_msg.js' %}
+      {% include 'js/table.js' %}
     </script>
     {% block extendhead %}{% endblock %}
     <title>Gitbi | {% block title %}{% endblock %}</title>

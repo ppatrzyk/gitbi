@@ -1,9 +1,9 @@
-var chart_id = `{{ echart_id }}`
+var chart_id = '{{ echart_id }}'
 var current_data = null;
 var initial_viz = true;
 var saved_viz;
 try {
-    saved_viz = JSON.parse(`{{ viz }}`);
+    saved_viz = JSON.parse('{{ viz }}');
 } catch (_e) {
     saved_viz = null;
 }
