@@ -7,8 +7,8 @@ clickhouse-driver==0.2.5
 duckdb==0.7.1
 exceptiongroup==1.1.1
 h11==0.14.0
-httpcore==0.16.3
-httpx==0.23.3
+httpcore==0.17.0
+httpx==0.24.0
 idna==3.4
 iniconfig==2.0.0
 Jinja2==3.1.2
@@ -16,16 +16,17 @@ Markdown==3.4.3
 MarkupSafe==2.1.2
 packaging==23.0
 pluggy==1.0.0
+prettytable==3.7.0
 prql-python==0.7.1
 psycopg==3.1.8
 psycopg-binary==3.1.8
 pycparser==2.21
 pygit2==1.12.0
-pytest==7.2.2
+pytest==7.3.0
 python-multipart==0.0.6
 pytz==2023.3
 pytz-deprecation-shim==0.1.0.post0
-rfc3986==1.5.0
+rfc3986==2.0.0
 six==1.16.0
 sniffio==1.3.0
 sqlparse==0.4.3
@@ -35,3 +36,4 @@ typing_extensions==4.5.0
 tzdata==2023.3
 tzlocal==4.3
 uvicorn==0.21.1
+wcwidth==0.2.6

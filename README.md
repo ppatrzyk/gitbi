@@ -82,21 +82,25 @@ GITBI_DB2_TYPE=<type_db2>
 
 ## Usage
 
-You can view your queries with two endpoints:
+You can trigger your queries with the following endpoints:
 
-- `/query/{db}/{file}/{state}`: this endpoint displays query on a web page and allows you to edit or execute it interactively
-- `/report/{db}/{file}/{state}`: this endpoint displays _and executes_ query, returning self-contained and non-interactive (no JS) html with results
+Endpoint | Query params | Description
+--- | ---
+`/query/{db}/{file}/{state}` | - | displays query on a web page and allows you to edit or execute it interactively
+`/report/{db}/{file}/{state}` | format | displays _and executes_ query, returning self-contained and non-interactive (no JS) html with results
+`/email/{db}/{file}/{state}` | format, to, type | Executes query and sends result via email
 
-The use case for using report is to execute it and pipe results directly to email for reporting and alerting. Examples how to do it are auto-generated on each query page.
+Query parameters:
 
-Alternatively, for reporting and alerting, you can set up email credentials in _Gitbi_ and have the app email it to you. Relevant routes are:
+Query parameter | Description
+--- | ---
+format | _[html (default), text, json]_. Response format
+to | email(s) to which report should be sent
+type | _[report (default), alert]_. _report_ always sends an email with results when invoked, while _alert_ sends results _only if there are some rows returned_. Write your alert queries in a way that they usually do not return anything, but you want to be notified when they do.
 
-- `/email/alert/{db}/{file}/{state}?to=your@email.com`
-- `/email/report/{db}/{file}/{state}to=your@email.com`
-
-Both routes require query parameter `to` to be set. The difference between aforementioned routes is that _report_ always sends an email with results when invoked, while _alert_ sends results _only if there are some rows returned_. Write your alert queries in a way that they usually do not return anything, but you want to be notified when they do. If you don't have email credentials set up, you can implement this logic yourself - the number of rows for a query is available in a header `Gitbi-Row-Count`.
-
-Note, _Gitbi_ does not attempt to reinvent the wheel and suggests to use e.g. CRON for scheduling.
+Notes:
+- if you don't have email credentials set up, you can still implement alerting this logic yourself using `/report` endpoint - the number of rows for a query is available in a header `Gitbi-Row-Count`,
+- _Gitbi_ does not attempt to reinvent the wheel and suggests to use e.g. CRON for scheduling.
 
 ## Repo setup
 
@@ -124,10 +128,11 @@ docker build -t pieca/gitbi:<version> .
 
 ## Some alternatives
 
-- if you want to generate static html reports from db queries using Python: [merkury](https://github.com/ppatrzyk/merkury)
-- if you want to analyze single sqlite db: [datasette](https://github.com/simonw/datasette)
-- if you want to run queries from your browser: [sqlpad](https://github.com/sqlpad/sqlpad), [chartbrew](https://github.com/chartbrew/chartbrew)
-- if you want a full-blown BI solution: [metabase](https://github.com/metabase/metabase)
+- generate static html reports from SQL queries using Python: [merkury](https://github.com/ppatrzyk/merkury)
+- create custom dashboards using SQL and markdown: [evidence](https://github.com/evidence-dev/evidence)
+- analyze single sqlite db: [datasette](https://github.com/simonw/datasette)
+- run SQL queries from your browser: [sqlpad](https://github.com/sqlpad/sqlpad)
+- full-blown BI solution: [metabase](https://github.com/metabase/metabase)
 
 ## Acknowledgements
 
@@ -136,6 +141,7 @@ Backend:
 - [duckdb](https://github.com/duckdb/duckdb/tree/master/tools/pythonpkg)
 - [jinja](https://github.com/pallets/jinja/)
 - [markdown](https://github.com/Python-Markdown/markdown)
+- [prettytable](https://github.com/jazzband/prettytable)
 - [prql](https://github.com/PRQL/prql/tree/main/bindings/prql-python)
 - [psycopg](https://github.com/psycopg/psycopg)
 - [pygit2](https://github.com/libgit2/pygit2)

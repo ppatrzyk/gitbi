@@ -25,8 +25,7 @@ async def server_error(request, exc):
 
 routes = [
     # routes execute
-    Route('/email/alert/{db:str}/{file:str}/{state:str}', endpoint=routes_execute.email_alert_route, name="email_alert_route"),
-    Route('/email/report/{db:str}/{file:str}/{state:str}', endpoint=routes_execute.email_report_route, name="email_report_route"),
+    Route('/email/{db:str}/{file:str}/{state:str}', endpoint=routes_execute.email_route, name="email_route"),
     Route('/execute/{db:str}', endpoint=routes_execute.execute_route, methods=("POST", ), name="execute_route"),
     Route('/report/{db:str}/{file:str}/{state:str}', endpoint=routes_execute.report_route, name="report_route"),
     Route('/dashboard-entry/{db:str}/{file:str}/{state:str}', endpoint=routes_execute.dashboard_entry_route, name="dashboard_entry_route"),

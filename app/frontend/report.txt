@@ -1,0 +1,6 @@
+{{ db|e }} | {{ file|e }} | {{ state|e }}
+
+Returned {{ no_rows|e }} rows in {{ duration|e }}ms
+Executed on {{ time|e }}
+
+{{ table }}
