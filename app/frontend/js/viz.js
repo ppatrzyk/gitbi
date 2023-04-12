@@ -25,11 +25,10 @@ function series_multi(current_data, chart_options) {
     return series
 }
 function create_viz(current_data, chart_options, chart_el) {
-    var axis_opts = {
-        nameLocation: 'middle',
-        min: function (value) {return value.min - ((value.max-value.min)*0.1);},
-        max: function (value) {return value.max + ((value.max-value.min)*0.1);},
-        splitArea: {show: true},
+    var axis_opts = {nameLocation: 'middle', nameTextStyle: {padding: 20}, splitArea: {show: true}, }
+    if (['line', 'scatter'].includes(chart_options.type)) {
+        axis_opts.min = function (value) {return value.min - ((value.max-value.min)*0.1);};
+        axis_opts.max = function (value) {return value.max + ((value.max-value.min)*0.1);};
     }
     chart_options.x_index = current_data.headings.indexOf(chart_options.xaxis);
     chart_options.y_index = current_data.headings.indexOf(chart_options.yaxis);
@@ -49,11 +48,11 @@ function create_viz(current_data, chart_options, chart_el) {
         var series = series_multi(current_data, chart_options);
     }
     var echarts_conf = {
-        legend: {show: true, },
+        legend: {show: true, top: 20, },
         toolbox: {show: true, feature: {saveAsImage: {show: true}}},
         tooltip: {show: true, triggerOn: "mousemove", },
         title: {show: true, text: title},
-        textStyle: {fontFamily: 'Ubuntu'},
+        textStyle: {fontFamily: 'Ubuntu', fontSize: 16},
         xAxis: Object.assign({}, {type: current_data.dtypes[chart_options.x_index], name: chart_options.xaxis}, axis_opts),
         yAxis: Object.assign({}, {type: current_data.dtypes[chart_options.y_index], name: chart_options.yaxis}, axis_opts),
         series: series,

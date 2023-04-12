@@ -91,7 +91,7 @@ async def dashboard_entry_route(request):
         query=query_str,
         lang=lang
     )
-    table_id = utils.random_id()
+    table_id = f"results-table-{utils.random_id()}"
     echart_id = utils.random_id()
     table = utils.format_htmltable(table_id, echart_id, col_names, rows, True)
     data = {

@@ -1,4 +1,11 @@
 {# partial html - this is used by htmx inserting one query into dashboard #}
+<script type="text/javascript">
+    var chart_options = {{ viz }};
+    var chart_el = document.getElementById('{{ echart_id }}');
+    chart_el.addEventListener("newdata", (e) => {
+        create_viz(e.detail.data, chart_options, chart_el);
+    });
+</script>
 <hgroup>
     <h4>{{ db|e }}/{{ file|e }}</h4>
     <h5>Executed on {{ time|e }}</h5>
@@ -10,16 +17,4 @@
 <details open>
     <summary role="button">Visualization</summary>
     <div id="{{ echart_id }}"></div>
-    <script type="text/javascript">
-        try {
-            var chart_id = '{{ echart_id }}';
-            var chart_options = JSON.parse('{{ viz }}');
-            var chart_el = document.getElementById(chart_id);
-            create_viz(data, chart_options, chart_el);
-        } catch (error) {
-            console.error(`Failed to draw chart`);
-            console.error(error);
-            create_error(chart_id, error)
-        }
-    </script>
 </details>

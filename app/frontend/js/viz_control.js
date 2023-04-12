@@ -3,7 +3,7 @@ var current_data = null;
 var initial_viz = true;
 var saved_viz;
 try {
-    saved_viz = JSON.parse('{{ viz }}');
+    saved_viz = {{ viz }};
 } catch (_e) {
     saved_viz = null;
 }
