@@ -5,7 +5,6 @@ from starlette.exceptions import HTTPException
 from starlette.responses import JSONResponse, PlainTextResponse
 from datetime import datetime
 import mailer
-import prettytable
 import query
 import repo
 import utils
@@ -24,7 +23,7 @@ async def execute_route(request):
             lang=utils.get_lang(data.get("file"))
         )
         table_id = f"results-table-{utils.random_id()}"
-        table = utils.format_table(table_id, data["echart_id"], col_names, rows, True)
+        table = utils.format_htmltable(table_id, data["echart_id"], col_names, rows, True)
         no_rows = len(rows)
     except Exception as e:
         status_code = 404 if isinstance(e, RuntimeError) else 500
@@ -64,21 +63,20 @@ async def email_route(request):
         if (no_rows == 0) and (type == "alert"):
             response = PlainTextResponse(content=None, status_code=204)
         else:
-            response = await _mailer_response(report, to, file_name)
+            response = await _mailer_response(report, format, to, file_name)
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
     else:
         return response
 
-async def _mailer_response(report, to, file_name):
+async def _mailer_response(report, format, to, file_name):
     """
     Wrapper for sending email
     """
     try:
-        _res = mailer.send(report, to, file_name)
+        _res = mailer.send(report, format, to, file_name)
     except Exception as e:
-        error = f"Error: {str(e)}"
-        response = PlainTextResponse(content=error, status_code=500)
+        response = PlainTextResponse(content=str(e), status_code=500)
     else:
         response = PlainTextResponse(content="OK", status_code=200)
     return response
@@ -95,7 +93,7 @@ async def dashboard_entry_route(request):
     )
     table_id = utils.random_id()
     echart_id = utils.random_id()
-    table = utils.format_table(table_id, echart_id, col_names, rows, True)
+    table = utils.format_htmltable(table_id, echart_id, col_names, rows, True)
     data = {
         **utils.common_context_args(request),
         **request.path_params,
@@ -109,7 +107,7 @@ async def dashboard_entry_route(request):
 async def _execute_from_saved_query(request, format):
     """
     Execute saved query, common logic for reports and alerts
-    format: html, text, json
+    format: html, text, json, csv
     Called by:
     - report
     - email alert/report
@@ -127,7 +125,7 @@ async def _execute_from_saved_query(request, format):
         headers = {"Gitbi-Row-Count": str(no_rows)}
         match format:
             case "html":
-                table = utils.format_table(f"results-table-{utils.random_id()}", utils.random_id(), col_names, rows, False)
+                table = utils.format_htmltable(f"results-table-{utils.random_id()}", utils.random_id(), col_names, rows, False)
                 data = {
                     **utils.common_context_args(request),
                     "query_url": query_url,
@@ -140,21 +138,22 @@ async def _execute_from_saved_query(request, format):
                 }
                 response = utils.TEMPLATES.TemplateResponse(name='report.html', headers=headers, context=data)
             case "text":
-                table = prettytable.PrettyTable()
-                table.field_names = col_names
-                table.add_rows(rows)
+                table = utils.format_asciitable(col_names, rows)
                 data = {
                     **utils.common_context_args(request),
                     "duration": duration_ms,
                     "no_rows": no_rows,
                     "time": time,
-                    "table": table.get_string(),
+                    "table": table,
                     **request.path_params,
                 }
                 response = utils.TEMPLATES.TemplateResponse(name='report.txt', headers=headers, context=data, media_type="text/plain")
             case "json":
                 data = {"headers": col_names, "rows": rows, "duration_ms": duration_ms}
                 response = JSONResponse(content=data, headers=headers)
+            case "csv":
+                table = utils.format_csvtable(col_names, rows)
+                response = PlainTextResponse(content=table, headers=headers)
             case other:
                 raise ValueError(f"Bad format: {other}")
     except Exception as e:

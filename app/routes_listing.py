@@ -60,7 +60,7 @@ async def commits_route(request):
     """
     try:
         headers, commits = repo.list_commits()
-        table = utils.format_table("commits-table", utils.random_id(), headers, commits, False)
+        table = utils.format_htmltable("commits-table", utils.random_id(), headers, commits, False)
         data = {
             **utils.common_context_args(request),
             "commits_table": table,

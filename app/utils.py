@@ -1,10 +1,14 @@
 """
 common functions for all routes
 """
+import csv
 import datetime
 import decimal
+import io
+import itertools
 import json
 import os
+import prettytable
 from pathlib import Path
 from starlette.templating import Jinja2Templates
 import uuid
@@ -49,7 +53,26 @@ def get_lang(file):
     suffix = Path(file).suffix
     return suffix[1:]
 
-def format_table(table_id, echart_id, headers, rows, interactive):
+def format_asciitable(headers, rows):
+    """
+    Format data into a text table
+    """
+    table = prettytable.PrettyTable()
+    table.field_names = headers
+    table.add_rows(rows)
+    return table.get_string()
+
+def format_csvtable(headers, rows):
+    """
+    Format data into a CSV table
+    """
+    out = io.StringIO()
+    writer = csv.writer(out)
+    for entry in itertools.chain((headers, ), rows):
+        writer.writerow(entry)
+    return out.getvalue()
+
+def format_htmltable(table_id, echart_id, headers, rows, interactive):
     """
     Format data into a html table
     """
