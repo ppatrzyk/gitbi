@@ -76,16 +76,9 @@ def format_htmltable(table_id, echart_id, headers, rows, interactive):
     """
     Format data into a html table
     """
-    if rows:
-        dtypes = tuple(_data_convert(el)[1] for el in rows[0])
-    else:
-        dtypes = tuple(None for _ in headers)
-    headers = tuple(_data_convert(el)[0] for el in headers)
-    rows = tuple(tuple(_data_convert(el)[0] for el in row) for row in rows)
     data = {"request": None, "table_id": table_id, "echart_id": echart_id}
     if interactive:
-        data_json = json.dumps({"headings": headers, "data": rows, "dtypes": dtypes}, default=str)
-        data = {**data, "data_json": data_json}
+        data = {**data, "data_json": get_data_json(headers, rows)}
         response = TEMPLATES.TemplateResponse(name='partial_html_table_interactive.html', context=data)
     else:
         data = {**data, "headers": headers, "data": rows}
@@ -97,6 +90,18 @@ def random_id():
     Random id for html element
     """
     return f"id-{str(uuid.uuid4())}"
+
+def get_data_json(headers, rows):
+    """
+    Convert data to json
+    """
+    if rows:
+        dtypes = tuple(_data_convert(el)[1] for el in rows[0])
+    else:
+        dtypes = tuple(None for _ in headers)
+    headers = tuple(_data_convert(el)[0] for el in headers)
+    rows = tuple(tuple(_data_convert(el)[0] for el in row) for row in rows)
+    return json.dumps({"headings": headers, "data": rows, "dtypes": dtypes}, default=str)
 
 def _data_convert(el):
     """

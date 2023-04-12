@@ -2,7 +2,7 @@
 Routes for executing queries
 """
 from starlette.exceptions import HTTPException
-from starlette.responses import JSONResponse, PlainTextResponse
+from starlette.responses import PlainTextResponse
 from datetime import datetime
 import mailer
 import query
@@ -122,7 +122,7 @@ async def _execute_from_saved_query(request, format):
         )
         time = _get_time()
         no_rows = len(rows)
-        headers = {"Gitbi-Row-Count": str(no_rows)}
+        headers = {"Gitbi-Row-Count": str(no_rows), "Gitbi-Duration-Ms": str(duration_ms)}
         match format:
             case "html":
                 table = utils.format_htmltable(f"results-table-{utils.random_id()}", utils.random_id(), col_names, rows, False)
@@ -149,8 +149,7 @@ async def _execute_from_saved_query(request, format):
                 }
                 response = utils.TEMPLATES.TemplateResponse(name='report.txt', headers=headers, context=data, media_type="text/plain")
             case "json":
-                data = {"headers": col_names, "rows": rows, "duration_ms": duration_ms}
-                response = JSONResponse(content=data, headers=headers)
+                response = PlainTextResponse(content=utils.get_data_json(col_names, rows), headers=headers, media_type="application/json")
             case "csv":
                 table = utils.format_csvtable(col_names, rows)
                 response = PlainTextResponse(content=table, headers=headers)
