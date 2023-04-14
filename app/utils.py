@@ -13,7 +13,7 @@ from pathlib import Path
 from starlette.templating import Jinja2Templates
 import uuid
 
-VERSION = "0.8"
+VERSION = "0.9"
 APP_DIR = os.path.abspath(os.path.dirname(__file__))
 STATIC_DIR = os.path.join(APP_DIR, "frontend/static")
 TEMPLATE_DIR = os.path.join(APP_DIR, "frontend")

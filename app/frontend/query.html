@@ -5,6 +5,10 @@
     <script type="module">
         {% include 'js/code_editor.js' %}
     </script>
+    <script type="text/javascript">
+        {% include 'js/viz.js' %}
+        {% include 'js/viz_control.js' %}
+    </script>
 {% endblock %}
 {% block title %}Query | {{ file }}{% endblock %}
 {% block content %}
@@ -93,6 +97,15 @@
                 </div>
                 <button id="echart-render" class="secondary" onclick="make_viz()">Render chart</button>
                 <div id="{{ echart_id }}"></div>
+                <script type="text/javascript">
+                    var chart_options = {{ viz }};
+                    var chart_el = document.getElementById('{{ echart_id }}');
+                    chart_el.addEventListener("newdata", (e) => {
+                        current_data = e.detail.data;
+                        update_chart_options();
+                        make_viz();
+                    });
+                </script>
             </div>
         </details>
     </div>
@@ -107,8 +120,4 @@
         Load table info
     </a>
     {% include 'partial_report_cron.html' %}
-    <script type="text/javascript">
-        {% include 'js/viz.js' %}
-        {% include 'js/viz_control.js' %}
-    </script>
 {% endblock %}

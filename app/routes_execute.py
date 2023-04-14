@@ -85,7 +85,7 @@ async def dashboard_entry_route(request):
     """
     Single entry in dashboard - execute from saved query
     """
-    query_str, viz, lang = repo.get_query(**request.path_params)
+    query_str, viz_str, lang = repo.get_query(**request.path_params)
     col_names, rows, _duration_ms = query.execute(
         db=request.path_params.get("db"),
         query=query_str,
@@ -98,7 +98,7 @@ async def dashboard_entry_route(request):
         **utils.common_context_args(request),
         **request.path_params,
         "table": table,
-        "viz": viz,
+        "viz": viz_str,
         "echart_id": echart_id,
         "time": _get_time(),
     }
@@ -114,7 +114,7 @@ async def _execute_from_saved_query(request, format):
     """
     try:
         query_url = request.url_for("saved_query_route", **request.path_params)
-        query_str, _viz, lang = repo.get_query(**request.path_params)
+        query_str, _viz_str, lang = repo.get_query(**request.path_params)
         col_names, rows, duration_ms = query.execute(
             db=request.path_params.get("db"),
             query=query_str,

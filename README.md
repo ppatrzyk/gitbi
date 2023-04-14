@@ -10,6 +10,8 @@ Test it now with sample db and config:
 docker run -p 8000:8000 pieca/gitbi:latest
 ```
 
+Or view [screenshots](screenshots.md).
+
 See full deployment example: [ppatrzyk/gitbi-example](https://github.com/ppatrzyk/gitbi-example).
 
 ## Configuration

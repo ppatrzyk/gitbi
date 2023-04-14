@@ -62,8 +62,8 @@ def get_query(state, db, file):
     try:
         viz_path = os.path.join(db, f"{file}.json")
         viz_str = _get_file_content(state, viz_path)
-    except:
-        viz_str = ""
+    except Exception as e:
+        viz_str = "null" # this is read by JS
     query_str = _get_file_content(state, query_path)
     return query_str, viz_str, lang
 

@@ -65,6 +65,7 @@ async def query_route(request):
     else:
         request.state.query_data = {
             "query": request.query_params.get('query') or "",
+            "viz": "null",
             "file": "",
             "report_url": None,
             **request.path_params, # db

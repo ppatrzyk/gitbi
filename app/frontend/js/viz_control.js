@@ -1,12 +1,7 @@
 var chart_id = '{{ echart_id }}'
 var current_data = null;
 var initial_viz = true;
-var saved_viz;
-try {
-    saved_viz = {{ viz }};
-} catch (_e) {
-    saved_viz = null;
-}
+var saved_viz = {{ viz }};
 
 function array_ident(arr1, arr2) {
     // https://stackoverflow.com/a/19746771
@@ -74,8 +69,3 @@ function make_viz() {
         create_error(chart_id, error)
     }
 }
-document.getElementById(chart_id).addEventListener("newdata", (e) => {
-    current_data = e.detail.data;
-    update_chart_options();
-    make_viz();
-});
