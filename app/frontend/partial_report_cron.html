@@ -8,10 +8,10 @@
     <label for="cron-mail">CRON configuration example (email configured in Gitbi)</label>
     <figure id="cron-mail"><pre><code>
  # alert
- * * * * * curl -s {% if user is not none %}-u USER:PASSWORD{% endif %} {{ email_url|e }}?type=alert&to=RECIPIENT_EMAIL
+ * * * * * curl -s {% if user is not none %}-u USER:PASSWORD{% endif %} "{{ email_url|e }}?type=alert&to=RECIPIENT_EMAIL"
 
  #report
- * * * * * curl -s {% if user is not none %}-u USER:PASSWORD{% endif %} {{ email_url|e }}?type=report&to=RECIPIENT_EMAIL
+ * * * * * curl -s {% if user is not none %}-u USER:PASSWORD{% endif %} "{{ email_url|e }}?type=report&to=RECIPIENT_EMAIL"
     </code></pre></figure>
     <label for="cron-mail">CRON configuration example (external email)</label>
     <figure id="cron-mail"><pre><code>
