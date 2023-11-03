@@ -46,7 +46,7 @@ async def report_route(request):
     This just returns html with report
     """
     format = (request.query_params.get("format") or "html")
-    report, _no_rows =  await _execute_from_saved_query(request, format)
+    report, _no_rows = await _execute_from_saved_query(request, format)
     return report
 
 async def email_route(request):
@@ -81,29 +81,6 @@ async def _mailer_response(report, format, to, file_name):
         response = PlainTextResponse(content="OK", status_code=200)
     return response
 
-async def dashboard_entry_route(request):
-    """
-    Single entry in dashboard - execute from saved query
-    """
-    query_str, viz_str, lang = repo.get_query(**request.path_params)
-    col_names, rows, _duration_ms = query.execute(
-        db=request.path_params.get("db"),
-        query=query_str,
-        lang=lang
-    )
-    table_id = f"results-table-{utils.random_id()}"
-    echart_id = utils.random_id()
-    table = utils.format_htmltable(table_id, echart_id, col_names, rows, True)
-    data = {
-        **utils.common_context_args(request),
-        **request.path_params,
-        "table": table,
-        "viz": viz_str,
-        "echart_id": echart_id,
-        "time": _get_time(),
-    }
-    return utils.TEMPLATES.TemplateResponse(name='partial_dashboard_entry.html', context=data)
-
 async def _execute_from_saved_query(request, format):
     """
     Execute saved query, common logic for reports and alerts
@@ -111,10 +88,11 @@ async def _execute_from_saved_query(request, format):
     Called by:
     - report
     - email alert/report
+    - dashboard entry
     """
     try:
         query_url = request.url_for("saved_query_route", **request.path_params)
-        query_str, _viz_str, lang = repo.get_query(**request.path_params)
+        query_str, viz_str, lang = repo.get_query(**request.path_params)
         col_names, rows, duration_ms = query.execute(
             db=request.path_params.get("db"),
             query=query_str,
@@ -123,9 +101,11 @@ async def _execute_from_saved_query(request, format):
         time = _get_time()
         no_rows = len(rows)
         headers = {"Gitbi-Row-Count": str(no_rows), "Gitbi-Duration-Ms": str(duration_ms)}
+        table_id = f"results-table-{utils.random_id()}"
+        echart_id = utils.random_id()
         match format:
             case "html":
-                table = utils.format_htmltable(f"results-table-{utils.random_id()}", utils.random_id(), col_names, rows, False)
+                table = utils.format_htmltable(table_id, echart_id, col_names, rows, False)
                 data = {
                     **utils.common_context_args(request),
                     "query_url": query_url,
@@ -137,6 +117,18 @@ async def _execute_from_saved_query(request, format):
                     **request.path_params,
                 }
                 response = utils.TEMPLATES.TemplateResponse(name='report.html', headers=headers, context=data)
+            case "dashboard":
+                table = utils.format_htmltable(table_id, echart_id, col_names, rows, True)
+                data = {
+                    **utils.common_context_args(request),
+                    "table": table,
+                    "duration": duration_ms,
+                    "viz": viz_str,
+                    "echart_id": echart_id,
+                    "time": time,
+                    **request.path_params,
+                }
+                response = utils.TEMPLATES.TemplateResponse(name='partial_dashboard_entry.html', context=data)
             case "text":
                 table = utils.format_asciitable(col_names, rows)
                 data = {
