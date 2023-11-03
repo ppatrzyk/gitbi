@@ -43,7 +43,7 @@ async def execute_route(request):
 async def report_route(request):
     """
     Endpoint for running reports
-    This just returns html with report
+    i.e. executes saved query and passes ready result in given format
     """
     format = (request.query_params.get("format") or "html")
     report, _no_rows = await _execute_from_saved_query(request, format)
@@ -83,12 +83,8 @@ async def _mailer_response(report, format, to, file_name):
 
 async def _execute_from_saved_query(request, format):
     """
-    Execute saved query, common logic for reports and alerts
-    format: html, text, json, csv
-    Called by:
-    - report
-    - email alert/report
-    - dashboard entry
+    Execute saved query, common logic for dashboard entries, reports and alerts
+    format: html, dashboard, text, json, csv
     """
     try:
         query_url = request.url_for("saved_query_route", **request.path_params)
@@ -98,46 +94,41 @@ async def _execute_from_saved_query(request, format):
             query=query_str,
             lang=lang
         )
-        time = _get_time()
         no_rows = len(rows)
         headers = {"Gitbi-Row-Count": str(no_rows), "Gitbi-Duration-Ms": str(duration_ms)}
         table_id = f"results-table-{utils.random_id()}"
         echart_id = utils.random_id()
+        common_data = {
+            **utils.common_context_args(request),
+            **request.path_params,
+            "time": _get_time(),
+            "duration": duration_ms,
+            "no_rows": no_rows,
+        }
         match format:
             case "html":
                 table = utils.format_htmltable(table_id, echart_id, col_names, rows, False)
                 data = {
-                    **utils.common_context_args(request),
-                    "query_url": query_url,
+                    **common_data,
                     "table": table,
-                    "duration": duration_ms,
+                    "query_url": query_url,
                     "query": query_str,
-                    "time": time,
-                    "no_rows": no_rows,
-                    **request.path_params,
                 }
                 response = utils.TEMPLATES.TemplateResponse(name='report.html', headers=headers, context=data)
             case "dashboard":
                 table = utils.format_htmltable(table_id, echart_id, col_names, rows, True)
                 data = {
-                    **utils.common_context_args(request),
+                    **common_data,
                     "table": table,
-                    "duration": duration_ms,
                     "viz": viz_str,
                     "echart_id": echart_id,
-                    "time": time,
-                    **request.path_params,
                 }
                 response = utils.TEMPLATES.TemplateResponse(name='partial_dashboard_entry.html', context=data)
             case "text":
                 table = utils.format_asciitable(col_names, rows)
                 data = {
-                    **utils.common_context_args(request),
-                    "duration": duration_ms,
-                    "no_rows": no_rows,
-                    "time": time,
+                    **common_data,
                     "table": table,
-                    **request.path_params,
                 }
                 response = utils.TEMPLATES.TemplateResponse(name='report.txt', headers=headers, context=data, media_type="text/plain")
             case "json":
