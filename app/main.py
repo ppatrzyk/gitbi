@@ -21,7 +21,7 @@ async def server_error(request, exc):
         "code": exc.status_code,
         "message": exc.detail
     }
-    return utils.TEMPLATES.TemplateResponse(name='error.html', context=data, status_code=exc.status_code)
+    return utils.TEMPLATES.TemplateResponse(name='partial_error.html', context=data, status_code=exc.status_code)
 
 routes = [
     # routes execute

@@ -30,6 +30,7 @@
             hx-vals="js:{data: query_format()}"
             hx-trigger="click"
             hx-target="#query-result"
+            hx-target-error="#htmx-error"
             hx-swap="innerHTML"
         >
             Run
@@ -40,7 +41,7 @@
             hx-post="{{ request.app.url_path_for('query_save_route', db=db) }}"
             hx-vals="js:{data: query_format()}"
             hx-trigger="click"
-            hx-target="#save-error"
+            hx-target-error="#htmx-error"
             hx-swap="innerHTML"
         >
             Save query
@@ -51,7 +52,7 @@
             class="secondary"
             hx-get="{{ request.app.url_path_for('query_delete_route', db=db, file=file) }}"
             hx-trigger="click"
-            hx-target="#save-error"
+            hx-target-error="#htmx-error"
             hx-swap="innerHTML"
         >
             Delete query
@@ -65,7 +66,6 @@
             Generate share link
         </div>
     </div>
-    <div id="save-error"></div>
     <br>
     <div>
         <h4>Result</h4>
@@ -115,6 +115,7 @@
         hx-get="{{ request.app.url_path_for('db_details_route', db=db) }}"
         hx-trigger="load"
         hx-target="#db-details-{{ db }}"
+        hx-target-error="#htmx-error"
         hx-swap="outerHTML"
     >
         Load table info

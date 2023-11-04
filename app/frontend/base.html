@@ -10,6 +10,7 @@
     <link href="{{ request.app.url_path_for('static', path='/css/font.css') }}" rel="stylesheet">
     <link href="{{ request.app.url_path_for('static', path='/css/gitbi.css') }}" rel="stylesheet">
     <script src="{{ request.app.url_path_for('static', path='/js/htmx.min.js') }}"></script>
+    <script src="{{ request.app.url_path_for('static', path='/js/htmx-response-targets.min.js') }}"></script>
     <script src="{{ request.app.url_path_for('static', path='/js/simple-datatables.min.js') }}"></script>
     <script type="text/javascript">
       {% include 'js/utils.js' %}
@@ -20,7 +21,7 @@
     {% block extendhead %}{% endblock %}
     <title>Gitbi | {% block title %}{% endblock %}</title>
 </head>
-<body>
+<body hx-ext="response-targets">
 <main class="container">
     <nav>
         <ul>
@@ -39,6 +40,7 @@
         </ul>
       </nav>
       <div id="commits-section"></div>
+      <div id="htmx-error"></div>
       {% block content %}{% endblock %}
       <footer class="container footer">
         <hr>

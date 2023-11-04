@@ -43,8 +43,7 @@ async def db_details_route(request):
         data_docs = query.list_table_data_types(db, tables)
     except Exception as e:
         status_code = 404 if isinstance(e, RuntimeError) else 500
-        data = {"request": request, "code": status_code, "message": str(e)}
-        return utils.TEMPLATES.TemplateResponse(name='partial_error.html', context=data)
+        raise HTTPException(status_code=status_code, detail=str(e))
     else:
         data = {
             **utils.common_context_args(request),

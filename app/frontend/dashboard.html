@@ -13,12 +13,11 @@
         class="secondary"
         hx-get="{{ request.app.url_path_for('dashboard_delete_route', file=file) }}"
         hx-trigger="click"
-        hx-target="#delete-error"
+        hx-target-error="#htmx-error"
         hx-swap="innerHTML"
     >
         Delete this dashboard
     </div>
-    <div id="delete-error"></div>
     <hr>
     {% for db, query, id in dashboard_conf %}
     <a
@@ -26,6 +25,7 @@
         hx-get="{{ request.app.url_path_for('report_route', db=db, file=query, state=state) }}?format=dashboard"
         hx-trigger="load"
         hx-target="#{{ id }}"
+        hx-target-error="#htmx-error"
         hx-swap="outerHTML"
     >
         Load dashboard
