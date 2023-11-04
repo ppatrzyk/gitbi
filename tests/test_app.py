@@ -32,25 +32,27 @@ def test_query():
 
 def test_execute():
     assert client.post("/execute/postgres/", data={}).status_code == 401
-    assert client.post("/execute/postgres/", data={}, auth=USER_HTTPX).status_code == 200
-    assert client.post("/execute/baddb/", data={}, auth=USER_HTTPX).status_code == 200
-    assert client.post("/execute/sqlite/", data={}, auth=USER_HTTPX).status_code == 200
-    assert client.post("/execute/sqlite/", data={"baddata": 666}, auth=USER_HTTPX).status_code == 200
+    assert client.post("/execute/postgres/", data={}, auth=USER_HTTPX).status_code == 500
+    assert client.post("/execute/baddb/", data={}, auth=USER_HTTPX).status_code == 500
+    assert client.post("/execute/sqlite/", data={}, auth=USER_HTTPX).status_code == 500
+    assert client.post("/execute/sqlite/", data={"baddata": 666}, auth=USER_HTTPX).status_code == 500
     # htmx responses always return 200 even if there was an error
-    assert client.post("/execute/sqlite/", data={"data": json.dumps({"query": "select badfunc();"})}, auth=USER_HTTPX).status_code == 200
-    assert client.post("/execute/sqlite/", data={"data": json.dumps({"query": "select 1;"})}, auth=USER_HTTPX).status_code == 200
-    assert client.get("/report/sqlite/incorrectfile/HEAD", auth=USER_HTTPX).status_code == 500
+    assert client.post("/execute/sqlite/", data={"data": json.dumps({"query": "select badfunc();"})}, auth=USER_HTTPX).status_code == 500
+    assert client.post("/execute/sqlite/", data={"data": json.dumps({"query": "select badfunc();", "viz": "foobar", "echart_id": "foobar", "file": "file.sql", })}, auth=USER_HTTPX).status_code == 500
+    assert client.post("/execute/sqlite/", data={"data": json.dumps({"query": "select 1;", "viz": "", "echart_id": "", "file": "", })}, auth=USER_HTTPX).status_code == 500
+    assert client.post("/execute/sqlite/", data={"data": json.dumps({"query": "select 1;", "viz": "foobar", "echart_id": "foobar", "file": "file.sql", })}, auth=USER_HTTPX).status_code == 200
+    assert client.get("/report/sqlite/incorrectfile/HEAD", auth=USER_HTTPX).status_code == 404
     assert client.get("/report/sqlite/incorrectfile.sql/HEAD", auth=USER_HTTPX).status_code == 404
     assert client.get("/report/sqlite/incorrectfile.prql/HEAD", auth=USER_HTTPX).status_code == 404
-    assert client.get("/report/sqlite/myquery.sql/HEAD", auth=USER_HTTPX).status_code == 200
-    assert client.get("/report/sqlite/myquery.sql/HEAD?format=html", auth=USER_HTTPX).status_code == 200
-    assert client.get("/report/sqlite/myquery.sql/HEAD?format=text", auth=USER_HTTPX).status_code == 200
-    assert client.get("/report/sqlite/myquery.sql/HEAD?format=json", auth=USER_HTTPX).status_code == 200
-    assert client.get("/report/sqlite/myquery.sql/HEAD?format=invalid", auth=USER_HTTPX).status_code == 500
-    assert client.get("/email/sqlite/incorrectfile/HEAD", auth=USER_HTTPX).status_code == 500
-    assert client.get("/email/sqlite/incorrectfile.prql/HEAD", auth=USER_HTTPX).status_code == 500
-    assert client.get("/email/sqlite/myquery.sql/HEAD", auth=USER_HTTPX).status_code == 500
-    assert client.get("/email/sqlite/myquery.sql/HEAD?to=email@email.com", auth=USER_HTTPX).status_code == 500
+    assert client.get("/report/sqlite/myquery.sql/HEAD", auth=USER_HTTPX).status_code == 404
+    assert client.get("/report/sqlite/myquery.sql/HEAD/html", auth=USER_HTTPX).status_code == 200
+    assert client.get("/report/sqlite/myquery.sql/HEAD/text", auth=USER_HTTPX).status_code == 200
+    assert client.get("/report/sqlite/myquery.sql/HEAD/json", auth=USER_HTTPX).status_code == 200
+    assert client.get("/report/sqlite/myquery.sql/HEAD/invalid", auth=USER_HTTPX).status_code == 500
+    assert client.get("/email/sqlite/incorrectfile/HEAD/html", auth=USER_HTTPX).status_code == 500
+    assert client.get("/email/sqlite/incorrectfile.prql/HEAD/html", auth=USER_HTTPX).status_code == 500
+    assert client.get("/email/sqlite/myquery.sql/HEAD/html", auth=USER_HTTPX).status_code == 500
+    assert client.get("/email/sqlite/myquery.sql/HEAD/html?to=email@email.com", auth=USER_HTTPX).status_code == 500
 
 def test_dashboard():
     assert client.get("/dashboard/test_dashboard.json/HEAD").status_code == 401

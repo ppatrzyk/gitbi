@@ -2,9 +2,7 @@
 <details>
     <summary class="secondary" role="button">Show report and alerts config</summary>
     <a role="button" class="small-button" target="_blank" href="{{ report_url|e }}?format=html">HTML report</a>
-    <a role="button" class="small-button" target="_blank" href="{{ report_url|e }}?format=text">Text report</a>
-    <a role="button" class="small-button" target="_blank" href="{{ report_url|e }}?format=json">JSON data</a>
-    <a role="button" class="small-button" target="_blank" href="{{ report_url|e }}?format=csv">CSV data</a>
+    <p>Permissible formats: html, text, json, csv</p>
     <label for="cron-mail">CRON configuration example (email configured in Gitbi)</label>
     <figure id="cron-mail"><pre><code>
  # alert

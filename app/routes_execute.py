@@ -44,7 +44,7 @@ async def report_route(request):
     Endpoint for running reports
     i.e. executes saved query and passes ready result in given format
     """
-    format = (request.query_params.get("format") or "html")
+    format = request.path_params.get("format")
     report, _no_rows = await _execute_from_saved_query(request, format)
     return report
 
@@ -54,8 +54,9 @@ async def email_route(request):
     """
     try:
         file_name = request.path_params.get("file")
+        format = request.path_params.get("format")
+        # TODO rethink this, these are mandatory
         to = request.query_params.get("to")
-        format = (request.query_params.get("format") or "html")
         type = (request.query_params.get("type") or "report")
         assert type in ("report", "alert", ), "Bad type"
         report, no_rows =  await _execute_from_saved_query(request, format)
@@ -86,10 +87,11 @@ async def _execute_from_saved_query(request, format):
     format: html, dashboard, text, json, csv
     """
     try:
-        query_url = request.url_for("saved_query_route", **request.path_params)
-        query_str, viz_str, lang = repo.get_query(**request.path_params)
+        query_args = {k: request.path_params[k] for k in ("db", "file", "state")}
+        query_url = request.url_for("saved_query_route", **query_args)
+        query_str, viz_str, lang = repo.get_query(**query_args)
         col_names, rows, duration_ms = query.execute(
-            db=request.path_params.get("db"),
+            db=query_args.get("db"),
             query=query_str,
             lang=lang
         )
