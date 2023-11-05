@@ -1,7 +1,8 @@
 {% if report_url is not none %}
 <details>
     <summary class="secondary" role="button">Show report and alerts config</summary>
-    <a role="button" class="small-button" target="_blank" href="{{ report_url|e }}?format=html">HTML report</a>
+    <!-- TODO show all here -->
+    <a role="button" class="small-button" target="_blank" href="{{ report_url|e }}">HTML report</a>
     <p>Permissible formats: html, text, json, csv</p>
     <label for="cron-mail">CRON configuration example (email configured in Gitbi)</label>
     <figure id="cron-mail"><pre><code>

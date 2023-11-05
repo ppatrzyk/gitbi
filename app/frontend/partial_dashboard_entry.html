@@ -2,9 +2,8 @@
 <script type="text/javascript">
     var chart_options = {{ viz }};
     var chart_el = document.getElementById('{{ echart_id }}');
-    chart_el.addEventListener("newdata", (e) => {
-        create_viz(e.detail.data, chart_options, chart_el);
-    });
+    var data = {{ data_json }};
+    create_viz(data, chart_options, chart_el);
 </script>
 <hgroup>
     <h4>{{ db|e }}/{{ file|e }}</h4>

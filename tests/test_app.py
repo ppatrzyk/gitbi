@@ -36,11 +36,10 @@ def test_execute():
     assert client.post("/execute/baddb/", data={}, auth=USER_HTTPX).status_code == 500
     assert client.post("/execute/sqlite/", data={}, auth=USER_HTTPX).status_code == 500
     assert client.post("/execute/sqlite/", data={"baddata": 666}, auth=USER_HTTPX).status_code == 500
-    # htmx responses always return 200 even if there was an error
     assert client.post("/execute/sqlite/", data={"data": json.dumps({"query": "select badfunc();"})}, auth=USER_HTTPX).status_code == 500
-    assert client.post("/execute/sqlite/", data={"data": json.dumps({"query": "select badfunc();", "viz": "foobar", "echart_id": "foobar", "file": "file.sql", })}, auth=USER_HTTPX).status_code == 500
-    assert client.post("/execute/sqlite/", data={"data": json.dumps({"query": "select 1;", "viz": "", "echart_id": "", "file": "", })}, auth=USER_HTTPX).status_code == 500
-    assert client.post("/execute/sqlite/", data={"data": json.dumps({"query": "select 1;", "viz": "foobar", "echart_id": "foobar", "file": "file.sql", })}, auth=USER_HTTPX).status_code == 200
+    assert client.post("/execute/sqlite/", data={"data": json.dumps({"query": "select badfunc();", "viz": "foobar", "echart_id": "foobar", "file": "file.sql", "format": "bad"})}, auth=USER_HTTPX).status_code == 500
+    assert client.post("/execute/sqlite/", data={"data": json.dumps({"query": "select 1;", "viz": "", "echart_id": "", "file": "", "format": ""})}, auth=USER_HTTPX).status_code == 500
+    assert client.post("/execute/sqlite/", data={"data": json.dumps({"query": "select 1;", "viz": "foobar", "echart_id": "foobar", "file": "file.sql", "format": "text"})}, auth=USER_HTTPX).status_code == 200
     assert client.get("/report/sqlite/incorrectfile/HEAD", auth=USER_HTTPX).status_code == 404
     assert client.get("/report/sqlite/incorrectfile.sql/HEAD", auth=USER_HTTPX).status_code == 404
     assert client.get("/report/sqlite/incorrectfile.prql/HEAD", auth=USER_HTTPX).status_code == 404

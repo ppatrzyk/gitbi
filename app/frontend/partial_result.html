@@ -5,3 +5,15 @@
 </p>
 {# table also contains js script that replaces current data in document #}
 {{ table }}
+<script type="text/javascript">
+    try {
+        var echart_id = '{{ echart_id }}';
+        var data = {{ data_json }};
+        var new_data = new CustomEvent("newdata", {detail: {data: Object.assign({}, data)}});
+        document.getElementById(echart_id).dispatchEvent(new_data);
+    } catch (error) {
+        console.error(`Failed to update viz`);
+        console.error(error);
+        // create_error(table_id, error)
+    }
+</script>

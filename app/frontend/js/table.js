@@ -1,9 +1,4 @@
-function create_table(table_id, echart_id, data) {
-    if (table_id.startsWith('results-table')) {
-        // send new data to viz: only tables created from user running query
-        var new_data = new CustomEvent("newdata", {detail: {data: Object.assign({}, data), id: table_id}});
-        document.getElementById(echart_id).dispatchEvent(new_data);
-    }
+function create_table(table_id, data) {
     var table = document.getElementById(table_id);
     var perPageSelect = (data.data.length <= 25) ? false :[10, 25, 50, 100];
     data.headings = data.headings.map(e => html_escape(e))

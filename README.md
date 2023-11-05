@@ -89,14 +89,20 @@ You can trigger your queries with the following endpoints:
 Endpoint | Query params | Description
 --- | --- | ---
 `/query/{db}/{file}/{state}` | - | displays query on a web page and allows you to edit or execute it interactively
-`/report/{db}/{file}/{state}` | format | displays _and executes_ query, returning self-contained and non-interactive (no JS) html with results
-`/email/{db}/{file}/{state}` | format, to, type | Executes query and sends result via email
+`/report/{db}/{file}/{state}/{format}` | - | displays _and executes_ query, returning result in chosen format
+`/email/{db}/{file}/{state}/{format}` | to, type | Executes query and sends result via email
 
-Query parameters:
+Available formats:
+
+ - html
+ - text
+ - json
+ - csv
+
+Email query parameters:
 
 Query parameter | Description
 --- | ---
-format | _[html (default), text, json, csv]_. Response format
 to | email(s) to which report should be sent
 type | _[report (default), alert]_. _report_ always sends an email with results when invoked, while _alert_ sends results _only if there are some rows returned_. Write your alert queries in a way that they usually do not return anything, but you want to be notified when they do.
 

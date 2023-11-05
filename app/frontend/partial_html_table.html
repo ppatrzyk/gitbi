@@ -1,7 +1,7 @@
 {# partial html - this is used to generate html table #}
 <figure><table id="{{ table_id }}" role="grid">
     <thead><tr>
-        {% for header in headers %}<th>{{ header|e }}</th>{% endfor %}
+        {% for col in col_names %}<th>{{ col|e }}</th>{% endfor %}
     </tr></thead>
     <tbody>
         {% for row in data %}

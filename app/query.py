@@ -66,7 +66,7 @@ def list_table_data_types(db, tables):
     else:
         rows = tuple()
     col_names = ("table", "column", "type", )
-    table = utils.format_htmltable(utils.random_id(), utils.random_id(), col_names, rows, True)
+    table = utils.format_htmltable(utils.random_id(), col_names, rows, True)
     return table
 
 def execute(db, query, lang):

@@ -27,7 +27,7 @@ def parse_query_data(request, form):
     """
     data = json.loads(form["data"])
     data["file"] = data["file"].strip()
-    for key in ("query", "viz", "echart_id", "file", ):
+    for key in ("query", "viz", "echart_id", "file", "format", ):
         assert key in data.keys(), f"No {key} in POST data"
         assert data[key] != "", f"Empty {key} string"
     data["user"] = common_context_args(request).get("user")
@@ -72,16 +72,16 @@ def format_csvtable(headers, rows):
         writer.writerow(entry)
     return out.getvalue()
 
-def format_htmltable(table_id, echart_id, headers, rows, interactive):
+def format_htmltable(table_id, col_names, rows, interactive):
     """
     Format data into a html table
     """
-    data = {"request": None, "table_id": table_id, "echart_id": echart_id}
+    data = {"request": None, "table_id": table_id, }
     if interactive:
-        data = {**data, "data_json": get_data_json(headers, rows)}
+        data = {**data, "data_json": get_data_json(col_names, rows)}
         response = TEMPLATES.TemplateResponse(name='partial_html_table_interactive.html', context=data)
     else:
-        data = {**data, "headers": headers, "data": rows}
+        data = {**data, "col_names": col_names, "data": rows}
         response = TEMPLATES.TemplateResponse(name='partial_html_table.html', context=data)
     return response.body.decode()
 

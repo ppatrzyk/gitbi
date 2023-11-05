@@ -23,6 +23,16 @@
         <input type="text" id="file-name" name="file-name" placeholder="Enter file name" value="{{ file }}">
         <small>Query name must have <em>.sql</em> or <em>.prql</em> extension</small>
     </div>
+    <div>
+        <label for="result-format">Result format</label>
+        <select id="result-format" required>
+            <option value="interactive-table" selected>Interactive table</option>
+            <option value="simple-table" selected>Standard table</option>
+            <option value="text" selected>ASCII table</option>
+            <option value="csv" selected>CSV</option>
+            <option value="json" selected>JSON</option>
+        </select>
+    </div>
     <div class="grid">
         <div
             role="button"

@@ -2,10 +2,9 @@
 <figure><table id="{{ table_id }}"></table></figure>
 <script type="text/javascript">
     try {
-        var echart_id = '{{ echart_id }}';
         var table_id = '{{ table_id }}';
         var data = {{ data_json }};
-        create_table(table_id, echart_id, data)
+        create_table(table_id, data)
     } catch (error) {
         console.error(`Failed to make interactive table id=${table_id}`);
         console.error(error);
