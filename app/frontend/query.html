@@ -13,7 +13,7 @@
 {% block title %}Query | {{ file }}{% endblock %}
 {% block content %}
     <h2>Query db: {{ db|e }}</h2>
-    <h4>Query</h4>
+    <h2>Query</h2>
     <figure>
         <label for="query-editor">Query</label>
         <div id="query-editor" class="code-editor language-sql">{{ query }}</div>
@@ -33,9 +33,9 @@
             <option value="json" selected>JSON</option>
         </select>
     </div>
-    <div class="grid">
+    <div class="pure-button-group" role="group">
         <div
-            role="button"
+            class="pure-button"
             hx-post="{{ request.app.url_path_for('execute_route', db=db) }}"
             hx-vals="js:{data: query_format()}"
             hx-trigger="click"
@@ -46,8 +46,7 @@
             Run
         </div>
         <div
-            role="button"
-            class="secondary"
+            class="pure-button"
             hx-post="{{ request.app.url_path_for('query_save_route', db=db) }}"
             hx-vals="js:{data: query_format()}"
             hx-trigger="click"
@@ -58,8 +57,7 @@
         </div>
         {% if file != "" %}
         <div
-            role="button"
-            class="secondary"
+            class="pure-button"
             hx-get="{{ request.app.url_path_for('query_delete_route', db=db, file=file) }}"
             hx-trigger="click"
             hx-target-error="#htmx-error"
@@ -69,8 +67,7 @@
         </div>
         {% endif %}
         <div
-            role="button"
-            class="secondary"
+            class="pure-button"
             onclick="generate_link()"
         >
             Generate share link
@@ -78,16 +75,16 @@
     </div>
     <br>
     <div>
-        <h4>Result</h4>
+        <h2>Result</h2>
         <details open>
-            <summary role="button">Table</summary>
+            <summary >Table</summary>
             <div id="query-result">
                 <p>No data available</p>
                 <p class="htmx-indicator" aria-busy="true">Running query...</p>
             </div>
         </details>
         <details open>
-            <summary role="button">Visualization</summary>
+            <summary >Visualization</summary>
             <div id="echart-note">No data available</div>
             <div id="echart-chart" class="hidden">
                 <div id="echart-options" class="grid">
@@ -105,7 +102,7 @@
                     <label for="echart-options-zaxis">Z axis<select id="echart-options-zaxis"></select></label>
                     <label for="echart-options-group">Group<select id="echart-options-group"></select></label>
                 </div>
-                <button id="echart-render" class="secondary" onclick="make_viz()">Render chart</button>
+                <button id="echart-render" class="pure-button" onclick="make_viz()">Render chart</button>
                 <div id="{{ echart_id }}"></div>
                 <script type="text/javascript">
                     var chart_options = {{ viz }};

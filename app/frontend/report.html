@@ -1,17 +1,15 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="light">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
-    <style>{% include "static/css/pico.min.css" %}</style>
+    <style>{% include "static/css/pure.min.css" %}</style>
     <style>{% include "static/css/gitbi.css" %}</style>
     <title>Gitbi Report</title>
 </head>
 <body>
     <main class="container">
-        <hgroup>
-            <h2>Gitbi Report</h2>
-            <h3>{{ db|e }} | {{ file|e }} | {{ state|e }}</h3>
-        </hgroup>
+        <h1>Gitbi Report</h1>
+        <h2>{{ db|e }} | {{ file|e }} | {{ state|e }}</h2>
         <p>
             Returned {{ no_rows|e }} rows in {{ duration|e }}ms<br>
             Executed on {{ time|e }}<br>

@@ -1,6 +1,6 @@
 {# partial html - this is used by htmx passing tables list #}
-<details id="commits-section" open>
-    <summary role="button">Go to commit</summary>
+<details id="commits-section" class="container" open>
+    <summary >Go to commit</summary>
     {{ commits_table }}
     <script type="text/javascript">{% include 'js/commit_links.js' %}</script>
 </details>

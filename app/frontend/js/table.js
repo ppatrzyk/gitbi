@@ -7,7 +7,7 @@ function create_table(table_id, data) {
         data: data,
         perPage: 25,
         perPageSelect: perPageSelect,
-        classes: {bottom: "grid", top: "grid", selector: "no-margin", input: "no-margin"},
+        classes: {bottom: "grid", top: "grid", table: "pure-table pure-table-striped", },
         type: "html",
         layout: {
             top: "{search}",
@@ -16,8 +16,7 @@ function create_table(table_id, data) {
     });
     var search_button = table.parentNode.parentNode.getElementsByClassName("datatable-search")[0];
     var csv_button = document.createElement("div"); 
-    csv_button.setAttribute("class", "secondary");
-    csv_button.setAttribute("role", "button");
+    csv_button.setAttribute("class", "pure-button");
     csv_button.innerText = "Export CSV";
     csv_button.addEventListener("click", () => {
         simpleDatatables.exportCSV(data_table, {

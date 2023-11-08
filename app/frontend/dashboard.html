@@ -9,8 +9,7 @@
 {% block content %}
     <h1>{{ file }}</h1>
         <div
-        role="button"
-        class="secondary"
+        class="pure-button"
         hx-get="{{ request.app.url_path_for('dashboard_delete_route', file=file) }}"
         hx-trigger="click"
         hx-target-error="#htmx-error"

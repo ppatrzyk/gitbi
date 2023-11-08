@@ -1,5 +1,5 @@
 {# partial html - used as is by htmx or inserted into "full" error pages #}
-<article class="error">
-    <h3>Error {{ code|e }}</h3>
+<article class="container error">
+    <h2>Error {{ code|e }}</h2>
     <p>{{ message|e }}</p>
 </article>
