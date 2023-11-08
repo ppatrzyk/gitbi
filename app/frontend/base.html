@@ -1,12 +1,13 @@
 {# https://jinja.palletsprojects.com/en/3.0.x/templates/#base-template #}
 <!DOCTYPE html>
-<html lang="en" data-theme="light">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="{{ request.app.url_path_for('static', path='/favicon.ico') }}" rel="shortcut icon" type="image/x-icon">
-    <link href="{{ request.app.url_path_for('static', path='/css/pico.min.css') }}" rel="stylesheet">
+    <link href="{{ request.app.url_path_for('static', path='/css/pure.min.css') }}" rel="stylesheet">
+    <link href="{{ request.app.url_path_for('static', path='/css/grids-responsive.min.css') }}" rel="stylesheet">
     <link href="{{ request.app.url_path_for('static', path='/css/font.css') }}" rel="stylesheet">
     <link href="{{ request.app.url_path_for('static', path='/css/gitbi.css') }}" rel="stylesheet">
     <script src="{{ request.app.url_path_for('static', path='/js/htmx.min.js') }}"></script>
@@ -22,43 +23,53 @@
     <title>Gitbi | {% block title %}{% endblock %}</title>
 </head>
 <body hx-ext="response-targets">
-<main class="container">
-    <nav>
-        <ul>
-          <li><a class="gitbi-logo" href="{{ request.app.url_path_for('home_default_route') }}">Gitbi</a></li>
-        </ul>
-        <ul>
-          {% if state is not none %}
-          <li>State: {{ state|e }}</li>
-          {% endif %}
-          {% if user is not none %}
-          <li>User: {{ user|e }}</li>
-          {% endif %}
-          <li><a href="#" hx-get="{{ request.app.url_path_for('commits_route') }}" hx-trigger="click" hx-target="#commits-section" hx-swap="outerHTML">
-          Show commits
-          </a></li>
-        </ul>
-      </nav>
-      <div id="commits-section"></div>
-      <div id="htmx-error"></div>
-      <div id="resources-list"></div>
-      <a
-          class="hidden"
-          hx-get="{{ request.app.url_path_for('resources_route', state=state) }}"
-          hx-trigger="load"
-          hx-target="#resources-list"
-          hx-target-error="#htmx-error"
-          hx-swap="outerHTML"
-      >
-          Load resources
-      </a>
+<div class="pure-g">
+  <nav>
+    <ul>
+      <li><a class="gitbi-logo" href="{{ request.app.url_path_for('home_default_route') }}">Gitbi</a></li>
+    </ul>
+    <ul>
+      {% if state is not none %}
+      <li>State: {{ state|e }}</li>
+      {% endif %}
+      {% if user is not none %}
+      <li>User: {{ user|e }}</li>
+      {% endif %}
+      <li><a href="#" hx-get="{{ request.app.url_path_for('commits_route') }}" hx-trigger="click" hx-target="#commits-section" hx-swap="outerHTML">
+      Show commits
+      </a></li>
+    </ul>
+  </nav>
+</div>
+<div id="commits-section" class="pure-g"></div>
+<div id="htmx-error" class="pure-g"></div>
+<div class="pure-g">
+  <div class="pure-u-1 pure-u-md-1-4">
+    <div id="resources-list"></div>
+    <a
+        class="hidden"
+        hx-get="{{ request.app.url_path_for('resources_route', state=state) }}"
+        hx-trigger="load"
+        hx-target="#resources-list"
+        hx-target-error="#htmx-error"
+        hx-swap="outerHTML"
+    >
+        Load resources
+    </a>
+  </div>
+  <div class="pure-u-1 pure-u-md-3-4">
+    <main class="container">
       {% block content %}{% endblock %}
-      <footer class="container footer">
-        <hr>
-        <small>
-            <p><a target="_blank" href="https://github.com/ppatrzyk/gitbi">Gitbi</a> v{{ version }}.</p>
-        </small>
-    </footer>
-</main>
+    </main>
+  </div>
+</div>
+<div class="pure-g">
+  <footer class="container footer">
+    <hr>
+    <small>
+        <p><a target="_blank" href="https://github.com/ppatrzyk/gitbi">Gitbi</a> v{{ version }}.</p>
+    </small>
+  </footer>
+</div>
 </body>
 </html>

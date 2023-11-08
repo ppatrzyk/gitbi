@@ -163,6 +163,6 @@ Frontend:
 - [Font Awesome](https://iconscout.com/contributors/font-awesome)
 - [highlight](https://github.com/highlightjs/highlight.js)
 - [htmx](https://github.com/bigskysoftware/htmx)
-- [pico](https://github.com/picocss/pico)
+- [pure.css](https://github.com/pure-css/pure)
 - [simple-datatables](https://github.com/fiduswriter/simple-datatables)
 - [ubuntu font](https://ubuntu.com/legal/font-licence)
