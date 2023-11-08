@@ -31,6 +31,7 @@ routes = [
     # routes_listing
     Route("/", endpoint=routes_listing.home_default_route, name="home_default_route"),
     Route("/home/{state:str}", endpoint=routes_listing.home_route, name="home_route"),
+    Route("/resources/{state:str}", endpoint=routes_listing.resources_route, name="resources_route"),
     Route("/dbdetails/{db:str}", endpoint=routes_listing.db_details_route, name="db_details_route"),
     Route("/commits/", endpoint=routes_listing.commits_route, name="commits_route"),
     # routes query

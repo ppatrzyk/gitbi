@@ -18,11 +18,12 @@ async def dashboard_route(request):
             **request.path_params,
             "dashboard_conf": dashboard_conf,
         }
+        response = utils.TEMPLATES.TemplateResponse(name='dashboard.html', context=data)
     except Exception as e:
         status_code = 404 if isinstance(e, RuntimeError) else 500
         raise HTTPException(status_code=status_code, detail=str(e))
     else:
-        return utils.TEMPLATES.TemplateResponse(name='dashboard.html', context=data)
+        return response
 
 async def delete_route(request):
     """

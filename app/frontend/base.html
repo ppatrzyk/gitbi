@@ -41,6 +41,17 @@
       </nav>
       <div id="commits-section"></div>
       <div id="htmx-error"></div>
+      <div id="resources-list"></div>
+      <a
+          class="hidden"
+          hx-get="{{ request.app.url_path_for('resources_route', state=state) }}"
+          hx-trigger="load"
+          hx-target="#resources-list"
+          hx-target-error="#htmx-error"
+          hx-swap="outerHTML"
+      >
+          Load resources
+      </a>
       {% block content %}{% endblock %}
       <footer class="container footer">
         <hr>

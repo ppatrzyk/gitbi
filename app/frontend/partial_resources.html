@@ -1,0 +1,13 @@
+<h3>Dashboards</h3>
+{% for dashboard in dashboards %}
+    <a target="_blank" href="{{ request.app.url_path_for('dashboard_route', state=state, file=dashboard) }}">{{ dashboard|e }}</a>
+{% endfor %}
+{% for db, queries in databases.items() %}
+    <div>
+        <h3>{{ db|e }}</h3>
+        <a target="_blank" href="{{ request.app.url_path_for('query_route', db=db) }}">new query</a>
+        {% for query in queries %}
+            <a target="_blank" href="{{ request.app.url_path_for('saved_query_route', state=state, db=db, file=query) }}">{{ query|e }}</a>
+        {% endfor %}
+    </div>
+{% endfor %}

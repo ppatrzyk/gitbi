@@ -58,9 +58,6 @@ async def query_route(request):
         db = request.path_params.get("db")
         if db not in repo.list_sources("file").keys():
             raise RuntimeError(f"db {db} not present in repo")
-    except RuntimeError as e:
-        raise HTTPException(status_code=404, detail=str(e))
-    else:
         request.state.query_data = {
             "query": request.query_params.get('query') or "",
             "viz": "null",
@@ -68,6 +65,9 @@ async def query_route(request):
             "report_url": None,
             **request.path_params, # db
         }
+    except RuntimeError as e:
+        raise HTTPException(status_code=404, detail=str(e))
+    else:
         return await _query(request)
 
 async def saved_query_route(request):
@@ -79,9 +79,6 @@ async def saved_query_route(request):
         url_params = {**request.path_params, "format": "html"}
         report_url = request.url_for("report_route", **url_params)
         email_url = request.url_for("email_route", **url_params)
-    except RuntimeError as e:
-        raise HTTPException(status_code=404, detail=str(e))
-    else:
         request.state.query_data = {
             "query": query_str,
             "viz": viz_str,
@@ -89,6 +86,10 @@ async def saved_query_route(request):
             "email_url": email_url,
             **request.path_params, # db, file, state
         }
+    except RuntimeError as e:
+        raise HTTPException(status_code=404, detail=str(e))
+    else:
+        
         return await _query(request)
 
 async def _query(request):
