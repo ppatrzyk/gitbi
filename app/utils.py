@@ -131,7 +131,7 @@ def common_context_args(request):
         "request": request,
         "version": VERSION,
         "user": _get_user(request),
-        "state": None, # to be overwritten if exists
+        "state": (request.path_params.get("state") or "HEAD"),
     }
     return data
 

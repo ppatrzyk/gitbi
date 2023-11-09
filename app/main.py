@@ -17,7 +17,7 @@ import utils
 async def server_error(request, exc):
     data = {
         "request": request,
-        "version": utils.VERSION,
+        "path": dict(request).get("path"),
         "code": exc.status_code,
         "message": exc.detail
     }

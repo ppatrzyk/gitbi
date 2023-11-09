@@ -1,15 +1,65 @@
 <div class="container">
-    <h2>Dashboards</h2>
+    <h2>
+        <img class="icon" src="data:image/svg+xml;utf8;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxNzkyIiBoZWlnaHQ9IjE3OTIiPjxwYXRoIGQ9Ik0xNzI4IDk5MlYxNjBxMC0xMy05LjUtMjIuNVQxNjk2IDEyOEg5NnEtMTMgMC0yMi41IDkuNVQ2NCAxNjB2ODMycTAgMTMgOS41IDIyLjVUOTYgMTAyNGgxNjAwcTEzIDAgMjIuNS05LjV0OS41LTIyLjV6bTEyOC04MzJ2MTA4OHEwIDY2LTQ3IDExM3QtMTEzIDQ3aC01NDRxMCAzNyAxNiA3Ny41dDMyIDcxIDE2IDQzLjVxMCAyNi0xOSA0NXQtNDUgMTlINjQwcS0yNiAwLTQ1LTE5dC0xOS00NXEwLTE0IDE2LTQ0dDMyLTcwIDE2LTc4SDk2cS02NiAwLTExMy00N3QtNDctMTEzVjE2MHEwLTY2IDQ3LTExM1Q5NiAwaDE2MDBxNjYgMCAxMTMgNDd0NDcgMTEzeiIvPjwvc3ZnPg==" alt="">
+        Dashboards
+    </h2>
+    <a class="pure-button" href="#dashboard-modal">new dashboard</a>
+    <ul>
     {% for dashboard in dashboards %}
-        <a target="_blank" href="{{ request.app.url_path_for('dashboard_route', state=state, file=dashboard) }}">{{ dashboard|e }}</a>
+        <li><a target="_blank" href="{{ request.app.url_path_for('dashboard_route', state=state, file=dashboard) }}">{{ dashboard|e }}</a></li>
     {% endfor %}
+    </ul>
     {% for db, queries in databases.items() %}
         <div>
-            <h2>{{ db|e }}</h2>
-            <a target="_blank" href="{{ request.app.url_path_for('query_route', db=db) }}">new query</a>
+            <h2>
+                <img class="icon" src="data:image/svg+xml;utf8;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxNzkyIiBoZWlnaHQ9IjE3OTIiPjxwYXRoIGQ9Ik04OTYgNzY4cTIzNyAwIDQ0My00M3QzMjUtMTI3djE3MHEwIDY5LTEwMyAxMjh0LTI4MCA5My41LTM4NSAzNC41LTM4NS0zNC41VDIzMSA4OTYgMTI4IDc2OFY1OThxMTE5IDg0IDMyNSAxMjd0NDQzIDQzem0wIDc2OHEyMzcgMCA0NDMtNDN0MzI1LTEyN3YxNzBxMCA2OS0xMDMgMTI4dC0yODAgOTMuNS0zODUgMzQuNS0zODUtMzQuNS0yODAtOTMuNS0xMDMtMTI4di0xNzBxMTE5IDg0IDMyNSAxMjd0NDQzIDQzem0wLTM4NHEyMzcgMCA0NDMtNDN0MzI1LTEyN3YxNzBxMCA2OS0xMDMgMTI4dC0yODAgOTMuNS0zODUgMzQuNS0zODUtMzQuNS0yODAtOTMuNS0xMDMtMTI4Vjk4MnExMTkgODQgMzI1IDEyN3Q0NDMgNDN6TTg5NiAwcTIwOCAwIDM4NSAzNC41dDI4MCA5My41IDEwMyAxMjh2MTI4cTAgNjktMTAzIDEyOHQtMjgwIDkzLjVUODk2IDY0MHQtMzg1LTM0LjVUMjMxIDUxMiAxMjggMzg0VjI1NnEwLTY5IDEwMy0xMjh0MjgwLTkzLjVUODk2IDB6Ii8+PC9zdmc+" alt="">
+                {{ db|e }}
+            </h2>
+            <a class="pure-button" target="_blank" href="{{ request.app.url_path_for('query_route', db=db) }}">new query</a>
+            <ul>
             {% for query in queries %}
-                <a target="_blank" href="{{ request.app.url_path_for('saved_query_route', state=state, db=db, file=query) }}">{{ query|e }}</a>
+                <li><a target="_blank" href="{{ request.app.url_path_for('saved_query_route', state=state, db=db, file=query) }}">{{ query|e }}</a></li>
             {% endfor %}
+            </ul>
         </div>
     {% endfor %}
+    <div id="dashboard-modal" data-modal>
+        <div id="dashboard-modal-dialog" data-modal-dialog role="dialog" aria-modal="true" aria-labelledby="dashboard-modal-dialog-title" tabindex="-1">
+          <h3 id="dashboard-modal-dialog-title">New dashboard</h3>
+          <div>
+            <form class="pure-form pure-form-stacked">
+                <summary >New dashboard</summary>
+                <fieldset id="dashboard-choices">
+                    {% for db, queries in databases.items() %}
+                        {% for query in queries %}
+                        <label for="{{ db|e }}-{{ query|e }}">
+                            <input type="checkbox" id="{{ db|e }}/{{ query|e }}" name="{{ db|e }}/{{ query|e }}">
+                            <span><strong>{{ db|e }}</strong>: {{ query|e }}</span>
+                        </label>
+                        {% endfor %}
+                    {% endfor %}
+                </fieldset>
+                <div>
+                    <label for="dashboard-file-name">Dashboard file name</label>
+                    <input type="text" id="dashboard-file-name" name="dashboard-file-name" placeholder="Enter file name">
+                    <small>Dashboard name must have <em>.json</em> extension</small>
+                </div>
+                <div
+                    class="pure-button"
+                    hx-post="{{ request.app.url_path_for('dashboard_save_route') }}"
+                    hx-vals="js:{data: dashboard_format()}"
+                    hx-trigger="click"
+                    hx-target-error="#htmx-error"
+                    hx-swap="innerHTML"
+                >
+                    Save dashboard
+                </div>
+            </form>
+          </div>
+          <a href="#" data-modal-close>
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-x"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+          </a>
+        </div>
+        <a href="#" data-modal-overlay></a>
+    </div>
 </div>

@@ -1,3 +1,6 @@
+function html_escape(str) {
+    return new Option(str).innerHTML;
+}
 function create_table(table_id, data) {
     var table = document.getElementById(table_id);
     var perPageSelect = (data.data.length <= 25) ? false :[10, 25, 50, 100];

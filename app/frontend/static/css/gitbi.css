@@ -17,6 +17,9 @@ h1 {
 h2 {
     font-size: 1.5em;
 }
+.sidebar {
+    background-color: var(--secondary);
+}
 .container {
     width: 100%;
     margin: 2em;
@@ -46,11 +49,6 @@ h2 {
     line-height: 20px;
     padding: 10px;
     tab-size: 4;
-}
-.gitbi-logo {
-    font-variant-caps: all-small-caps;
-    font-weight: bold;
-    font-size: 3em;
 }
 .datatable-info {
     display: flex;

@@ -15,10 +15,7 @@ async def home_route(request):
         state = request.path_params.get("state")
         data = {
             **utils.common_context_args(request),
-            "state": state,
             "readme": repo.get_readme(state),
-            "databases": repo.list_sources(state),
-            "dashboards": repo.list_dashboards(state),
         }
         response = utils.TEMPLATES.TemplateResponse(name='index.html', context=data)
     except Exception as e:
@@ -40,7 +37,6 @@ async def resources_route(request):
         state = request.path_params.get("state")
         data = {
             **utils.common_context_args(request),
-            "state": state,
             "databases": repo.list_sources(state),
             "dashboards": repo.list_dashboards(state),
         }
@@ -83,7 +79,7 @@ async def commits_route(request):
             **utils.common_context_args(request),
             "commits_table": table,
         }
-        response = utils.TEMPLATES.TemplateResponse(name='partial_commits.html', context=data)
+        response = utils.TEMPLATES.TemplateResponse(name='commits.html', context=data)
     except Exception as e:
         raise HTTPException(status_code=404, detail=str(e))
     else:

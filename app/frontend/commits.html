@@ -1,6 +1,9 @@
-{# partial html - this is used by htmx passing tables list #}
-<details id="commits-section" class="container" open>
+{% extends "base.html" %}
+{% block title %}Commits{% endblock %}
+{% block content %}
+<div id="commits-section">
     <summary >Go to commit</summary>
     {{ commits_table }}
     <script type="text/javascript">{% include 'js/commit_links.js' %}</script>
-</details>
+</div>
+{% endblock %}

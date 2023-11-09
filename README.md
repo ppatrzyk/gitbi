@@ -158,6 +158,7 @@ Backend:
 - [uvicorn](https://github.com/encode/uvicorn)
 
 Frontend:
+- [CSSUI](https://github.com/zetareticoli/cssui)
 - [codejar](https://github.com/antonmedv/codejar)
 - [ECharts](https://github.com/apache/echarts)
 - [Font Awesome](https://iconscout.com/contributors/font-awesome)

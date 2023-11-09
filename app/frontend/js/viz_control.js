@@ -66,6 +66,6 @@ function make_viz() {
     } catch (error) {
         console.error(`Failed to draw chart`);
         console.error(error);
-        create_error(chart_id, error)
+        alert(error)
     }
 }
