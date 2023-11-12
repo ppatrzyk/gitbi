@@ -1,5 +1,5 @@
 {# partial html - this is used to generate html table #}
-<figure><table id="{{ table_id }}" class="pure-table pure-table-striped">
+<table id="{{ table_id }}" class="pure-table pure-table-striped">
     <thead><tr>
         {% for col in col_names %}<th>{{ col|e }}</th>{% endfor %}
     </tr></thead>
@@ -8,4 +8,4 @@
             <tr>{% for entry in row %}<td>{{ entry|e }}</td>{% endfor %}</tr>
         {% endfor %}
     </tbody>
-</table></figure>
+</table>

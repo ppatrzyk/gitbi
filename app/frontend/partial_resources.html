@@ -15,7 +15,10 @@
                 <img class="icon" src="data:image/svg+xml;utf8;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxNzkyIiBoZWlnaHQ9IjE3OTIiPjxwYXRoIGQ9Ik04OTYgNzY4cTIzNyAwIDQ0My00M3QzMjUtMTI3djE3MHEwIDY5LTEwMyAxMjh0LTI4MCA5My41LTM4NSAzNC41LTM4NS0zNC41VDIzMSA4OTYgMTI4IDc2OFY1OThxMTE5IDg0IDMyNSAxMjd0NDQzIDQzem0wIDc2OHEyMzcgMCA0NDMtNDN0MzI1LTEyN3YxNzBxMCA2OS0xMDMgMTI4dC0yODAgOTMuNS0zODUgMzQuNS0zODUtMzQuNS0yODAtOTMuNS0xMDMtMTI4di0xNzBxMTE5IDg0IDMyNSAxMjd0NDQzIDQzem0wLTM4NHEyMzcgMCA0NDMtNDN0MzI1LTEyN3YxNzBxMCA2OS0xMDMgMTI4dC0yODAgOTMuNS0zODUgMzQuNS0zODUtMzQuNS0yODAtOTMuNS0xMDMtMTI4Vjk4MnExMTkgODQgMzI1IDEyN3Q0NDMgNDN6TTg5NiAwcTIwOCAwIDM4NSAzNC41dDI4MCA5My41IDEwMyAxMjh2MTI4cTAgNjktMTAzIDEyOHQtMjgwIDkzLjVUODk2IDY0MHQtMzg1LTM0LjVUMjMxIDUxMiAxMjggMzg0VjI1NnEwLTY5IDEwMy0xMjh0MjgwLTkzLjVUODk2IDB6Ii8+PC9zdmc+" alt="">
                 {{ db|e }}
             </h2>
-            <a class="pure-button" target="_blank" href="{{ request.app.url_path_for('query_route', db=db) }}">new query</a>
+            <div class="pure-button-group" role="group">
+                <a class="pure-button" target="_blank" href="{{ request.app.url_path_for('query_route', db=db) }}">new query</a>
+                <a class="pure-button" target="_blank" href="{{ request.app.url_path_for('db_details_route', db=db) }}">docs</a>
+            </div>
             <ul>
             {% for query in queries %}
                 <li><a target="_blank" href="{{ request.app.url_path_for('saved_query_route', state=state, db=db, file=query) }}">{{ query|e }}</a></li>
@@ -28,7 +31,7 @@
           <h3 id="dashboard-modal-dialog-title">New dashboard</h3>
           <div>
             <form class="pure-form pure-form-stacked">
-                <summary >New dashboard</summary>
+                <h2>New dashboard</h2>
                 <fieldset id="dashboard-choices">
                     {% for db, queries in databases.items() %}
                         {% for query in queries %}

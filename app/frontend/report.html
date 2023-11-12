@@ -15,14 +15,10 @@
             Executed on {{ time|e }}<br>
             <a href="{{ query_url }}">View query on Gitbi</a>
         </p>
-        <details open>
-            <summary>Query</summary>
-            <figure><pre><code>{{ query }}</code></pre></figure>
-        </details>
-        <details open>
-            <summary>Result</summary>
-            {{ table }}
-        </details>
+        <h2>Query</h2>
+        <pre><code>{{ query }}</code></pre>
+        <h2>Result</h2>
+        {{ table }}
     </main>
 </body>
 </html>

@@ -12,27 +12,26 @@
 {% endblock %}
 {% block title %}Query | {{ file }}{% endblock %}
 {% block content %}
-    <h2>Query db: {{ db|e }}</h2>
-    <h2>Query</h2>
-    <figure>
-        <label for="query-editor">Query</label>
-        <div id="query-editor" class="code-editor language-sql">{{ query }}</div>
-    </figure>
-    <div>
-        <label for="file-name">Query file name</label>
-        <input type="text" id="file-name" name="file-name" placeholder="Enter file name" value="{{ file }}">
-        <small>Query name must have <em>.sql</em> or <em>.prql</em> extension</small>
-    </div>
-    <div>
-        <label for="result-format">Result format</label>
-        <select id="result-format" required>
-            <option value="interactive-table" selected>Interactive table</option>
-            <option value="simple-table" selected>Standard table</option>
-            <option value="text" selected>ASCII table</option>
-            <option value="csv" selected>CSV</option>
-            <option value="json" selected>JSON</option>
-        </select>
-    </div>
+    <h1>Query db: {{ db|e }}</h1>
+    <label for="query-editor">Query</label>
+    <div id="query-editor" class="code-editor language-sql">{{ query }}</div>
+    <form class="pure-form pure-form-stacked">
+        <div>
+            <label for="file-name">Query file name</label>
+            <input type="text" id="file-name" name="file-name" placeholder="Enter file name" value="{{ file }}">
+            <small>Query name must have <em>.sql</em> or <em>.prql</em> extension</small>
+        </div>
+        <div>
+            <label for="result-format">Result format</label>
+            <select id="result-format" required>
+                <option value="interactive-table" selected>Interactive table</option>
+                <option value="simple-table" selected>Standard table</option>
+                <option value="text" selected>ASCII table</option>
+                <option value="csv" selected>CSV</option>
+                <option value="json" selected>JSON</option>
+            </select>
+        </div>
+    </form>
     <div class="pure-button-group" role="group">
         <div
             class="pure-button"
@@ -55,7 +54,13 @@
         >
             Save query
         </div>
-        {% if file != "" %}
+        <div
+            class="pure-button"
+            onclick="generate_link()"
+        >
+            Generate share link
+        </div>
+        {% if report_url is not none %}
         <div
             class="pure-button"
             hx-get="{{ request.app.url_path_for('query_delete_route', db=db, file=file) }}"
@@ -66,28 +71,29 @@
             Delete query
         </div>
         {% endif %}
-        <div
-            class="pure-button"
-            onclick="generate_link()"
-        >
-            Generate share link
-        </div>
+    </div>
+    <div>
+        {% if report_url is not none %}
+        <p>TODO all report formats</p>
+        <a target="_blank" href="{{ report_url.html|e }}">HTML report</a>
+        <a target="_blank" href="{{ report_url.text|e }}">text report</a>
+        <a target="_blank" href="{{ report_url.csv|e }}">csv report</a>
+        <a target="_blank" href="{{ report_url.json|e }}">json report</a>
+        <p>Permissible formats: html, text, json, csv</p>
+        {% endif %}
     </div>
     <br>
     <div>
-        <h2>Result</h2>
-        <details open>
-            <summary >Table</summary>
-            <div id="query-result">
-                <p>No data available</p>
-                <p class="htmx-indicator" aria-busy="true">Running query...</p>
-            </div>
-        </details>
-        <details open>
-            <summary >Visualization</summary>
-            <div id="echart-note">No data available</div>
-            <div id="echart-chart" class="hidden">
-                <div id="echart-options" class="grid">
+        <h2 >Table</h2>
+        <div id="query-result">
+            <p>No data available</p>
+            <p class="htmx-indicator" aria-busy="true">Running query...</p>
+        </div>
+        <h2 >Visualization</h2>
+        <div id="echart-note">No data available</div>
+        <div id="echart-chart" class="hidden">
+            <form class="pure-form pure-form-stacked">
+                <div id="echart-options">
                     <label for="echart-options-type">
                         Chart type
                         <select id="echart-options-type">
@@ -103,29 +109,30 @@
                     <label for="echart-options-group">Group<select id="echart-options-group"></select></label>
                 </div>
                 <button id="echart-render" class="pure-button" onclick="make_viz()">Render chart</button>
-                <div id="{{ echart_id }}"></div>
-                <script type="text/javascript">
-                    var chart_options = {{ viz }};
-                    var chart_el = document.getElementById('{{ echart_id }}');
-                    chart_el.addEventListener("newdata", (e) => {
-                        current_data = e.detail.data;
-                        update_chart_options();
-                        make_viz();
-                    });
-                </script>
-            </div>
-        </details>
+            </form>
+            <div id="{{ echart_id }}"></div>
+            <script type="text/javascript">
+                var chart_options = {{ viz }};
+                var chart_el = document.getElementById('{{ echart_id }}');
+                chart_el.addEventListener("newdata", (e) => {
+                    current_data = e.detail.data;
+                    update_chart_options();
+                    make_viz();
+                });
+            </script>
+        </div>
     </div>
-    <div id="db-details-{{ db }}"></div>
-    <a
-        class="hidden"
-        hx-get="{{ request.app.url_path_for('db_details_route', db=db) }}"
-        hx-trigger="load"
-        hx-target="#db-details-{{ db }}"
-        hx-target-error="#htmx-error"
-        hx-swap="outerHTML"
-    >
-        Load table info
-    </a>
-    {% include 'partial_report_cron.html' %}
+    {% if report_url is not none %}
+    <div>
+        <h2>Alert configs</h2>
+        <label for="cron-mail">CRON configuration example (email configured in Gitbi)</label>
+        <pre id="cron-mail"><code>
+# alert
+* * * * * curl -s {% if user is not none %}-u USER:PASSWORD{% endif %} "{{ email_url|e }}?type=alert&to=RECIPIENT_EMAIL"
+
+#report
+* * * * * curl -s {% if user is not none %}-u USER:PASSWORD{% endif %} "{{ email_url|e }}?type=report&to=RECIPIENT_EMAIL"
+        </code></pre>
+    </div>
+    {% endif %}
 {% endblock %}

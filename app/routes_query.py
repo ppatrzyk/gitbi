@@ -76,9 +76,10 @@ async def saved_query_route(request):
     """
     try:
         query_str, viz_str, _lang = repo.get_query(**request.path_params)
-        url_params = {**request.path_params, "format": "html"}
-        report_url = request.url_for("report_route", **url_params)
-        email_url = request.url_for("email_route", **url_params)
+        # TODO unify report url email url
+        report_formats = ("html", "text", "json", "csv", )
+        report_url = {f: request.url_for("report_route", **{**request.path_params, "format": f}) for f in report_formats}
+        email_url = request.url_for("email_route", **{**request.path_params, "format": "html"})
         request.state.query_data = {
             "query": query_str,
             "viz": viz_str,

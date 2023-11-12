@@ -1,17 +1,13 @@
 {# partial html - this is used by htmx inserting one query into dashboard #}
+<h2>{{ db|e }}/{{ file|e }}</h2>
+<h2>Executed on {{ time|e }}</h2>
+<h2>Table</h2>
+{{ table }}
+<h2 >Visualization</h2>
+<div id="{{ echart_id }}"></div>
 <script type="text/javascript">
     var chart_options = {{ viz }};
     var chart_el = document.getElementById('{{ echart_id }}');
     var data = {{ data_json }};
     create_viz(data, chart_options, chart_el);
 </script>
-<h2>{{ db|e }}/{{ file|e }}</h2>
-<h2>Executed on {{ time|e }}</h2>
-<details>
-    <summary>Table</summary>
-    {{ table }}
-</details>
-<details open>
-    <summary >Visualization</summary>
-    <div id="{{ echart_id }}"></div>
-</details>

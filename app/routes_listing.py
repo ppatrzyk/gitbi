@@ -48,8 +48,7 @@ async def resources_route(request):
 
 async def db_details_route(request):
     """
-    Endpoint for getting table info
-    User by htmx
+    Endpoint for getting database docs
     """
     try:
         db = request.path_params.get("db")
@@ -61,7 +60,7 @@ async def db_details_route(request):
             "tables": tables,
             **request.path_params,
         }
-        response = utils.TEMPLATES.TemplateResponse(name='partial_db_details.html', context=data)
+        response = utils.TEMPLATES.TemplateResponse(name='db_details.html', context=data)
     except Exception as e:
         status_code = 404 if isinstance(e, RuntimeError) else 500
         raise HTTPException(status_code=status_code, detail=str(e))

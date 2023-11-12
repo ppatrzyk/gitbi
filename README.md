@@ -1,10 +1,12 @@
 # gitbi
 
-_Gitbi_ is a lightweight business intelligence application that uses git repo as a "DB" for saved queries and other configuration (visualizations, dashboards). This design enables you either to write your queries via web interface _or_ directly commit to git repo and have _Gitbi_ display latest changes.
+_Gitbi_ is a lightweight BI web app that uses git repo as a source of saved queries, visualizations and dashboards. Everything is stored as text files that can be easily accessed, as well as edited and commited to repo (of course you can also edit via web interface).
 
-You can write queries using either SQL or [PRQL](https://github.com/PRQL/prql). Currently supported DBs: clickhouse, duckdb (query csv files), postgresql, sqlite.
+You can write queries using either SQL or [PRQL](https://github.com/PRQL/prql). 
 
-Test it now with sample db and config:
+Currently supported DBs: clickhouse, duckdb (query csv files), postgresql, sqlite.
+
+Test it now with sample dbs and config:
 
 ```
 docker run -p 8000:8000 pieca/gitbi:latest
@@ -18,12 +20,12 @@ See full deployment example: [ppatrzyk/gitbi-example](https://github.com/ppatrzy
 
 _Gitbi_ requires the following to run:
 
-### Repository with saved queries
+### Config repository
 
 Repository needs to have the following structure:
 - directories in repo root refer to databases
 - files in each directory are queries/visualizations to be run against respective database
-    - files with `.sql` extension are queries
+    - files with `.sql` or `.prql` extension are queries
     - (optional) files with `.json` extension are saved visualizations
 - (optional) special directory `_dashboards` contain dashboard specifications (`.json` format)
 - (optional) README.md file content will be displayed on _Gitbi_ main page
