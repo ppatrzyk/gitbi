@@ -13,6 +13,15 @@
 {% block title %}Query | {{ file }}{% endblock %}
 {% block content %}
     <h1>Query db: {{ db|e }}</h1>
+    {% if report_url is not none %}
+    <div>
+        Go to report:
+        <a href="{{ report_url.html|e }}">html</a> | 
+        <a href="{{ report_url.text|e }}">text</a> | 
+        <a href="{{ report_url.csv|e }}">csv</a> | 
+        <a href="{{ report_url.json|e }}">json</a>
+    </div>
+    {% endif %}
     <label for="query-editor">Query</label>
     <div id="query-editor" class="code-editor language-sql">{{ query }}</div>
     <form class="pure-form pure-form-stacked">
@@ -25,10 +34,10 @@
             <label for="result-format">Result format</label>
             <select id="result-format" required>
                 <option value="interactive-table" selected>Interactive table</option>
-                <option value="simple-table" selected>Standard table</option>
-                <option value="text" selected>ASCII table</option>
-                <option value="csv" selected>CSV</option>
-                <option value="json" selected>JSON</option>
+                <option value="simple-table">Standard table</option>
+                <option value="text">ASCII table</option>
+                <option value="csv">CSV</option>
+                <option value="json">JSON</option>
             </select>
         </div>
     </form>
@@ -72,19 +81,9 @@
         </div>
         {% endif %}
     </div>
-    <div>
-        {% if report_url is not none %}
-        <p>TODO all report formats</p>
-        <a target="_blank" href="{{ report_url.html|e }}">HTML report</a>
-        <a target="_blank" href="{{ report_url.text|e }}">text report</a>
-        <a target="_blank" href="{{ report_url.csv|e }}">csv report</a>
-        <a target="_blank" href="{{ report_url.json|e }}">json report</a>
-        <p>Permissible formats: html, text, json, csv</p>
-        {% endif %}
-    </div>
     <br>
     <div>
-        <h2 >Table</h2>
+        <h2>Result</h2>
         <div id="query-result">
             <p>No data available</p>
             <p class="htmx-indicator" aria-busy="true">Running query...</p>
@@ -92,22 +91,20 @@
         <h2 >Visualization</h2>
         <div id="echart-note">No data available</div>
         <div id="echart-chart" class="hidden">
-            <form class="pure-form pure-form-stacked">
-                <div id="echart-options">
-                    <label for="echart-options-type">
-                        Chart type
-                        <select id="echart-options-type">
-                            <option value="scatter">Scatter</option>
-                            <option value="line" selected>Line</option>
-                            <option value="bar">Bar</option>
-                            <option value="heatmap">Heatmap</option>
-                        </select>
-                    </label>
-                    <label for="echart-options-xaxis">X axis<select id="echart-options-xaxis"></select></label>
-                    <label for="echart-options-yaxis">Y axis<select id="echart-options-yaxis"></select></label>
-                    <label for="echart-options-zaxis">Z axis<select id="echart-options-zaxis"></select></label>
-                    <label for="echart-options-group">Group<select id="echart-options-group"></select></label>
-                </div>
+            <form id="echart-options" class="pure-form pure-form-stacked">
+                <label for="echart-options-type">
+                    Chart type
+                    <select id="echart-options-type">
+                        <option value="scatter">Scatter</option>
+                        <option value="line" selected>Line</option>
+                        <option value="bar">Bar</option>
+                        <option value="heatmap">Heatmap</option>
+                    </select>
+                </label>
+                <label for="echart-options-xaxis">X axis<select id="echart-options-xaxis"></select></label>
+                <label for="echart-options-yaxis">Y axis<select id="echart-options-yaxis"></select></label>
+                <label for="echart-options-zaxis">Z axis<select id="echart-options-zaxis"></select></label>
+                <label for="echart-options-group">Group<select id="echart-options-group"></select></label>
                 <button id="echart-render" class="pure-button" onclick="make_viz()">Render chart</button>
             </form>
             <div id="{{ echart_id }}"></div>

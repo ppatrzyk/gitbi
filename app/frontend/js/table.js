@@ -10,7 +10,7 @@ function create_table(table_id, data) {
         data: data,
         perPage: 25,
         perPageSelect: perPageSelect,
-        classes: {bottom: "grid", top: "grid", table: "pure-table pure-table-striped", },
+        classes: {top: "pure-form", bottom: "datatable-container", table: "pure-table pure-table-striped", },
         type: "html",
         layout: {
             top: "{search}",

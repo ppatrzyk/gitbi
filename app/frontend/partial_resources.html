@@ -4,9 +4,9 @@
         Dashboards
     </h2>
     <a class="pure-button" href="#dashboard-modal">new dashboard</a>
-    <ul>
+    <ul class="mylist">
     {% for dashboard in dashboards %}
-        <li><a target="_blank" href="{{ request.app.url_path_for('dashboard_route', state=state, file=dashboard) }}">{{ dashboard|e }}</a></li>
+        <li><a href="{{ request.app.url_path_for('dashboard_route', state=state, file=dashboard) }}">{{ dashboard|e }}</a></li>
     {% endfor %}
     </ul>
     {% for db, queries in databases.items() %}
@@ -16,12 +16,12 @@
                 {{ db|e }}
             </h2>
             <div class="pure-button-group" role="group">
-                <a class="pure-button" target="_blank" href="{{ request.app.url_path_for('query_route', db=db) }}">new query</a>
-                <a class="pure-button" target="_blank" href="{{ request.app.url_path_for('db_details_route', db=db) }}">docs</a>
+                <a class="pure-button"  href="{{ request.app.url_path_for('query_route', db=db) }}">new query</a>
+                <a class="pure-button"  href="{{ request.app.url_path_for('db_details_route', db=db) }}">docs</a>
             </div>
-            <ul>
+            <ul class="mylist">
             {% for query in queries %}
-                <li><a target="_blank" href="{{ request.app.url_path_for('saved_query_route', state=state, db=db, file=query) }}">{{ query|e }}</a></li>
+                <li><a href="{{ request.app.url_path_for('saved_query_route', state=state, db=db, file=query) }}">{{ query|e }}</a></li>
             {% endfor %}
             </ul>
         </div>
@@ -31,7 +31,6 @@
           <h3 id="dashboard-modal-dialog-title">New dashboard</h3>
           <div>
             <form class="pure-form pure-form-stacked">
-                <h2>New dashboard</h2>
                 <fieldset id="dashboard-choices">
                     {% for db, queries in databases.items() %}
                         {% for query in queries %}
