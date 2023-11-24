@@ -20,6 +20,9 @@ h1 {
 h2 {
     font-size: 1.5em;
 }
+h3 {
+    font-size: 1em;
+}
 a {
     color: var(--blue3);
     text-decoration: none;
@@ -113,3 +116,5 @@ a:hover {
 .datatable-pagination-list-item.datatable-active {
     background-color: var(--blue1);
 }
+/* https://codepen.io/alvarotrigo/pen/RwLzvQz */
+/* https://codepen.io/alvarotrigo/pen/bGoPzMe */

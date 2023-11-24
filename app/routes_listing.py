@@ -13,6 +13,10 @@ async def home_route(request):
     """
     try:
         state = request.path_params.get("state")
+        # since readme can be empty, need to check for state validity
+        _headers, commits = repo.list_commits()
+        commit_hashes = ("HEAD", ) + tuple(entry[0] for entry in commits)
+        assert state in commit_hashes, f"Unknown state: {state}"
         data = {
             **utils.common_context_args(request),
             "readme": repo.get_readme(state),

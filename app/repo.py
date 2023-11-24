@@ -139,15 +139,22 @@ def list_commits():
     """
     headers = ("commit_hash", "author", "date", "message")
     commits = [("file", "N/A", "now", "N/A", ), ]
-    for el in REPO.walk(REPO.head.target):
-        commit = (
-            str(el.id),
-            str(el.author),
-            datetime.fromtimestamp(el.commit_time).astimezone().strftime("%Y-%m-%d %H:%M:%S %Z"),
-            el.message.replace("\n", ""),
-        )
+    for entry in REPO.walk(REPO.head.target):
+        commit = _format_commit(entry)
         commits.append(commit)
     return headers, commits
+
+def _format_commit(entry):
+    """
+    Format commit tuple
+    """
+    commit = (
+        str(entry.id),
+        str(entry.author),
+        datetime.fromtimestamp(entry.commit_time).astimezone().strftime("%Y-%m-%d %H:%M:%S %Z"),
+        entry.message.replace("\n", ""),
+    )
+    return commit
 
 def save_dashboard(user, file, queries):
     """

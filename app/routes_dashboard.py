@@ -25,6 +25,21 @@ async def dashboard_route(request):
     else:
         return response
 
+async def new_route(request):
+    """
+    Endpoint for new dashboard
+    """
+    try:
+        data = {
+            **utils.common_context_args(request),
+            "databases": repo.list_sources("HEAD"),
+        }
+        response = utils.TEMPLATES.TemplateResponse(name='create_dashboard.html', context=data)
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+    else:
+        return response
+
 async def delete_route(request):
     """
     Delete query from repository

@@ -1,5 +1,8 @@
 {# partial html - used as is by htmx or inserted into "full" error pages #}
-<div></div>
-<script>
-    alert("Error {{ code|e }} at {{ path|e }}\n{{ message|e }}");
-</script>
+<div class="hidden">
+    <p>Error {{ code|e }}</p>
+    <p>{{ message|e }}</p>
+    <script>
+        alert("Error {{ code|e }} at {{ path|e }}\n{{ message|e }}");
+    </script>
+</div>

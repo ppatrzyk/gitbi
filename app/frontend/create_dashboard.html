@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% block title %}New Dashboard{% endblock %}
+{% block content %}
+<div id="new-dashboard">
+    <h1>New dashboard</h1>
+    <form class="pure-form pure-form-stacked">
+        <fieldset id="dashboard-choices">
+            {% for db, queries in databases.items() %}
+                {% for query in queries %}
+                <label for="{{ db|e }}-{{ query|e }}">
+                    <input type="checkbox" id="{{ db|e }}/{{ query|e }}" name="{{ db|e }}/{{ query|e }}">
+                    <span><strong>{{ db|e }}</strong>: {{ query|e }}</span>
+                </label>
+                {% endfor %}
+            {% endfor %}
+        </fieldset>
+        <div>
+            <label for="dashboard-file-name">Dashboard file name</label>
+            <input type="text" id="dashboard-file-name" name="dashboard-file-name" placeholder="Enter file name">
+            <small>Dashboard name must have <em>.json</em> extension</small>
+        </div>
+        <div
+            class="pure-button"
+            hx-post="{{ request.app.url_path_for('dashboard_save_route') }}"
+            hx-vals="js:{data: dashboard_format()}"
+            hx-trigger="click"
+            hx-target-error="#htmx-error"
+            hx-swap="innerHTML"
+        >
+            Save dashboard
+        </div>
+    </form>
+</div>
+{% endblock %}
+
+
+<div id="dashboard-modal" data-modal>
+    <div id="dashboard-modal-dialog" data-modal-dialog role="dialog" aria-modal="true" aria-labelledby="dashboard-modal-dialog-title" tabindex="-1">
+      <h3 id="dashboard-modal-dialog-title">New dashboard</h3>
+
+      <a href="#" data-modal-close>
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-x"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+      </a>
+    </div>
+    <a href="#" data-modal-overlay></a>
+</div>

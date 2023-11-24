@@ -43,6 +43,7 @@ routes = [
     Route('/dashboard/delete/{file:str}', endpoint=routes_dashboard.delete_route, name="dashboard_delete_route"),
     Route('/dashboard/save', endpoint=routes_dashboard.save_route, methods=("POST", ), name="dashboard_save_route"),
     Route('/dashboard/{file:str}/{state:str}', endpoint=routes_dashboard.dashboard_route, name="dashboard_route"),
+    Route('/dashboard/new', endpoint=routes_dashboard.new_route, name="dashboard_new_route"),
     # static
     Mount('/static', app=StaticFiles(directory=utils.STATIC_DIR), name="static"),
 ]
