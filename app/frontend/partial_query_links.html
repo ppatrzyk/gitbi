@@ -1,0 +1,10 @@
+{# partial html - listing query links #}
+<div class="text-result bottom-margin">
+    Query: <a href="{{ request.app.url_path_for('saved_query_route', state=state, db=db, file=file) }}">{{ file|e }}</a>
+    <hr>
+    Report:
+    <a href="{{ request.app.url_path_for('report_route', db=db, file=file, state=state, format='html') }}">html</a> | 
+    <a href="{{ request.app.url_path_for('report_route', db=db, file=file, state=state, format='text') }}">text</a> | 
+    <a href="{{ request.app.url_path_for('report_route', db=db, file=file, state=state, format='csv') }}">csv</a> | 
+    <a href="{{ request.app.url_path_for('report_route', db=db, file=file, state=state, format='json') }}">json</a>
+</div>

@@ -2,12 +2,21 @@
 {% block title %}Home{% endblock %}
 {% block content %}
 <h1>Data docs: {{ db }}</h1>
-<h2>Tables</h2>
-<ul class="mylist">
-    {% for table in tables %}
-    <li><a href="{{ request.app.url_path_for('query_route', db=db) }}?query=select * from {{ table }} limit 10;">{{ table }}</a></li>
-    {% endfor %}
-</ul>
-<h2>Columns</h2>
-{{ data_docs }}
+<div id="data-docs" class="tabs">
+    <input id="cols" type="radio" name="tabs" checked="checked">
+    <label class="tabs-label" for="cols">Columns</label>
+    <div class="tab">
+        {{ data_docs }}
+    </div>
+
+    <input id="tables" type="radio" name="tabs">
+    <label class="tabs-label" for="tables">Tables</label>
+    <div class="tab">
+        <ul class="mylist">
+            {% for table in tables %}
+            <li><a href="{{ request.app.url_path_for('query_route', db=db) }}?query=select * from {{ table }} limit 10;">{{ table }}</a></li>
+            {% endfor %}
+        </ul>
+    </div>
+</div>
 {% endblock %}

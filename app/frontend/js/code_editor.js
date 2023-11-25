@@ -15,6 +15,7 @@ function query_format() {
 window.query_format = query_format;
 function generate_link() {
     var data = JSON.parse(query_format());
+    delete data.echart_id;
     var path = window.location.pathname.split("/").slice(0, 3).join("/");
     var query = "?";
     for (let [key, value] of Object.entries(data)) {

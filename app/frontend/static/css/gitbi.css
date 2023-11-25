@@ -5,7 +5,6 @@
     --blue2: #a6b4ce;
     --blue3: #657594;
     --black: #101820;
-    --error: rgba(255,20,20,0.3);
     --font-size: 18px;
     --font-family: "Ubuntu";
 }
@@ -29,6 +28,9 @@ a {
 }
 a:hover {
     color: var(--black);
+}
+hr {
+    color: var(--blue1);
 }
 .pure-button {
     background-color: var(--blue1);
@@ -60,14 +62,24 @@ a:hover {
     width: 100%;
     margin: 2em;
 }
+.bottom-margin {
+    margin-bottom: 1em;
+}
 .icon {
-    height: var(--font-size);
+    height: 1em;
+    width: 1em;
+    vertical-align: middle;
+    border: 0;
+    margin-right: 0.25em;
+}
+.icon-dashboard {
+    content: url(data:image/svg+xml;utf8;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxNzkyIiBoZWlnaHQ9IjE3OTIiPjxwYXRoIGQ9Ik0xNzI4IDk5MlYxNjBxMC0xMy05LjUtMjIuNVQxNjk2IDEyOEg5NnEtMTMgMC0yMi41IDkuNVQ2NCAxNjB2ODMycTAgMTMgOS41IDIyLjVUOTYgMTAyNGgxNjAwcTEzIDAgMjIuNS05LjV0OS41LTIyLjV6bTEyOC04MzJ2MTA4OHEwIDY2LTQ3IDExM3QtMTEzIDQ3aC01NDRxMCAzNyAxNiA3Ny41dDMyIDcxIDE2IDQzLjVxMCAyNi0xOSA0NXQtNDUgMTlINjQwcS0yNiAwLTQ1LTE5dC0xOS00NXEwLTE0IDE2LTQ0dDMyLTcwIDE2LTc4SDk2cS02NiAwLTExMy00N3QtNDctMTEzVjE2MHEwLTY2IDQ3LTExM1Q5NiAwaDE2MDBxNjYgMCAxMTMgNDd0NDcgMTEzeiIvPjwvc3ZnPg==);
+}
+.icon-db {
+    content: url(data:image/svg+xml;utf8;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxNzkyIiBoZWlnaHQ9IjE3OTIiPjxwYXRoIGQ9Ik04OTYgNzY4cTIzNyAwIDQ0My00M3QzMjUtMTI3djE3MHEwIDY5LTEwMyAxMjh0LTI4MCA5My41LTM4NSAzNC41LTM4NS0zNC41VDIzMSA4OTYgMTI4IDc2OFY1OThxMTE5IDg0IDMyNSAxMjd0NDQzIDQzem0wIDc2OHEyMzcgMCA0NDMtNDN0MzI1LTEyN3YxNzBxMCA2OS0xMDMgMTI4dC0yODAgOTMuNS0zODUgMzQuNS0zODUtMzQuNS0yODAtOTMuNS0xMDMtMTI4di0xNzBxMTE5IDg0IDMyNSAxMjd0NDQzIDQzem0wLTM4NHEyMzcgMCA0NDMtNDN0MzI1LTEyN3YxNzBxMCA2OS0xMDMgMTI4dC0yODAgOTMuNS0zODUgMzQuNS0zODUtMzQuNS0yODAtOTMuNS0xMDMtMTI4Vjk4MnExMTkgODQgMzI1IDEyN3Q0NDMgNDN6TTg5NiAwcTIwOCAwIDM4NSAzNC41dDI4MCA5My41IDEwMyAxMjh2MTI4cTAgNjktMTAzIDEyOHQtMjgwIDkzLjVUODk2IDY0MHQtMzg1LTM0LjVUMjMxIDUxMiAxMjggMzg0VjI1NnEwLTY5IDEwMy0xMjh0MjgwLTkzLjVUODk2IDB6Ii8+PC9zdmc+);
 }
 .hidden {
     display: none;
-}
-.error {
-    background: var(--error);
 }
 .footer {
     text-align: center;
@@ -75,16 +87,22 @@ a:hover {
 }
 .code-editor {
     /* https://github.com/antonmedv/codejar#getting-started */
-    margin: 0.25em;
-    border-radius: 6px;
-    box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 1px 5px 0 rgba(0, 0, 0, 0.12), 0 3px 1px -2px rgba(0, 0, 0, 0.2);
     font-family: 'Source Code Pro', monospace;
     font-weight: 400;
     min-height: 100px;
     letter-spacing: normal;
     line-height: 20px;
-    padding: 10px;
     tab-size: 4;
+}
+.text-result {
+    width: fit-content;
+    background-color: var(--blue0);
+    padding: 1em;
+    border-style: solid;
+    border-width: 1px;
+    border-radius: 5px;
+    border-color: var(--blue1);
+    box-shadow: inset 0 1px 3px #ddd;
 }
 .datatable-container button {
     background-color: transparent;
@@ -117,4 +135,51 @@ a:hover {
     background-color: var(--blue1);
 }
 /* https://codepen.io/alvarotrigo/pen/RwLzvQz */
-/* https://codepen.io/alvarotrigo/pen/bGoPzMe */
+.tabs {
+    display: flex;
+    flex-wrap: wrap;
+}
+.tabs-label {
+    order: 1;
+    display: block;
+    font-size: 1.5em;
+    padding: 1rem 2rem;
+    margin-right: 0.2rem;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background ease 0.2s;
+}
+.tabs .tab {
+    order: 99;
+    flex-grow: 1;
+    width: 100%;
+    display: none;
+    padding: 1rem;
+}
+.tabs input[type="radio"] {
+    display: none;
+}
+.tabs input[type="radio"] + label {
+    border-style: none none solid none;
+    border-width: 2px;
+    border-color: var(--blue1);
+    color: var(--blue1);
+}
+.tabs input[type="radio"]:checked + label {
+    color: var(--black);
+    border-color: var(--black);
+}
+.tabs input[type="radio"]:checked + label + .tab {
+    display: block;
+}
+@media (max-width: 45em) {
+  .tabs .tab,
+  .tabs label {
+    order: initial;
+  }
+  .tabs label {
+    width: 100%;
+    margin-right: 0;
+    margin-top: 0.2rem;
+  }
+}

@@ -61,8 +61,7 @@ async def query_route(request):
         request.state.query_data = {
             "query": request.query_params.get('query') or "",
             "viz": "null",
-            "file": "",
-            "report_url": None,
+            "file": "__empty__",
             **request.path_params, # db
         }
     except RuntimeError as e:
@@ -76,14 +75,10 @@ async def saved_query_route(request):
     """
     try:
         query_str, viz_str, _lang = repo.get_query(**request.path_params)
-        # TODO unify report url email url
-        report_formats = ("html", "text", "json", "csv", )
-        report_url = {f: request.url_for("report_route", **{**request.path_params, "format": f}) for f in report_formats}
         email_url = request.url_for("email_route", **{**request.path_params, "format": "html"})
         request.state.query_data = {
             "query": query_str,
             "viz": viz_str,
-            "report_url": report_url,
             "email_url": email_url,
             **request.path_params, # db, file, state
         }

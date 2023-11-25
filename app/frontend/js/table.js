@@ -10,23 +10,17 @@ function create_table(table_id, data) {
         data: data,
         perPage: 25,
         perPageSelect: perPageSelect,
-        classes: {top: "pure-form", bottom: "datatable-container", table: "pure-table pure-table-striped", },
+        classes: {
+            top: "pure-form",
+            bottom: "datatable-container",
+            table: "pure-table pure-table-striped",
+            search: "datatable-search bottom-margin",
+            dropdown: "datatable-dropdown bottom-margin"
+        },
         type: "html",
         layout: {
             top: "{search}",
             bottom: "{select}{info}{pager}"
         },
     });
-    var search_button = table.parentNode.parentNode.getElementsByClassName("datatable-search")[0];
-    var csv_button = document.createElement("div"); 
-    csv_button.setAttribute("class", "pure-button");
-    csv_button.innerText = "Export CSV";
-    csv_button.addEventListener("click", () => {
-        simpleDatatables.exportCSV(data_table, {
-            download: true,
-            lineDelimiter: "\n",
-            columnDelimiter: ";"
-        })
-    });
-    search_button.insertAdjacentElement('afterend', csv_button);
 }

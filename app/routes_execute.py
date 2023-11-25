@@ -46,7 +46,7 @@ async def execute_route(request):
                         table = utils.format_csvtable(col_names, rows)
                     case "json":
                         table = data_json
-                table = f"<pre><code>{table}</pre></code>"
+                table = f'<pre class="text-result"><code>{table}</pre></code>'
             case other:
                 raise ValueError(f"Bad format: {other}")
         data = {**data, "table": table}
@@ -142,6 +142,7 @@ async def _execute_from_saved_query(request, format):
                     "table": table,
                     "viz": viz_str,
                     "echart_id": utils.random_id(),
+                    "tab_id": utils.random_id(),
                     "data_json": data_json,
                 }
                 response = utils.TEMPLATES.TemplateResponse(name='partial_dashboard_entry.html', context=data)

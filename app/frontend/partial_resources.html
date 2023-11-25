@@ -1,8 +1,5 @@
 <div class="container">
-    <h2>
-        <img class="icon" src="data:image/svg+xml;utf8;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxNzkyIiBoZWlnaHQ9IjE3OTIiPjxwYXRoIGQ9Ik0xNzI4IDk5MlYxNjBxMC0xMy05LjUtMjIuNVQxNjk2IDEyOEg5NnEtMTMgMC0yMi41IDkuNVQ2NCAxNjB2ODMycTAgMTMgOS41IDIyLjVUOTYgMTAyNGgxNjAwcTEzIDAgMjIuNS05LjV0OS41LTIyLjV6bTEyOC04MzJ2MTA4OHEwIDY2LTQ3IDExM3QtMTEzIDQ3aC01NDRxMCAzNyAxNiA3Ny41dDMyIDcxIDE2IDQzLjVxMCAyNi0xOSA0NXQtNDUgMTlINjQwcS0yNiAwLTQ1LTE5dC0xOS00NXEwLTE0IDE2LTQ0dDMyLTcwIDE2LTc4SDk2cS02NiAwLTExMy00N3QtNDctMTEzVjE2MHEwLTY2IDQ3LTExM1Q5NiAwaDE2MDBxNjYgMCAxMTMgNDd0NDcgMTEzeiIvPjwvc3ZnPg==" alt="">
-        Dashboards
-    </h2>
+    <h2><img class="icon icon-dashboard" alt="">Dashboards</h2>
     <a class="pure-button" href="{{ request.app.url_path_for('dashboard_new_route') }}">new dashboard</a>
     <ul class="mylist">
     {% for dashboard in dashboards %}
@@ -11,10 +8,7 @@
     </ul>
     {% for db, queries in databases.items() %}
         <div>
-            <h2>
-                <img class="icon" src="data:image/svg+xml;utf8;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxNzkyIiBoZWlnaHQ9IjE3OTIiPjxwYXRoIGQ9Ik04OTYgNzY4cTIzNyAwIDQ0My00M3QzMjUtMTI3djE3MHEwIDY5LTEwMyAxMjh0LTI4MCA5My41LTM4NSAzNC41LTM4NS0zNC41VDIzMSA4OTYgMTI4IDc2OFY1OThxMTE5IDg0IDMyNSAxMjd0NDQzIDQzem0wIDc2OHEyMzcgMCA0NDMtNDN0MzI1LTEyN3YxNzBxMCA2OS0xMDMgMTI4dC0yODAgOTMuNS0zODUgMzQuNS0zODUtMzQuNS0yODAtOTMuNS0xMDMtMTI4di0xNzBxMTE5IDg0IDMyNSAxMjd0NDQzIDQzem0wLTM4NHEyMzcgMCA0NDMtNDN0MzI1LTEyN3YxNzBxMCA2OS0xMDMgMTI4dC0yODAgOTMuNS0zODUgMzQuNS0zODUtMzQuNS0yODAtOTMuNS0xMDMtMTI4Vjk4MnExMTkgODQgMzI1IDEyN3Q0NDMgNDN6TTg5NiAwcTIwOCAwIDM4NSAzNC41dDI4MCA5My41IDEwMyAxMjh2MTI4cTAgNjktMTAzIDEyOHQtMjgwIDkzLjVUODk2IDY0MHQtMzg1LTM0LjVUMjMxIDUxMiAxMjggMzg0VjI1NnEwLTY5IDEwMy0xMjh0MjgwLTkzLjVUODk2IDB6Ii8+PC9zdmc+" alt="">
-                {{ db|e }}
-            </h2>
+            <h2><img class="icon icon-db" alt="">{{ db|e }}</h2>
             <div class="pure-button-group" role="group">
                 <a class="pure-button"  href="{{ request.app.url_path_for('query_route', db=db) }}">new query</a>
                 <a class="pure-button"  href="{{ request.app.url_path_for('db_details_route', db=db) }}">docs</a>

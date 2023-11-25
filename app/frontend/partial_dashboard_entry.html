@@ -1,13 +1,26 @@
 {# partial html - this is used by htmx inserting one query into dashboard #}
-<h1>{{ db|e }}/{{ file|e }}</h1>
-<h2>Executed on {{ time|e }}</h2>
-<h2>Table</h2>
-{{ table }}
-<h2 >Visualization</h2>
-<div id="{{ echart_id }}"></div>
-<script type="text/javascript">
-    var chart_options = {{ viz }};
-    var chart_el = document.getElementById('{{ echart_id }}');
-    var data = {{ data_json }};
-    create_viz(data, chart_options, chart_el);
-</script>
+<h1><img class="icon icon-db" alt="">{{ db|e }} | {{ file|e }}</h1>
+<p>
+    Returned {{ no_rows|e }} rows in {{ duration|e }}ms<br>
+    Executed on {{ time|e }}
+</p>
+{% include 'partial_query_links.html' %}
+<div id="{{ tab_id }}" class="tabs">
+    <input id="table-{{ tab_id }}" type="radio" name="tabs-{{ tab_id }}" checked="checked">
+    <label class="tabs-label" for="table-{{ tab_id }}">Visualization</label>
+    <div class="tab">
+        <div id="{{ echart_id }}"></div>
+        <script type="text/javascript">
+            var chart_options = {{ viz }};
+            var chart_el = document.getElementById('{{ echart_id }}');
+            var data = {{ data_json }};
+            create_viz(data, chart_options, chart_el);
+        </script>
+    </div>
+
+    <input id="viz-{{ tab_id }}" type="radio" name="tabs-{{ tab_id }}">
+    <label class="tabs-label" for="viz-{{ tab_id }}">Table</label>
+    <div class="tab">
+        {{ table }}
+    </div>
+</div>

@@ -10,27 +10,21 @@
         {% include 'js/viz_control.js' %}
     </script>
 {% endblock %}
-{% block title %}Query | {{ file }}{% endblock %}
+{% block title %}Query | {{ db|e }}{% if file != "__empty__" %}| {{ file }}{% endif %}{% endblock %}
 {% block content %}
-    <h1>Query db: {{ db|e }}</h1>
-    {% if report_url is not none %}
-    <div>
-        Go to report:
-        <a href="{{ report_url.html|e }}">html</a> | 
-        <a href="{{ report_url.text|e }}">text</a> | 
-        <a href="{{ report_url.csv|e }}">csv</a> | 
-        <a href="{{ report_url.json|e }}">json</a>
+    <h1><img class="icon icon-db" alt="">{{ db|e }}{% if file != "__empty__" %} | {{ file }}{% endif %}</h1>
+    {% if file != "__empty__" %}{% include 'partial_query_links.html' %}{% endif %}
+    <div class="bottom-margin">
+        <label for="query-editor">Query</label>
+        <div id="query-editor" class="text-result code-editor language-sql">{{ query }}</div>
     </div>
-    {% endif %}
-    <label for="query-editor">Query</label>
-    <div id="query-editor" class="code-editor language-sql">{{ query }}</div>
     <form class="pure-form pure-form-stacked">
-        <div>
+        <div class="bottom-margin">
             <label for="file-name">Query file name</label>
-            <input type="text" id="file-name" name="file-name" placeholder="Enter file name" value="{{ file }}">
+            <input type="text" id="file-name" name="file-name" placeholder="Enter file name" value="{% if file != '__empty__' %}{{ file }}{% endif %}">
             <small>Query name must have <em>.sql</em> or <em>.prql</em> extension</small>
         </div>
-        <div>
+        <div class="bottom-margin">
             <label for="result-format">Result format</label>
             <select id="result-format" required>
                 <option value="interactive-table" selected>Interactive table</option>
@@ -41,7 +35,7 @@
             </select>
         </div>
     </form>
-    <div class="pure-button-group" role="group">
+    <div class="pure-button-group bottom-margin" role="group">
         <div
             class="pure-button"
             hx-post="{{ request.app.url_path_for('execute_route', db=db) }}"
@@ -69,7 +63,7 @@
         >
             Generate share link
         </div>
-        {% if report_url is not none %}
+        {% if file != "__empty__" %}
         <div
             class="pure-button"
             hx-get="{{ request.app.url_path_for('query_delete_route', db=db, file=file) }}"
@@ -81,7 +75,6 @@
         </div>
         {% endif %}
     </div>
-    <br>
     <div>
         <h2>Result</h2>
         <div id="query-result">
@@ -91,7 +84,7 @@
         <h2 >Visualization</h2>
         <div id="echart-note">No data available</div>
         <div id="echart-chart" class="hidden">
-            <form id="echart-options" class="pure-form pure-form-stacked">
+            <form id="echart-options" class="pure-form pure-form-stacked bottom-margin">
                 <label for="echart-options-type">
                     Chart type
                     <select id="echart-options-type">
@@ -119,7 +112,7 @@
             </script>
         </div>
     </div>
-    {% if report_url is not none %}
+    {% if file != "__empty__" %}
     <div>
         <h2>Alert configs</h2>
         <label for="cron-mail">CRON configuration example (email configured in Gitbi)</label>

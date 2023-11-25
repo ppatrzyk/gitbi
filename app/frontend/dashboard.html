@@ -7,7 +7,7 @@
     </script>
 {% endblock %}
 {% block content %}
-    <h1>{{ file }}</h1>
+    <h1><img class="icon icon-dashboard" alt="">{{ file }}</h1>
         <div
         class="pure-button"
         hx-get="{{ request.app.url_path_for('dashboard_delete_route', file=file) }}"
