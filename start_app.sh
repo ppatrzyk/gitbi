@@ -32,6 +32,7 @@ uvicorn \
     --host=0.0.0.0 \
     --port=8000 \
     --log-level=debug \
+    --lifespan=on \
     --workers=1  \
     --app-dir=$app_dir \
     main:app

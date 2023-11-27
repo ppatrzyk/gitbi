@@ -7,6 +7,7 @@ from starlette.routing import Mount, Route
 from starlette.staticfiles import StaticFiles
 import auth
 import routes_dashboard, routes_execute, routes_listing, routes_query
+import scheduler
 import utils
 
 # Error types
@@ -54,6 +55,8 @@ exception_handlers = {
 
 middleware = []
 middleware.extend(auth.AUTH)
+if scheduler.scheduler_middleware is not None:
+    middleware.append(scheduler.scheduler_middleware)
 
 app = Starlette(
     debug=True,

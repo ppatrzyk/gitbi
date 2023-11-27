@@ -1,15 +1,16 @@
-anyio==4.0.0
+anyio==4.1.0
+APScheduler==4.0.0a4
 attrs==23.1.0
 certifi==2023.7.22
 cffi==1.16.0
 click==8.1.7
 clickhouse-driver==0.2.6
 duckdb==0.9.1
-exceptiongroup==1.1.3
+exceptiongroup==1.2.0
 h11==0.14.0
 httpcore==0.18.0
 httpx==0.25.0
-idna==3.4
+idna==3.6
 iniconfig==2.0.0
 Jinja2==3.1.2
 Markdown==3.5
@@ -31,6 +32,7 @@ six==1.16.0
 sniffio==1.3.0
 sqlparse==0.4.4
 starlette==0.31.1
+tenacity==8.2.3
 tomli==2.0.1
 typing_extensions==4.8.0
 tzdata==2023.3

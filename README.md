@@ -1,10 +1,12 @@
-# gitbi
+# Gitbi
 
-_Gitbi_ is a lightweight BI web app that uses git repo as a source of saved queries, visualizations and dashboards. Everything is stored as text files that can be easily accessed, as well as edited and commited to repo (of course you can also edit via web interface).
+_Gitbi_ is a lightweight BI web app that uses git repository as a source of saved queries, visualizations and dashboards. Everything is stored as text files which can be easily accessed and edited outside of the app (in addition to using web interface).
 
-You can write queries using either SQL or [PRQL](https://github.com/PRQL/prql). 
+Features:
 
-Currently supported DBs: clickhouse, duckdb (query csv files), postgresql, sqlite.
+- You can write queries using either SQL or [PRQL](https://github.com/PRQL/prql)
+- Interactive visualizations with [ECharts](https://github.com/apache/echarts)
+- Currently supported DBs: clickhouse, duckdb (query csv files), postgresql, sqlite
 
 Test it now with sample dbs and config:
 
@@ -129,7 +131,13 @@ git config receive.denyCurrentBranch updateInstead
 ## Development
 
 ```
-# run local
+# install dependencies
+pip3 install -r requirements.txt
+
+# run with sample repo
+./start_app.sh
+
+# run with testing repo
 GITBI_REPO_DIR="./tests/gitbi-testing" GITBI_SQLITE_CONN="$(realpath ./tests/gitbi-testing/db.sqlite)" GITBI_SQLITE_TYPE=sqlite ./start_app.sh
 
 # build image
@@ -138,7 +146,7 @@ docker build -t pieca/gitbi:<version> .
 
 ## Some alternatives
 
-- generate static html reports from SQL queries using Python: [merkury](https://github.com/ppatrzyk/merkury)
+- generate static html reports using Python: [merkury](https://github.com/ppatrzyk/merkury)
 - create custom dashboards using SQL and markdown: [evidence](https://github.com/evidence-dev/evidence)
 - analyze single sqlite db: [datasette](https://github.com/simonw/datasette)
 - run SQL queries from your browser: [sqlpad](https://github.com/sqlpad/sqlpad)

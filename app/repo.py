@@ -96,7 +96,7 @@ def list_sources(state):
         match state:
             case 'file':
                 db_dirs = {db_dir for db_dir in os.scandir(DIR) if db_dir.is_dir() and db_dir.name not in QUERIES_EXCLUDE}
-                sources = {db_dir.name: list_file_names(db_dir) for db_dir in db_dirs}
+                sources = {db_dir.name: _list_file_names(db_dir) for db_dir in db_dirs}
             case hash:
                 commit = REPO.revparse_single(hash)
                 sources = dict()
@@ -122,7 +122,7 @@ def list_dashboards(state):
     try:
         match state:
             case 'file':
-                dashboards = list_file_names(DASHBOARDS_FULL_PATH)
+                dashboards = _list_file_names(DASHBOARDS_FULL_PATH)
             case hash:
                 commit = REPO.revparse_single(hash)
                 repo_paths = (Path(el) for el in _get_tree_objects_generator(commit.tree))
@@ -211,7 +211,20 @@ def delete_query(user, db, file):
     _commit(user, "delete", to_commit)
     return True
 
-def list_file_names(dir):
+def get_crontab(state):
+    """
+    Read and parse crontab for scheduling
+    """
+    try:
+        crontab = _get_file_content(state, "crontab")
+        # TODO parse file
+    except:
+        # It is OK for crontab to be missing, nothing set then
+        crontab = []
+    # return crontab
+    return [("* * * * *", "pokemon", "stats_by_type1.sql", "report", "text", "email@email.email"), ]
+
+def _list_file_names(dir):
     """
     List file names in given directory
     """

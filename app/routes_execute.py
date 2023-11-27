@@ -107,7 +107,6 @@ async def _execute_from_saved_query(request, format):
     """
     try:
         query_args = {k: request.path_params[k] for k in ("db", "file", "state")}
-        query_url = request.url_for("saved_query_route", **query_args)
         query_str, viz_str, lang = repo.get_query(**query_args)
         col_names, rows, duration_ms = query.execute(
             db=query_args.get("db"),
@@ -130,7 +129,6 @@ async def _execute_from_saved_query(request, format):
                 data = {
                     **common_data,
                     "table": table,
-                    "query_url": query_url,
                     "query": query_str,
                 }
                 response = utils.TEMPLATES.TemplateResponse(name='report.html', headers=headers, context=data)
