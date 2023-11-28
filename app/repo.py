@@ -59,13 +59,19 @@ def get_query(state, db, file):
     assert Path(file).suffix in VALID_QUERY_EXTENSIONS, "Bad query extension"
     lang = utils.get_lang(file)
     query_path = os.path.join(db, file)
+    query_str = _get_file_content(state, query_path)
+    return query_str, lang
+
+def get_query_viz(state, db, file):
+    """
+    Gets saved viz for given query
+    """
     try:
         viz_path = os.path.join(db, f"{file}.json")
         viz_str = _get_file_content(state, viz_path)
-    except Exception as e:
+    except:
         viz_str = "null" # this is read by JS
-    query_str = _get_file_content(state, query_path)
-    return query_str, viz_str, lang
+    return viz_str
 
 def get_dashboard(state, file):
     """
@@ -211,6 +217,7 @@ def delete_query(user, db, file):
     _commit(user, "delete", to_commit)
     return True
 
+# TODO implement this, show parsed cron table on main page
 def get_crontab(state):
     """
     Read and parse crontab for scheduling

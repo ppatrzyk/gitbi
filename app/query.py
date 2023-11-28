@@ -82,6 +82,13 @@ def execute(db, query, lang):
     duration_ms = round(1000*(time()-start))
     return col_names, rows, duration_ms
 
+def execute_saved(db, file, state):
+    """
+    Executes from saved query
+    """
+    query, lang = repo.get_query(db=db, file=file, state=state)
+    return execute(db, query, lang)
+
 def _execute_query(driver, conn_str, query):
     """
     Executes SQL query against DB using suitable driver

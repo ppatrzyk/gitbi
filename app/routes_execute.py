@@ -63,56 +63,11 @@ async def report_route(request):
     Endpoint for running reports
     i.e. executes saved query and passes ready result in given format
     """
-    format = request.path_params.get("format")
-    report, _no_rows = await _execute_from_saved_query(request, format)
-    return report
-
-async def email_route(request):
-    """
-    Endpoint for reports/alerts sent via email
-    """
     try:
-        file_name = request.path_params.get("file")
         format = request.path_params.get("format")
-        # TODO rethink this, these are mandatory
-        to = request.query_params.get("to")
-        type = (request.query_params.get("type") or "report")
-        assert type in ("report", "alert", ), "Bad type"
-        report, no_rows =  await _execute_from_saved_query(request, format)
-        if (no_rows == 0) and (type == "alert"):
-            response = PlainTextResponse(content=None, status_code=204)
-        else:
-            response = await _mailer_response(report, format, to, file_name)
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
-    else:
-        return response
-
-async def _mailer_response(report, format, to, file_name):
-    """
-    Wrapper for sending email
-    """
-    try:
-        _res = mailer.send(report, format, to, file_name)
-    except Exception as e:
-        response = PlainTextResponse(content=str(e), status_code=500)
-    else:
-        response = PlainTextResponse(content="OK", status_code=200)
-    return response
-
-async def _execute_from_saved_query(request, format):
-    """
-    Execute saved query, common logic for dashboard entries, reports and alerts
-    format: html, dashboard, text, json, csv
-    """
-    try:
         query_args = {k: request.path_params[k] for k in ("db", "file", "state")}
-        query_str, viz_str, lang = repo.get_query(**query_args)
-        col_names, rows, duration_ms = query.execute(
-            db=query_args.get("db"),
-            query=query_str,
-            lang=lang
-        )
+        query_str = repo.get_query(**query_args)
+        col_names, rows, duration_ms = query.execute_saved(**query_args)
         no_rows = len(rows)
         headers = {"Gitbi-Row-Count": str(no_rows), "Gitbi-Duration-Ms": str(duration_ms)}
         table_id = f"results-table-{utils.random_id()}"
@@ -129,12 +84,14 @@ async def _execute_from_saved_query(request, format):
                 data = {
                     **common_data,
                     "table": table,
+                    # TODO pass this everywhere
                     "query": query_str,
                 }
                 response = utils.TEMPLATES.TemplateResponse(name='report.html', headers=headers, context=data)
             case "dashboard":
                 table = utils.format_htmltable(table_id, col_names, rows, True)
                 data_json = utils.get_data_json(col_names, rows)
+                viz_str = repo.get_query_viz(**query_args)
                 data = {
                     **common_data,
                     "table": table,
@@ -162,7 +119,7 @@ async def _execute_from_saved_query(request, format):
         status_code = 404 if isinstance(e, RuntimeError) else 500
         raise HTTPException(status_code=status_code, detail=str(e))
     else:
-        return response, no_rows
+        return response
 
 def _get_time():
     """

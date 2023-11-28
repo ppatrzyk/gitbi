@@ -74,12 +74,11 @@ async def saved_query_route(request):
     Endpoint for saved query
     """
     try:
-        query_str, viz_str, _lang = repo.get_query(**request.path_params)
-        email_url = request.url_for("email_route", **{**request.path_params, "format": "html"})
+        query_str, _lang = repo.get_query(**request.path_params)
+        viz_str = repo.get_query_viz(**request.path_params)
         request.state.query_data = {
             "query": query_str,
             "viz": viz_str,
-            "email_url": email_url,
             **request.path_params, # db, file, state
         }
     except RuntimeError as e:

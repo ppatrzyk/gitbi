@@ -48,10 +48,6 @@ def test_execute():
     assert client.get("/report/sqlite/myquery.sql/HEAD/text", auth=USER_HTTPX).status_code == 200
     assert client.get("/report/sqlite/myquery.sql/HEAD/json", auth=USER_HTTPX).status_code == 200
     assert client.get("/report/sqlite/myquery.sql/HEAD/invalid", auth=USER_HTTPX).status_code == 500
-    assert client.get("/email/sqlite/incorrectfile/HEAD/html", auth=USER_HTTPX).status_code == 500
-    assert client.get("/email/sqlite/incorrectfile.prql/HEAD/html", auth=USER_HTTPX).status_code == 500
-    assert client.get("/email/sqlite/myquery.sql/HEAD/html", auth=USER_HTTPX).status_code == 500
-    assert client.get("/email/sqlite/myquery.sql/HEAD/html?to=email@email.com", auth=USER_HTTPX).status_code == 500
 
 def test_dashboard():
     assert client.get("/dashboard/test_dashboard.json/HEAD").status_code == 401
