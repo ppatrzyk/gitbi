@@ -12,6 +12,7 @@ def test_get_readme():
     assert get_readme("38ceabd502ad82f828f640e418fce0bd1d45a2bd") == latest
     assert get_readme("67aa8bd9b58e0ed496a440812bea4719a1361f10") == latest
     assert get_readme("47725449de77fc06fcae8d1f9bebbcacad4f5864") == latest
+    assert get_readme("85fd294d99bd810e2450c4bef596f06800aab372") == latest
     assert get_readme("HEAD") == latest
     assert get_readme("file") == latest
 
@@ -62,6 +63,7 @@ def test_get_query():
 def test_get_dashboard():
     latest = [["sqlite", "myquery.sql", ], ]
     assert get_dashboard("file", "test_dashboard.json") == latest
+    assert get_dashboard("85fd294d99bd810e2450c4bef596f06800aab372", "test_dashboard.json") == latest
     assert get_dashboard("47725449de77fc06fcae8d1f9bebbcacad4f5864", "test_dashboard.json") == latest
     with pytest.raises(Exception):
         get_dashboard("67aa8bd9b58e0ed496a440812bea4719a1361f10", "test_dashboard.json")
@@ -82,18 +84,37 @@ def test_list_sources():
     assert list_sources("38ceabd502ad82f828f640e418fce0bd1d45a2bd") == latest
     assert list_sources("67aa8bd9b58e0ed496a440812bea4719a1361f10") == latest
     assert list_sources("47725449de77fc06fcae8d1f9bebbcacad4f5864") == latest
+    assert list_sources("85fd294d99bd810e2450c4bef596f06800aab372") == latest
     assert list_sources("HEAD") == latest
     assert list_sources("file") == latest
 
 def test_list_commits():
     _headers, commits = list_commits()
     assert commits[0][0] == "file"
-    assert commits[1][0] == "47725449de77fc06fcae8d1f9bebbcacad4f5864"
-    assert commits[2][0] == "67aa8bd9b58e0ed496a440812bea4719a1361f10"
-    assert commits[3][0] == "38ceabd502ad82f828f640e418fce0bd1d45a2bd"
+    assert commits[1][0] == "85fd294d99bd810e2450c4bef596f06800aab372"
+    assert commits[2][0] == "47725449de77fc06fcae8d1f9bebbcacad4f5864"
+    assert commits[3][0] == "67aa8bd9b58e0ed496a440812bea4719a1361f10"
+    assert commits[4][0] == "38ceabd502ad82f828f640e418fce0bd1d45a2bd"
 
 def test_list_dashboards():
     latest = ("bad_spec.json", "test_dashboard.json", )
     assert list_dashboards("file") == latest
+    assert list_dashboards("85fd294d99bd810e2450c4bef596f06800aab372") == latest
     assert list_dashboards("47725449de77fc06fcae8d1f9bebbcacad4f5864") == latest
     assert list_dashboards("67aa8bd9b58e0ed496a440812bea4719a1361f10") == tuple()
+
+def test_get_schedule():
+    latest = [
+        {"cron": "0 7 * * *", "db": "postgres", "file": "query.sql", "type": "alert", "format": "text", "to": "email@email.com"},
+        {"cron": "* * * * *", "db": "sqlite", "file": "myquery.sql", "type": "report", "format": "html", "to": "email2@email.com"}
+    ]
+    assert get_schedule("file") == latest
+    assert get_schedule("HEAD") == latest
+    assert get_schedule("85fd294d99bd810e2450c4bef596f06800aab372") == latest
+    assert get_schedule("47725449de77fc06fcae8d1f9bebbcacad4f5864") == []
+
+def test_schedule_to_table():
+    exp = SCHEDULE_KEYS, (("0 7 * * *", "postgres", "query.sql", "alert", "text", "email@email.com"), ("* * * * *", "sqlite", "myquery.sql", "report", "html", "email2@email.com"), )
+    assert schedule_to_table(get_schedule("file")) == exp
+    assert schedule_to_table(get_schedule("HEAD")) == exp
+    assert schedule_to_table([]) == (SCHEDULE_KEYS, tuple(), )

@@ -6,6 +6,7 @@ Features:
 
 - You can write queries using either SQL or [PRQL](https://github.com/PRQL/prql)
 - Interactive visualizations with [ECharts](https://github.com/apache/echarts)
+- Scheduling reports and alerts
 - Currently supported DBs: clickhouse, duckdb (query csv files), postgresql, sqlite
 
 Test it now with sample dbs and config:
@@ -29,7 +30,8 @@ Repository needs to have the following structure:
 - files in each directory are queries/visualizations to be run against respective database
     - files with `.sql` or `.prql` extension are queries
     - (optional) files with `.json` extension are saved visualizations
-- (optional) special directory `_dashboards` contain dashboard specifications (`.json` format)
+- (optional) special directory `_dashboards` that contains dashboard specifications (`.json` format)
+- (optional) special file `schedule.json` that contains scheduled reports and alerts
 - (optional) README.md file content will be displayed on _Gitbi_ main page
 
 ### Environment variables
@@ -86,33 +88,81 @@ GITBI_DB2_CONN=<conn_str_to_db2>
 GITBI_DB2_TYPE=<type_db2>
 ```
 
-## Usage
+## Config formatting
 
-You can trigger your queries with the following endpoints:
+### Visualization
 
-Endpoint | Query params | Description
---- | --- | ---
-`/query/{db}/{file}/{state}` | - | displays query on a web page and allows you to edit or execute it interactively
-`/report/{db}/{file}/{state}/{format}` | - | displays _and executes_ query, returning result in chosen format
-`/email/{db}/{file}/{state}/{format}` | to, type | Executes query and sends result via email
+Visualization is a JSON file with the following format:
 
-Available formats:
+```
+{
+  "type": "scatter|line|bar|heatmap",
+  "xaxis": <column_name>,
+  "yaxis": <column_name>,
+  "zaxis": <column_name>,
+  "group": <column_name>
+}
+```
 
- - html
- - text
- - json
- - csv
+### Dashboard
 
-Email query parameters:
+Dashboard is a JSON file with the following format, list can have any number of entries:
 
-Query parameter | Description
+```
+[
+  [
+    "<db_name>",
+    "<query_file_name>"
+  ],
+  [
+    "<db_name>",
+    "<query_file_name>"
+  ],
+  ...
+]
+```
+
+### Scheduler
+
+Format for `schedule.json` file, list can have any number of entries:
+
+```
+[
+  {
+    "cron": "<cron_expression>",
+    "db": "<db_name>",
+    "file": "<query_file_name>",
+    "type": "alert|report",
+    "format": "html|text|csv|json",
+    "to": "<email_address>"
+  },
+  ...
+]
+```
+
+Parameter | Description
 --- | ---
+db | Database name
+file | Query file name
+format | _[html, text, csv, json]_
 to | email(s) to which report should be sent
-type | _[report (default), alert]_. _report_ always sends an email with results when invoked, while _alert_ sends results _only if there are some rows returned_. Write your alert queries in a way that they usually do not return anything, but you want to be notified when they do.
+type | _[report, alert]_. _report_ always sends an email with results when invoked, while _alert_ sends results only if there are some rows returned. Write your alert queries in a way that they usually do not return anything, but you want to be notified when they do.
 
-Notes:
-- if you don't have email credentials set up, you can still implement alerting this logic yourself using `/report` endpoint - the number of rows for a query is available in a header `Gitbi-Row-Count`,
-- _Gitbi_ does not attempt to reinvent the wheel and suggests to use e.g. CRON for scheduling.
+Note, any changes in scheduler require restarting the app for changes to be reflected.
+
+### System CRON examples
+
+If you don't want to setup email credentials in _Gitbi_, you can still just use CRON to to generate reports on schedule. Examples:
+
+```
+# HTML report via sendmail
+* * * * * echo -e "Subject: Gitbi report\nContent-Type: text/html\n\n$(curl -s -u <user>:<password> <report_url>)" | /usr/sbin/sendmail -f <sender_email> <recipient_email>
+
+# HTML report via mailgun api
+* * * * * curl -X POST --user "api:<mailgun_api_key>" --data-urlencode from=<sender_email> --data-urlencode to=<recipient_email> --data-urlencode subject="Gitbi report" --data-urlencode html="$(curl -s -u <user>:<password> <report_url>)" https://api.eu.mailgun.net/v3/SENDER_DOMAIN/messages
+```
+
+You can copy `report_url` from every query page. You could even implement alerting logic yourself with `/report` endpoint - the number of rows for a query is available in a header `Gitbi-Row-Count`.
 
 ## Repo setup
 

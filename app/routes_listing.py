@@ -17,9 +17,15 @@ async def home_route(request):
         _headers, commits = repo.list_commits()
         commit_hashes = ("HEAD", ) + tuple(entry[0] for entry in commits)
         assert state in commit_hashes, f"Unknown state: {state}"
+        schedule_headers, schedule_rows = repo.schedule_to_table(repo.get_schedule(state))
+        if schedule_rows:
+            schedule_table = utils.format_htmltable("schedule-table", schedule_headers, schedule_rows, False)
+        else:
+            schedule_table = None
         data = {
             **utils.common_context_args(request),
             "readme": repo.get_readme(state),
+            "schedule_table": schedule_table,
         }
         response = utils.TEMPLATES.TemplateResponse(name='index.html', context=data)
     except Exception as e:

@@ -4,6 +4,7 @@ Functions to interact with config repository
 from collections import OrderedDict
 from datetime import datetime
 import json
+import logging
 from markdown import markdown
 import os
 from pathlib import Path
@@ -20,6 +21,7 @@ DASHBOARDS_FULL_PATH = os.path.join(DIR, DASHBOARDS_DIR)
 if not os.path.exists(DASHBOARDS_FULL_PATH):
     os.makedirs(DASHBOARDS_FULL_PATH)
 QUERIES_EXCLUDE = (".git", DASHBOARDS_DIR, )
+SCHEDULE_KEYS = ("cron", "db", "file", "type", "format", "to", )
 
 def get_db_params(db):
     """
@@ -89,8 +91,9 @@ def get_readme(state):
     try:
         readme = _get_file_content(state, "README.md")
         readme = markdown(readme)
-    except:
+    except Exception as e:
         # It is OK for README to be missing, fallback present in template
+        logging.warning(f"Readme not specified: {str(e)}")
         readme = None
     return readme
 
@@ -217,19 +220,38 @@ def delete_query(user, db, file):
     _commit(user, "delete", to_commit)
     return True
 
-# TODO implement this, show parsed cron table on main page
-def get_crontab(state):
+def get_schedule(state):
     """
-    Read and parse crontab for scheduling
+    Read and parse schedule file
     """
     try:
-        crontab = _get_file_content(state, "crontab")
-        # TODO parse file
-    except:
-        # It is OK for crontab to be missing, nothing set then
-        crontab = []
-    # return crontab
-    return [("* * * * *", "pokemon", "stats_by_type1.sql", "report", "text", "email@email.email"), ]
+        schedule_str = _get_file_content(state, "schedule.json")
+        schedule = json.loads(schedule_str)
+        for entry in schedule:
+            _validate_schedule_entry(entry)
+    except Exception as e:
+        # It is OK for schedule to be missing, nothing set then
+        logging.warning(f"Schedule not specified: {str(e)}")
+        schedule = []
+    return schedule
+
+def schedule_to_table(schedule):
+    """
+    Reformat schedule list into tabular input
+    """
+    rows = tuple(tuple(entry[key] for key in SCHEDULE_KEYS) for entry in schedule)
+    return SCHEDULE_KEYS, rows
+
+def _validate_schedule_entry(entry):
+    """
+    Check if schedule entry is ok
+    """
+    assert set(SCHEDULE_KEYS) == set(entry.keys()), f"Bad keys in {str(entry)}"
+    type = entry.get("type")
+    assert type in ("report", "alert", ), f"Bad type {type}"
+    format = entry.get("format")
+    assert format in ("html", "text", "csv", "json", ), f"Bad format {format}"
+    return True
 
 def _list_file_names(dir):
     """

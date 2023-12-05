@@ -7,4 +7,10 @@
     <h1>Gitbi Home</h1>
     <p>[Readme file is missing]</p>
     {% endif %}
+    <h1>Schedule</h1>
+    {% if schedule_table is not none %}
+    {{ schedule_table }}
+    {% else %}
+    <p>[Schedule file is missing or invalid]</p>
+    {% endif %}
 {% endblock %}
