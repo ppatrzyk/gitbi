@@ -63,17 +63,18 @@ Assume you have repository with the following structure:
 ```
 repo
 ├── _dashboards
-│   └── my_dashboard.json
+│   └── my_dashboard.json
 ├── db1
-│   ├── query1.sql
-│   ├── query2.sql
-│   └── query2.sql.json
+│   ├── query1.sql
+│   ├── query2.sql
+│   └── query2.sql.json
 ├── db2
-│   ├── query3.sql
-│   ├── query3.sql.json
-│   ├── query4.sql
-│   └── query5.sql
-└── README.md
+│   ├── query3.sql
+│   ├── query3.sql.json
+│   ├── query4.sql
+│   └── query5.sql
+├── README.md
+└── schedule.json
 ```
 
 There are 2 databases named _db1_ and _db2_. _db1_ has 2 queries, one of them has also visualization; _db2_ has 3 queries, 1 with added visualization. There is also one dashboard called _my_dashboard.json_.
@@ -140,15 +141,10 @@ Format for `schedule.json` file, list can have any number of entries:
 ]
 ```
 
-Parameter | Description
---- | ---
-db | Database name
-file | Query file name
-format | _[html, text, csv, json]_
-to | email(s) to which report should be sent
-type | _[report, alert]_. _report_ always sends an email with results when invoked, while _alert_ sends results only if there are some rows returned. Write your alert queries in a way that they usually do not return anything, but you want to be notified when they do.
+Notes:
 
-Note, any changes in scheduler require restarting the app for changes to be reflected.
+- _report_ always sends an email with results when invoked, while _alert_ sends results only if there are some rows returned. Write your alert queries in a way that they usually do not return anything, but you want to be notified when they do
+- any changes in scheduler require restarting the app for changes to be reflected
 
 ### System CRON examples
 

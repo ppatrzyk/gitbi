@@ -3,4 +3,10 @@
 Returned {{ no_rows|e }} rows in {{ duration|e }}ms
 Executed on {{ time|e }}
 
+Query
+
+{{ query_str }}
+
+Result
+
 {{ table }}

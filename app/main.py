@@ -33,7 +33,6 @@ routes = [
     Route("/home/{state:str}", endpoint=routes_listing.home_route, name="home_route"),
     Route("/resources/{state:str}", endpoint=routes_listing.resources_route, name="resources_route"),
     Route("/dbdetails/{db:str}", endpoint=routes_listing.db_details_route, name="db_details_route"),
-    Route("/commits/", endpoint=routes_listing.commits_route, name="commits_route"),
     # routes query
     Route('/query/delete/{db:str}/{file:str}', endpoint=routes_query.delete_route, name="query_delete_route"),
     Route('/query/save/{db:str}', endpoint=routes_query.save_route, methods=("POST", ), name="query_save_route"),

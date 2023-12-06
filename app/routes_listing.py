@@ -14,18 +14,20 @@ async def home_route(request):
     try:
         state = request.path_params.get("state")
         # since readme can be empty, need to check for state validity
-        _headers, commits = repo.list_commits()
+        commits_headers, commits = repo.list_commits()
         commit_hashes = ("HEAD", ) + tuple(entry[0] for entry in commits)
         assert state in commit_hashes, f"Unknown state: {state}"
-        schedule_headers, schedule_rows = repo.schedule_to_table(repo.get_schedule(state))
+        commits_table = utils.format_htmltable("commits-table", commits_headers, commits, False)
+        schedule_rows = tuple(tuple(entry[key] for key in repo.SCHEDULE_KEYS) for entry in repo.get_schedule(state))
         if schedule_rows:
-            schedule_table = utils.format_htmltable("schedule-table", schedule_headers, schedule_rows, False)
+            schedule_table = utils.format_htmltable("schedule-table", repo.SCHEDULE_KEYS, schedule_rows, False)
         else:
             schedule_table = None
         data = {
             **utils.common_context_args(request),
             "readme": repo.get_readme(state),
             "schedule_table": schedule_table,
+            "commits_table": commits_table,
         }
         response = utils.TEMPLATES.TemplateResponse(name='index.html', context=data)
     except Exception as e:
@@ -74,22 +76,5 @@ async def db_details_route(request):
     except Exception as e:
         status_code = 404 if isinstance(e, RuntimeError) else 500
         raise HTTPException(status_code=status_code, detail=str(e))
-    else:
-        return response
-
-async def commits_route(request):
-    """
-    Endpoint for getting commits list
-    """
-    try:
-        headers, commits = repo.list_commits()
-        table = utils.format_htmltable("commits-table", headers, commits, False)
-        data = {
-            **utils.common_context_args(request),
-            "commits_table": table,
-        }
-        response = utils.TEMPLATES.TemplateResponse(name='commits.html', context=data)
-    except Exception as e:
-        raise HTTPException(status_code=404, detail=str(e))
     else:
         return response

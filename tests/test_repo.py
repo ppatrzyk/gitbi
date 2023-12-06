@@ -113,8 +113,3 @@ def test_get_schedule():
     assert get_schedule("85fd294d99bd810e2450c4bef596f06800aab372") == latest
     assert get_schedule("47725449de77fc06fcae8d1f9bebbcacad4f5864") == []
 
-def test_schedule_to_table():
-    exp = SCHEDULE_KEYS, (("0 7 * * *", "postgres", "query.sql", "alert", "text", "email@email.com"), ("* * * * *", "sqlite", "myquery.sql", "report", "html", "email2@email.com"), )
-    assert schedule_to_table(get_schedule("file")) == exp
-    assert schedule_to_table(get_schedule("HEAD")) == exp
-    assert schedule_to_table([]) == (SCHEDULE_KEYS, tuple(), )

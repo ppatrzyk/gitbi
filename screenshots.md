@@ -9,16 +9,16 @@ Go to:
 
 ## Main page
 
-![screenshot](https://drive.google.com/uc?export=view&id=1zWm4Bvzja-P0mQpg9rXq1QLNoGtuWtrz)
+![screenshot](https://drive.google.com/uc?export=view&id=1bGYmg69HWiI65iPF1gVWAvyRP6LkrwG9)
 
 ## Dashboard page
 
-![screenshot](https://drive.google.com/uc?export=view&id=1UWpMM-98tlYz9bOD0d54imfpdRPugONZ)
+![screenshot](https://drive.google.com/uc?export=view&id=1YovS0sPqDAm429VxYU-SHdPEVPrZ5vIN)
 
 ## Query page
 
-![screenshot](https://drive.google.com/uc?export=view&id=1laX55ZIJ_1btisEQHIu2cooyMCWD85aF)
+![screenshot](https://drive.google.com/uc?export=view&id=1V0MnyI2otg_qQrpzuCaY4dUEbAR9GR9j)
 
 ## HTML report page
 
-![screenshot](https://drive.google.com/uc?export=view&id=1PQrwIaxut-5GQxfeEHQxgoZpXlLtBRgC)
+![screenshot](https://drive.google.com/uc?export=view&id=1lF1vabLj02baHWW_YJoBK-yVh1_YIW4B)

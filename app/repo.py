@@ -235,13 +235,6 @@ def get_schedule(state):
         schedule = []
     return schedule
 
-def schedule_to_table(schedule):
-    """
-    Reformat schedule list into tabular input
-    """
-    rows = tuple(tuple(entry[key] for key in SCHEDULE_KEYS) for entry in schedule)
-    return SCHEDULE_KEYS, rows
-
 def _validate_schedule_entry(entry):
     """
     Check if schedule entry is ok

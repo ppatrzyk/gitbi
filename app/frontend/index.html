@@ -1,16 +1,35 @@
 {% extends "base.html" %}
 {% block title %}Home{% endblock %}
 {% block content %}
-    {% if readme is not none %}
-    <div>{{ readme }}</div>
-    {% else %}
-    <h1>Gitbi Home</h1>
-    <p>[Readme file is missing]</p>
-    {% endif %}
-    <h1>Schedule</h1>
-    {% if schedule_table is not none %}
-    {{ schedule_table }}
-    {% else %}
-    <p>[Schedule file is missing or invalid]</p>
-    {% endif %}
+    <div id="tabs" class="tabs">
+        <input id="readme" type="radio" name="tabs" checked="checked">
+        <label class="tabs-label" for="readme">Readme</label>
+        <div class="tab">
+            {% if readme is not none %}
+            <div>{{ readme }}</div>
+            {% else %}
+            <h1>Gitbi Home</h1>
+            <p>[Readme file is missing]</p>
+            {% endif %}
+        </div>
+
+        <input id="commits" type="radio" name="tabs">
+        <label class="tabs-label" for="commits">Commits</label>
+        <div class="tab">
+            <h1>Commits</h1>
+            {{ commits_table }}
+        </div>
+
+        <input id="schedule" type="radio" name="tabs">
+        <label class="tabs-label" for="schedule">Schedule</label>
+        <div class="tab">
+            <h1>Schedule</h1>
+            {% if schedule_table is not none %}
+            {{ schedule_table }}
+            {% else %}
+            <p>[Schedule file is missing or invalid]</p>
+            {% endif %}
+        </div>
+    </div>
+    <script type="text/javascript">{% include 'js/commit_links.js' %}</script>
 {% endblock %}

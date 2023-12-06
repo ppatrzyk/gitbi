@@ -66,7 +66,7 @@ async def report_route(request):
     try:
         format = request.path_params.get("format")
         query_args = {k: request.path_params[k] for k in ("db", "file", "state")}
-        query_str = repo.get_query(**query_args)
+        query_str, _lang = repo.get_query(**query_args)
         col_names, rows, duration_ms = query.execute_saved(**query_args)
         no_rows = len(rows)
         headers = {"Gitbi-Row-Count": str(no_rows), "Gitbi-Duration-Ms": str(duration_ms)}
@@ -77,6 +77,7 @@ async def report_route(request):
             "time": _get_time(),
             "duration": duration_ms,
             "no_rows": no_rows,
+            "query_str": query_str,
         }
         match format:
             case "html":
@@ -84,8 +85,6 @@ async def report_route(request):
                 data = {
                     **common_data,
                     "table": table,
-                    # TODO pass this everywhere
-                    "query": query_str,
                 }
                 response = utils.TEMPLATES.TemplateResponse(name='report.html', headers=headers, context=data)
             case "dashboard":
