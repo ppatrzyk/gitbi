@@ -90,6 +90,7 @@ hr {
     font-family: 'Source Code Pro', monospace;
     font-weight: 400;
     min-height: 100px;
+    min-width: 300px;
     letter-spacing: normal;
     line-height: 20px;
     tab-size: 4;
