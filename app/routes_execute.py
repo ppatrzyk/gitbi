@@ -3,8 +3,6 @@ Routes for executing queries
 """
 from starlette.exceptions import HTTPException
 from starlette.responses import PlainTextResponse
-from datetime import datetime
-import mailer
 import query
 import repo
 import utils
@@ -27,7 +25,7 @@ async def execute_route(request):
         data_json = utils.get_data_json(col_names, rows)
         data = {
             **utils.common_context_args(request),
-            "time": _get_time(),
+            "time": utils.get_time(),
             "no_rows": no_rows,
             "duration": duration_ms,
             "data_json": data_json,
@@ -74,7 +72,7 @@ async def report_route(request):
         common_data = {
             **utils.common_context_args(request),
             **request.path_params,
-            "time": _get_time(),
+            "time": utils.get_time(),
             "duration": duration_ms,
             "no_rows": no_rows,
             "query_str": query_str,
@@ -119,9 +117,3 @@ async def report_route(request):
         raise HTTPException(status_code=status_code, detail=str(e))
     else:
         return response
-
-def _get_time():
-    """
-    Returns current time formatted
-    """
-    return datetime.now().astimezone().strftime("%Y-%m-%d %H:%M:%S %Z")

@@ -52,9 +52,10 @@ exception_handlers = {
 }
 
 middleware = []
-middleware.extend(auth.AUTH)
-if scheduler.scheduler_middleware is not None:
-    middleware.append(scheduler.scheduler_middleware)
+if auth.AUTH is not None:
+    middleware.append(auth.AUTH)
+if scheduler.SCHEDULER is not None:
+    middleware.append(scheduler.SCHEDULER)
 
 app = Starlette(
     debug=True,

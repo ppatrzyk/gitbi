@@ -6,38 +6,34 @@ from apscheduler.eventbrokers.local import LocalEventBroker
 from apscheduler import AsyncScheduler
 from apscheduler.triggers.cron import CronTrigger
 from starlette.middleware import Middleware
-from starlette.requests import Request
-
+import httpx
 import logging
+
+import auth
 import mailer
-from routes_execute import report_route
 import repo
 
 CRON = repo.get_schedule("HEAD")
 
-async def run_report(db, file, type, format, to):
+def run_report(db, file, type, format, to):
     """
     Report runner
     """
-    # workaround with calling route functions, since jinja template needs to be rendered
-    scope = {
-        "type": "http",
-        "path_params": {
-            "state": "HEAD",
-            "db": db,
-            "file": file,
-            "format": format,
-        }
-    }
-    req = Request(scope=scope)
+    # workaround since jinja template cant be rendered outside of routes
     try:
-        response = await report_route(req)
+        client_kwargs = {"headers": {"User-Agent": "Gitbi Scheduler"}}
+        if auth.USERS:
+            client_kwargs["auth"] = auth.USERS[0]
+        url = f"http://localhost:8000/report/{db}/{file}/HEAD/{format}"
+        with httpx.Client(**client_kwargs) as client:
+            response = client.get(url)
         no_rows = int(response.headers.get("Gitbi-Row-Count") or 0)
+        print(no_rows)
+        print(response.text)
         if (no_rows == 0) and (type == "alert"):
             pass
         else:
-            content = response.body.decode()
-            _res = mailer.send(content, format, to, file)
+            _res = mailer.send(response.text, format, to, file)
         logging.info(f"{type} for {db}/{file} executed")
     except Exception as e:
         logging.error(f"Scheduler error: {str(e)}")
@@ -64,5 +60,12 @@ class SchedulerMiddleware:
         else:
             await self.app(scope, receive, send)
 
-scheduler = AsyncScheduler(data_store=MemoryDataStore(), event_broker=LocalEventBroker())
-scheduler_middleware = Middleware(SchedulerMiddleware, scheduler=scheduler)
+if CRON:
+    SCHEDULER = Middleware(
+        SchedulerMiddleware,
+        scheduler=AsyncScheduler(data_store=MemoryDataStore(), event_broker=LocalEventBroker())
+    )
+else:
+    SCHEDULER = None
+
+#TODO problem: this starts scheduler in every uvicorn process

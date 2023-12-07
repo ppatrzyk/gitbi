@@ -144,3 +144,9 @@ def _get_user(request):
     except:
         user = None
     return user
+
+def get_time():
+    """
+    Returns current time formatted
+    """
+    return datetime.datetime.now().astimezone().strftime("%Y-%m-%d %H:%M:%S %Z")

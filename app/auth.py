@@ -43,8 +43,10 @@ try:
     for parsed_entry, raw_entry in zip(parsed, users):
         assert len(parsed_entry) == 2, f"Malformed entry: {raw_entry}"
         user_names.append(parsed_entry[0])
-    AUTH = [Middleware(AuthenticationMiddleware, backend=BasicAuthBackend(users), on_error=_auth_challenge), ]
+    AUTH = Middleware(AuthenticationMiddleware, backend=BasicAuthBackend(users), on_error=_auth_challenge)
+    USERS = parsed
     logging.info(f"{len(user_names)} users: {', '.join(user_names)}")
 except Exception as e:
-    AUTH = []
-    logging.info(f"Auth not defined: {str(e)}")
+    AUTH = None
+    USERS = tuple()
+    logging.warning(f"Auth not defined: {str(e)}")
