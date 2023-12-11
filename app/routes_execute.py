@@ -3,6 +3,7 @@ Routes for executing queries
 """
 from starlette.exceptions import HTTPException
 from starlette.responses import PlainTextResponse
+import mailer
 import query
 import repo
 import utils
@@ -58,8 +59,8 @@ async def execute_route(request):
 
 async def report_route(request):
     """
-    Endpoint for running reports
-    i.e. executes saved query and passes ready result in given format
+    Common function for reports and alerts generation
+    Executes saved query and passes ready result in given format
     """
     try:
         format = request.path_params.get("format")
@@ -112,6 +113,15 @@ async def report_route(request):
                 response = PlainTextResponse(content=table, headers=headers, media_type="text/csv")
             case other:
                 raise ValueError(f"Bad format: {other}")
+        alert = request.query_params.get("alert")
+        mail = request.query_params.get("mail")
+        if (mail is not None) and ((no_rows > 0) or (alert is not None)):
+            _res = mailer.send(
+                content=response.body.decode(),
+                format=format,
+                to=mail,
+                file_name=request.path_params.get("file")
+            )
     except Exception as e:
         status_code = 404 if isinstance(e, RuntimeError) else 500
         raise HTTPException(status_code=status_code, detail=str(e))

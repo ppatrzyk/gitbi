@@ -31,7 +31,6 @@ Repository needs to have the following structure:
     - files with `.sql` or `.prql` extension are queries
     - (optional) files with `.json` extension are saved visualizations
 - (optional) special directory `_dashboards` that contains dashboard specifications (`.json` format)
-- (optional) special file `schedule.json` that contains scheduled reports and alerts
 - (optional) README.md file content will be displayed on _Gitbi_ main page
 
 ### Environment variables
@@ -63,18 +62,17 @@ Assume you have repository with the following structure:
 ```
 repo
 ├── _dashboards
-│   └── my_dashboard.json
+│   └── my_dashboard.json
 ├── db1
-│   ├── query1.sql
-│   ├── query2.sql
-│   └── query2.sql.json
+│   ├── query1.sql
+│   ├── query2.sql
+│   └── query2.sql.json
 ├── db2
-│   ├── query3.sql
-│   ├── query3.sql.json
-│   ├── query4.sql
-│   └── query5.sql
-├── README.md
-└── schedule.json
+│   ├── query3.sql
+│   ├── query3.sql.json
+│   ├── query4.sql
+│   └── query5.sql
+└── README.md
 ```
 
 There are 2 databases named _db1_ and _db2_. _db1_ has 2 queries, one of them has also visualization; _db2_ has 3 queries, 1 with added visualization. There is also one dashboard called _my_dashboard.json_.
@@ -123,32 +121,24 @@ Dashboard is a JSON file with the following format, list can have any number of 
 ]
 ```
 
-### Scheduler
+### Reporting
 
-Format for `schedule.json` file, list can have any number of entries:
+For every query, you have a _report_ endpoint that provides query results in html and text formats, as well as data only csv and json. This endpoint accepts two optional query parameters:
+
+- `mail`: if this is not empty, gitbi will send an email with the result to specified address
+- `alert`: if this is not empty, gitbi will send results via email only if there are some rows returned. Write your alert queries in a way that they usually do not return anything, but you want to be notified when they do. This parameter makes sense only together with email.
+
+Scheduling is possible via any external service, most commonly CRON. Example:
 
 ```
-[
-  {
-    "cron": "<cron_expression>",
-    "db": "<db_name>",
-    "file": "<query_file_name>",
-    "type": "alert|report",
-    "format": "html|text|csv|json",
-    "to": "<email_address>"
-  },
-  ...
-]
+# Report sent at 6am
+0 6 * * * curl -s -u <user>:<password> <report_url>?mail=<your_email>
+
+# Alert checked every minute
+* * * * * curl -s -u <user>:<password> <report_url>?alert=true&mail=<your_email>
 ```
 
-Notes:
-
-- _report_ always sends an email with results when invoked, while _alert_ sends results only if there are some rows returned. Write your alert queries in a way that they usually do not return anything, but you want to be notified when they do
-- any changes in scheduler require restarting the app for changes to be reflected
-
-### System CRON examples
-
-If you don't want to setup email credentials in _Gitbi_, you can still just use CRON to to generate reports on schedule. Examples:
+If you don't want to setup email credentials in _Gitbi_, you can still use CRON to to send reports with other tools. Examples:
 
 ```
 # HTML report via sendmail
@@ -158,7 +148,7 @@ If you don't want to setup email credentials in _Gitbi_, you can still just use 
 * * * * * curl -X POST --user "api:<mailgun_api_key>" --data-urlencode from=<sender_email> --data-urlencode to=<recipient_email> --data-urlencode subject="Gitbi report" --data-urlencode html="$(curl -s -u <user>:<password> <report_url>)" https://api.eu.mailgun.net/v3/SENDER_DOMAIN/messages
 ```
 
-You can copy `report_url` from every query page. You could even implement alerting logic yourself with `/report` endpoint - the number of rows for a query is available in a header `Gitbi-Row-Count`.
+You can copy `report_url` from every query page.
 
 ## Repo setup
 

@@ -102,14 +102,3 @@ def test_list_dashboards():
     assert list_dashboards("85fd294d99bd810e2450c4bef596f06800aab372") == latest
     assert list_dashboards("47725449de77fc06fcae8d1f9bebbcacad4f5864") == latest
     assert list_dashboards("67aa8bd9b58e0ed496a440812bea4719a1361f10") == tuple()
-
-def test_get_schedule():
-    latest = [
-        {"cron": "0 7 * * *", "db": "postgres", "file": "query.sql", "type": "alert", "format": "text", "to": "email@email.com"},
-        {"cron": "* * * * *", "db": "sqlite", "file": "myquery.sql", "type": "report", "format": "html", "to": "email2@email.com"}
-    ]
-    assert get_schedule("file") == latest
-    assert get_schedule("HEAD") == latest
-    assert get_schedule("85fd294d99bd810e2450c4bef596f06800aab372") == latest
-    assert get_schedule("47725449de77fc06fcae8d1f9bebbcacad4f5864") == []
-

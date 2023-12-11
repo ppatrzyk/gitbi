@@ -220,32 +220,6 @@ def delete_query(user, db, file):
     _commit(user, "delete", to_commit)
     return True
 
-def get_schedule(state):
-    """
-    Read and parse schedule file
-    """
-    try:
-        schedule_str = _get_file_content(state, "schedule.json")
-        schedule = json.loads(schedule_str)
-        for entry in schedule:
-            _validate_schedule_entry(entry)
-    except Exception as e:
-        # It is OK for schedule to be missing, nothing set then
-        logging.warning(f"Schedule not specified: {str(e)}")
-        schedule = []
-    return schedule
-
-def _validate_schedule_entry(entry):
-    """
-    Check if schedule entry is ok
-    """
-    assert set(SCHEDULE_KEYS) == set(entry.keys()), f"Bad keys in {str(entry)}"
-    type = entry.get("type")
-    assert type in ("report", "alert", ), f"Bad type {type}"
-    format = entry.get("format")
-    assert format in ("html", "text", "csv", "json", ), f"Bad format {format}"
-    return True
-
 def _list_file_names(dir):
     """
     List file names in given directory
