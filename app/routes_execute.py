@@ -1,8 +1,10 @@
 """
 Routes for executing queries
 """
+from starlette.background import BackgroundTask
 from starlette.exceptions import HTTPException
 from starlette.responses import PlainTextResponse
+import logging
 import mailer
 import query
 import repo
@@ -115,12 +117,15 @@ async def report_route(request):
                 raise ValueError(f"Bad format: {other}")
         alert = request.query_params.get("alert")
         mail = request.query_params.get("mail")
-        if (mail is not None) and ((no_rows > 0) or (alert is not None)):
-            _res = mailer.send(
+        if (mail is not None) and not ((alert is not None) and (no_rows == 0)):
+            file_name = request.path_params.get("file")
+            logging.info(f"Mailing {file_name} to {mail}")
+            response.background = BackgroundTask(
+                mailer.send,
                 content=response.body.decode(),
                 format=format,
                 to=mail,
-                file_name=request.path_params.get("file")
+                file_name=file_name
             )
     except Exception as e:
         status_code = 404 if isinstance(e, RuntimeError) else 500

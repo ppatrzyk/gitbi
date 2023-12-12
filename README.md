@@ -6,7 +6,7 @@ Features:
 
 - You can write queries using either SQL or [PRQL](https://github.com/PRQL/prql)
 - Interactive visualizations with [ECharts](https://github.com/apache/echarts)
-- Scheduling reports and alerts
+- Mailing reports and alerts
 - Currently supported DBs: clickhouse, duckdb (query csv files), postgresql, sqlite
 
 Test it now with sample dbs and config:
