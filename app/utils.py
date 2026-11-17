@@ -34,12 +34,11 @@ def parse_query_data(request, form):
     query, user, viz: string
     """
     data = json.loads(form["data"])
-    data["file"] = data["file"].strip()
     for key in (
         "query",
         "viz",
         "echart_id",
-        "file",
+        "query_lang",
         "format",
     ):
         assert key in data, f"No {key} in POST data"

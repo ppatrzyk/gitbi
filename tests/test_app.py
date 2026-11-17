@@ -71,7 +71,7 @@ def test_execute():
                         "query": "select badfunc();",
                         "viz": "foobar",
                         "echart_id": "foobar",
-                        "file": "file.sql",
+                        "query_lang": "sql",
                         "format": "bad",
                     }
                 )
@@ -89,7 +89,7 @@ def test_execute():
                         "query": "select 1;",
                         "viz": "",
                         "echart_id": "",
-                        "file": "",
+                        "query_lang": "",
                         "format": "",
                     }
                 )
@@ -107,7 +107,7 @@ def test_execute():
                         "query": "select 1;",
                         "viz": "foobar",
                         "echart_id": "foobar",
-                        "file": "file.sql",
+                        "query_lang": "sql",
                         "format": "text",
                     }
                 )

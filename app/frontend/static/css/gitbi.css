@@ -6,7 +6,6 @@
     --blue3: #657594;
     --black: #101820;
     --font-size: 18px;
-    --font-family: "Ubuntu";
 }
 body {
     color: var(--black);

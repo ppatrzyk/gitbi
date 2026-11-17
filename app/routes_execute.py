@@ -24,7 +24,7 @@ async def execute_route(request):
         col_names, rows, duration_ms = query.execute(
             db=request.path_params.get("db"),
             query=query_data.get("query"),
-            lang=utils.get_lang(query_data.get("file")),
+            lang=query_data.get("query_lang"),
         )
         report_format = query_data.get("format")
         no_rows = len(rows)

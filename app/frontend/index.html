@@ -1,16 +1,12 @@
 {% extends "base.html" %}
 {% block title %}Home{% endblock %}
 {% block content %}
-    <div id="tabs" class="tabs">
-        <input id="readme" type="radio" name="tabs" checked="checked">
-        <label class="tabs-label" for="readme">Readme</label>
-        <div class="tab">
-            {% if readme is not none %}
-            <div>{{ readme }}</div>
-            {% else %}
-            <h1>Gitbi Home</h1>
-            <p>[Readme file is missing]</p>
-            {% endif %}
-        </div>
-    </div>
+<div>
+    {% if readme is not none %}
+    {{ readme }}</div>
+    {% else %}
+    <h1>Gitbi Home</h1>
+    <p>[Readme file is missing]</p>
+    {% endif %}
+</div>
 {% endblock %}

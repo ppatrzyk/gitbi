@@ -20,9 +20,11 @@
     </div>
     <form class="pure-form pure-form-stacked">
         <div class="bottom-margin">
-            <label for="file-name">Query file name</label>
-            <input type="text" id="file-name" name="file-name" placeholder="Enter file name" value="{% if file != '__empty__' %}{{ file }}{% endif %}">
-            <small>Query name must have <em>.sql</em> or <em>.prql</em> extension</small>
+            <label for="query-lang">Query language</label>
+            <select id="query-lang">
+                <option value="sql" {% if lang == "sql" %}selected{% endif %}>SQL</option>
+                <option value="prql" {% if lang == "prql" %}selected{% endif %}>PRQL</option>
+            </select>
         </div>
         <div class="bottom-margin">
             <label for="result-format">Result format</label>

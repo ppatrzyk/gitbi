@@ -32,10 +32,11 @@ async def saved_query_route(request):
     Endpoint for saved query
     """
     try:
-        query_str, _lang = config.get_query(**request.path_params)
+        query_str, lang = config.get_query(**request.path_params)
         viz_str = config.get_query_viz(**request.path_params)
         request.state.query_data = {
             "query": query_str,
+            "lang": lang,
             "viz": viz_str,
             **request.path_params,  # db, file
         }

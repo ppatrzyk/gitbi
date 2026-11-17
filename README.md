@@ -1,7 +1,5 @@
 # Gitbi
 
-TODO rewrite without repo dependency
-
 _Gitbi_ is a lightweight BI web app that uses config files as a source of saved queries, visualizations and dashboards.
 
 Features:
@@ -23,9 +21,9 @@ Or view [screenshots](screenshots.md).
 
 _Gitbi_ requires the following to run:
 
-### Config repository
+### Configuration directory
 
-Repository needs to have the following structure:
+Directory needs to have the following structure:
 - directories in repo root refer to databases
 - files in each directory are queries/visualizations to be run against respective database
     - files with `.sql` or `.prql` extension are queries
@@ -37,7 +35,7 @@ Repository needs to have the following structure:
 
 Name | Description
 --- | ---
-GITBI\_REPO\_DIR | Path to the repository
+GITBI\_CONFIG\_DIR | Path to configuration directory
 GITBI\_<DB\_NAME>\_CONN | Connection string
 GITBI\_<DB\_NAME>\_TYPE | Database type (see below for permissible values)
 GITBI\_AUTH | (Optional) List of users (`"user1:password1, user2:password2"`), if set, Basic HTTP Auth (RFC 7617) required for all calls
@@ -57,7 +55,7 @@ sqlite | path to db file (or `:memory:`)
 
 ### Example
 
-Assume you have repository with the following structure:
+Assume you have directory with the following structure:
 
 ```
 repo
@@ -150,26 +148,9 @@ If you don't want to setup email credentials in _Gitbi_, you can still use CRON 
 
 You can copy `report_url` from every query page.
 
-## Repo setup
-
-The easiest way to run _Gitbi_ is to set up a repository at the same server the app is running, and then sync changes into your local repo via ssh. This requires setting proper permissions for everything to work smoothly. Example setup:
-
-```
-# initialize as shared repo
-# the command below allows any user in group <GROUP> to push into repo, for other options see https://git-scm.com/docs/git-init
-git init --shared=group <REPO_NAME>
-chgrp -R <GROUP> <REPO_NAME>
-chmod g+rwxs <REPO_NAME>
-# enable pushing to checked out branch
-git config receive.denyCurrentBranch updateInstead
-```
-
 ## Development
 
 ```
-# install dependencies
-pip3 install -r requirements.txt
-
 # prod
 pip3 install -r requirements.txt
 pip3 install clickhouse-driver duckdb Jinja2 Markdown prettytable prql-python psycopg psycopg-binary sqlparse starlette python-multipart uvicorn
@@ -197,36 +178,3 @@ uvicorn --log-level=debug --app-dir=app main:app
 # build image
 podman build -t ghcr.io/ppatrzyk/gitbi:dev .
 ```
-
-## Some alternatives
-
-- generate static html reports using Python: [merkury](https://github.com/ppatrzyk/merkury)
-- create custom dashboards using SQL and markdown: [evidence](https://github.com/evidence-dev/evidence)
-- analyze single sqlite db: [datasette](https://github.com/simonw/datasette)
-- run SQL queries from your browser: [sqlpad](https://github.com/sqlpad/sqlpad)
-- full-blown BI solution: [metabase](https://github.com/metabase/metabase)
-
-## Acknowledgements
-
-Backend:
-- [clickhouse-driver](https://github.com/mymarilyn/clickhouse-driver)
-- [duckdb](https://github.com/duckdb/duckdb/tree/master/tools/pythonpkg)
-- [jinja](https://github.com/pallets/jinja/)
-- [markdown](https://github.com/Python-Markdown/markdown)
-- [prettytable](https://github.com/jazzband/prettytable)
-- [prql](https://github.com/PRQL/prql/tree/main/bindings/prql-python)
-- [psycopg](https://github.com/psycopg/psycopg)
-- [pygit2](https://github.com/libgit2/pygit2)
-- [sqlparse](https://github.com/andialbrecht/sqlparse)
-- [starlette](https://github.com/encode/starlette)
-- [uvicorn](https://github.com/encode/uvicorn)
-
-Frontend:
-- [codejar](https://github.com/antonmedv/codejar)
-- [ECharts](https://github.com/apache/echarts)
-- [Font Awesome](https://iconscout.com/contributors/font-awesome)
-- [highlight](https://github.com/highlightjs/highlight.js)
-- [htmx](https://github.com/bigskysoftware/htmx)
-- [pure.css](https://github.com/pure-css/pure)
-- [simple-datatables](https://github.com/fiduswriter/simple-datatables)
-- [ubuntu font](https://ubuntu.com/legal/font-licence)
