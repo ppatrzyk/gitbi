@@ -12,6 +12,7 @@ import os
 import uuid
 from pathlib import Path
 
+import jinja2
 import prettytable
 from starlette.templating import Jinja2Templates
 
@@ -19,7 +20,11 @@ VERSION = "0.11"
 APP_DIR = os.path.abspath(os.path.dirname(__file__))
 STATIC_DIR = os.path.join(APP_DIR, "frontend/static")
 TEMPLATE_DIR = os.path.join(APP_DIR, "frontend")
-TEMPLATES = Jinja2Templates(directory=TEMPLATE_DIR)
+TEMPLATES = Jinja2Templates(
+    env=jinja2.Environment(
+        autoescape=False, loader=jinja2.FileSystemLoader(searchpath=TEMPLATE_DIR)
+    )
+)
 
 
 def parse_query_data(request, form):
