@@ -1,6 +1,8 @@
 # Gitbi
 
-_Gitbi_ is a lightweight BI web app that uses git repository as a source of saved queries, visualizations and dashboards. Everything is stored as text files which can be easily accessed and edited outside of the app (in addition to using web interface).
+TODO rewrite without repo dependency
+
+_Gitbi_ is a lightweight BI web app that uses config files as a source of saved queries, visualizations and dashboards.
 
 Features:
 
@@ -12,12 +14,10 @@ Features:
 Test it now with sample dbs and config:
 
 ```
-docker run -p 8000:8000 pieca/gitbi:latest
+podman run -p 8000:8000 ghcr.io/ppatrzyk/gitbi:v0.11
 ```
 
 Or view [screenshots](screenshots.md).
-
-See full deployment example: [ppatrzyk/gitbi-example](https://github.com/ppatrzyk/gitbi-example).
 
 ## Configuration
 
@@ -177,7 +177,7 @@ pip3 install -r requirements.txt
 GITBI_REPO_DIR="./tests/gitbi-testing" GITBI_SQLITE_CONN="$(realpath ./tests/gitbi-testing/db.sqlite)" GITBI_SQLITE_TYPE=sqlite ./start_app.sh
 
 # build image
-docker build -t pieca/gitbi:<version> .
+podman build -t ghcr.io/ppatrzyk/gitbi:dev .
 ```
 
 ## Some alternatives

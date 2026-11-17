@@ -1,3 +1,0 @@
-[submodule "tests/gitbi-testing"]
-	path = tests/gitbi-testing
-	url = https://github.com/ppatrzyk/gitbi-testing.git
