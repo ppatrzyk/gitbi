@@ -1,0 +1,4 @@
+[
+  {"cron": "0 7 * * *", "db": "postgres", "file": "query.sql", "type": "alert", "format": "text", "to": "email@email.com"},
+  {"cron": "* * * * *", "db": "sqlite", "file": "myquery.sql", "type": "report", "format": "html", "to": "email2@email.com"}
+]
