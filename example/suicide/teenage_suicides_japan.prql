@@ -1,0 +1,6 @@
+# teenage suicides in Japan
+from suicides
+filter age == '15-24'
+filter country == 'Japan'
+select {country, year, sex, suicides_per100k} 
+sort year

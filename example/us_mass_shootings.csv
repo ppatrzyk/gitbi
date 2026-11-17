@@ -1,0 +1,129 @@
+case,city,date,fatalities,injured,total_victims,location,age_of_shooter,prior_signs_mental_health_issues,weapons_obtained_legally,race,gender,latitude,longitude,type,year
+Uvalde elementary school massacre,"Uvalde, Texas",2022-05-24,15,0,15,School,18.0,,,,Male,,,Mass,2022
+Buffalo supermarket massacre,"Buffalo, New York",2022-05-14,10,3.0,13.0,Workplace,18.0,True,True,White,Male,,,Mass,2022
+Sacramento County church shooting,"Sacramento, California",2022-02-28,4,0.0,4.0,Religious,,,,,Male,38.60111019,-121.4189659,Mass,2022
+Oxford High School shooting,"Oxford, Michigan",2021-11-30,4,7.0,11.0,School,15.0,,,,Male,42.84410784,-83.25992831,Mass,2021
+San Jose VTA shooting,"San Jose, California",2021-05-26,9,0.0,9.0,Workplace,57.0,True,,,Male,37.316097,-121.888533,Mass,2021
+FedEx warehouse shooting,"Indianapolis, Indiana",2021-04-15,8,7.0,15.0,Workplace,19.0,True,True,White,Male,39.68663,-86.32313,Mass,2021
+Orange office complex shooting,"Orange, California",2021-03-31,4,1.0,5.0,Workplace,,,,,Male,33.83542,-117.85379,Mass,2021
+Boulder supermarket shooting,"Boulder, Colorado",2021-03-22,10,0.0,10.0,Workplace,21.0,True,True,,Male,39.986961,-105.251168,Mass,2021
+Atlanta massage parlor shootings,"Atlanta, Georgia",2021-03-16,8,1.0,9.0,Workplace,21.0,,,White,Male,34.111653,-84.580376,Spree,2021
+Springfield convenience store shooting,"Springfield, Missouri",2020-03-16,4,0.0,4.0,Workplace,31.0,,,,Male,37.210432,-93.23686,Mass,2020
+Molson Coors shooting,"Milwaukee, Wisconsin",2020-02-26,5,0.0,5.0,Workplace,51.0,,,Black,Male,43.044511,-87.962537,Mass,2020
+Jersey City kosher market shooting,"Jersey City, New Jersey",2019-12-10,4,3.0,7.0,Other,,,,Black,Male & Female,40.707363,-74.083609,Spree,2019
+Pensacola Naval base shooting,"Pensacola, Florida",2019-12-06,3,8.0,11.0,Military,,,,,Male,30.364707,-87.288567,Mass,2019
+Odessa-Midland shooting spree,"Odessa, Texas",2019-08-31,7,25.0,32.0,Other,36.0,True,,White,Male,31.925974,-102.2796,Spree,2019
+Dayton entertainment district shooting,"Dayton, Ohio",2019-08-04,9,27.0,36.0,Other,24.0,,True,White,Male,39.757312,-84.184947,Mass,2019
+El Paso Walmart mass shooting,"El Paso, Texas",2019-08-03,22,26.0,48.0,Workplace,21.0,,True,White,Male,31.771068,-106.375655,Mass,2019
+Gilroy garlic festival shooting,"Gilroy, California",2019-07-28,3,12.0,15.0,Other,19.0,,True,,Male,36.997191,-121.584819,Mass,2019
+Virginia Beach municipal building shooting,"Virginia Beach, Virginia",2019-05-31,12,4.0,16.0,Workplace,40.0,,True,Black,Male,36.75442,-76.060378,Mass,2019
+Harry Pratt Co. warehouse shooting,"Aurora, Illinois",2019-02-15,5,6.0,11.0,Workplace,45.0,True,False,Black,Male,41.753725,-88.331057,Mass,2019
+Pennsylvania hotel bar shooting,"State College, Pennsylvania",2019-01-24,3,1.0,4.0,Other,21.0,,True,White,Male,40.785142,-77.839411,Spree,2019
+SunTrust bank shooting,"Sebring, Florida",2019-01-23,5,0.0,5.0,Workplace,21.0,True,True,White,Male,27.471043,-81.45847,Mass,2019
+Mercy Hospital shooting,"Chicago, Illinois",2018-11-19,3,0.0,3.0,Workplace,32.0,,,Latino,Male,41.847667,-87.622009,Mass,2018
+Thousand Oaks nightclub shooting,"Thousand Oaks, California",2018-11-07,12,22.0,34.0,Other,28.0,True,True,,Male,34.176946,-118.874793,Mass,2018
+Tree of Life synagogue shooting,"Pittsburgh, Pennsylvania",2018-10-27,11,6.0,17.0,Religious,46.0,,True,White,Male,40.443898,-79.921398,Mass,2018
+Rite Aid warehouse shooting,"Perryman, Maryland",2018-09-20,3,3.0,6.0,Workplace,26.0,,True,Black,Female,39.455658,-76.208485,Mass,2018
+T&T Trucking shooting,"Bakersfield, California",2018-09-12,5,0.0,5.0,Workplace,54.0,,True,Latino,Male,35.349388,-118.916335,Spree,2018
+Fifth Third Center shooting,"Cincinnati, Ohio",2018-09-06,3,2.0,5.0,Workplace,29.0,True,True,Latino,Male,39.101981,-84.511782,Mass,2018
+Capital Gazette shooting,"Annapolis, Maryland",2018-06-28,5,2.0,7.0,Workplace,38.0,,True,White,Male,38.994548,-76.543657,Mass,2018
+Santa Fe High School shooting,"Santa Fe, Texas",2018-05-18,10,13.0,23.0,School,17.0,,,White,Male,29.392825,-95.141972,Mass,2018
+Waffle House shooting,"Nashville, Tennessee",2018-04-22,4,4.0,8.0,Other,29.0,True,True,White,Male,36.052521,-86.616944,Mass,2018
+Yountville veterans home shooting,"Yountville, California",2018-03-09,3,0.0,3.0,Workplace,36.0,True,True,Asian,Male,38.392496,-122.366528,Mass,2018
+Marjory Stoneman Douglas High School shooting,"Parkland, Florida",2018-02-14,17,17.0,34.0,School,19.0,True,True,White,Male,26.30483,-80.269511,Mass,2018
+Pennsylvania carwash shooting,"Melcroft, Pennsylvania",2018-01-28,4,1.0,5.0,Other,28.0,,,White,Male,40.052151,-79.389166,Mass,2018
+Rancho Tehama shooting spree,"Rancho Tehama, California",2017-11-14,5,10.0,15.0,Other,44.0,,False,White,Male,40.018759,-122.393089,Spree,2017
+Texas First Baptist Church massacre,"Sutherland Springs, Texas",2017-11-05,26,20.0,46.0,Religious,26.0,True,,White,Male,29.273282,-98.056488,Mass,2017
+Walmart shooting in suburban Denver,"Thornton, Colorado",2017-11-01,3,0.0,3.0,Other,47.0,,,White,Male,39.876374,-104.986132,Mass,2017
+Edgewood businees park shooting,"Edgewood, Maryland",2017-10-18,3,3.0,6.0,Workplace,37.0,,False,Black,Male,39.452189,-76.309988,Mass,2017
+Las Vegas Strip massacre,"Las Vegas, Nevada",2017-10-01,58,546.0,604.0,Other,64.0,,True,White,Male,36.095739,-115.171544,Mass,2017
+San Francisco UPS shooting,"San Francisco, California",2017-06-14,3,2.0,5.0,Workplace,38.0,True,False,Asian,Male,37.765947,-122.406087,Mass,2017
+Pennsylvania supermarket shooting,"Tunkhannock, Pennsylvania",2017-06-07,3,0.0,3.0,Workplace,24.0,,,White,Male,41.529546,-75.94722,Mass,2017
+Florida awning manufacturer shooting,"Orlando, Florida",2017-06-05,5,0.0,5.0,Workplace,45.0,,,,Male,28.580295,-81.294086,Mass,2017
+Rural Ohio nursing home shooting,"Kirkersville, Ohio",2017-05-12,3,0.0,3.0,Workplace,43.0,True,,White,Male,39.959034,-82.596508,Mass,2017
+Fresno downtown shooting,"Fresno, California",2017-04-18,3,0.0,3.0,Other,39.0,,,Black,Male,36.746378,-119.800319,Mass,2017
+Fort Lauderdale airport shooting,"Fort Lauderdale, Florida",2017-01-06,5,6.0,11.0,Airport,26.0,True,True,Latino,Male,26.072751,-80.143382,Mass,2017
+Cascade Mall shooting,"Burlington, Washington",2016-09-23,5,0.0,5.0,Other,20.0,True,,,Male,48.461367,-122.337918,Mass,2016
+Baton Rouge police shooting,"Baton Rouge, Lousiana",2016-07-17,3,3.0,6.0,Other,29.0,True,,Black,Male,30.433601,-91.081403,Spree,2016
+Dallas police shooting,"Dallas, Texas",2016-07-07,5,11.0,16.0,Other,25.0,,True,Black,Male,32.7801052,-96.8000082,Mass,2016
+Orlando nightclub massacre,"Orlando, Florida",2016-06-12,49,53.0,102.0,Other,29.0,,True,Other,Male,28.519718,-81.376777,Mass,2016
+Excel Industries mass shooting,"Hesston, Kansas",2016-02-25,3,14.0,17.0,Workplace,38.0,,True,Black,Male,38.135992,-97.425145,Mass,2016
+Kalamazoo shooting spree,"Kalamazoo County, Michigan",2016-02-20,6,2.0,8.0,Other,45.0,,True,White,Male,42.236689,-85.674795,Mass,2016
+San Bernardino mass shooting,"San Bernardino, California",2015-12-02,14,21.0,35.0,Workplace,28.0,,True,Other,Male & Female,34.075961,-117.27789,Mass,2015
+Planned Parenthood clinic,"Colorado Springs, Colorado",2015-11-27,3,9.0,12.0,Workplace,57.0,,,White,Male,38.881031,-104.849057,Mass,2015
+Colorado Springs shooting rampage,"Colorado Springs, Colorado",2015-10-31,3,0.0,3.0,Other,33.0,,True,White,Male,38.83755,-104.814251,Mass,2015
+Umpqua Community College shooting,"Roseburg, Oregon",2015-10-01,9,9.0,18.0,School,26.0,,True,Other,Male,43.289538,-123.333193,Mass,2015
+Chattanooga military recruitment center,"Chattanooga, Tennessee",2015-07-16,5,2.0,7.0,Military,24.0,,True,Other,Male,35.047157,-85.311819,Mass,2015
+Charleston Church Shooting,"Charleston, South Carolina",2015-06-17,9,1.0,10.0,Religious,21.0,,True,White,Male,32.788387,-79.933143,Mass,2015
+Trestle Trail bridge shooting,"Menasha, Wisconsin",2015-06-11,3,1.0,4.0,Other,27.0,True,True,Latino,Male,44.204124,-88.467541,Mass,2015
+Marysville-Pilchuck High School shooting,"Marysville, Washington",2014-10-24,5,1.0,6.0,School,15.0,,False,Native American,Male,48.050824,-122.176918,Mass,2014
+Isla Vista mass murder,"Santa Barbara, California",2014-05-23,6,13.0,19.0,School,22.0,True,True,White,Male,34.436283,-119.8714406,Mass,2014
+Fort Hood shooting 2,"Fort Hood, Texas",2014-04-03,3,12.0,15.0,Military,34.0,,True,Latino,Male,31.141716,-97.777559,Mass,2014
+Alturas tribal shooting,"Alturas, California",2014-02-20,4,2.0,6.0,Other,44.0,,,Native American,Female,41.487104,-120.542237,Spree,2014
+Washington Navy Yard shooting,"Washington, D.C.",2013-09-16,12,8.0,20.0,Military,34.0,True,True,Black,Male,38.874981,-76.99453,Mass,2013
+Hialeah apartment shooting,"Hialeah, Florida",2013-07-26,7,0.0,7.0,Other,42.0,,True,Latino,Male,25.864338,-80.311775,Mass,2013
+Santa Monica rampage,"Santa Monica, California",2013-06-07,6,3.0,9.0,Other,23.0,True,True,White,Male,34.008617,-118.494754,Mass,2013
+Pinewood Village Apartment shooting,"Federal Way, Washington",2013-04-21,5,0.0,5.0,Other,27.0,False,True,Black,Male,47.3129607,-122.3393665,Mass,2013
+Mohawk Valley shootings,"Herkimer County, New York",2013-03-13,5,2.0,7.0,Other,64.0,False,True,White,Male,43.045601,-74.984891,Mass,2013
+Sandy Hook Elementary massacre,"Newtown, Connecticut",2012-12-14,27,2.0,29.0,School,20.0,True,False,White,Male,41.4123225,-73.31142358,Mass,2012
+Accent Signage Systems shooting,"Minneapolis, Minnesota",2012-09-27,7,1.0,8.0,Workplace,36.0,True,True,White,Male,44.977425,-93.310408,Mass,2012
+Sikh temple shooting,"Oak Creek, Wisconsin",2012-08-05,7,3.0,10.0,Religious,40.0,True,True,White,Male,42.8858503,-87.8631362,Mass,2012
+Aurora theater shooting,"Aurora, Colorado",2012-07-20,12,70.0,82.0,Other,24.0,True,True,White,Male,39.706038,-104.820594,Spree,2012
+Seattle cafe shooting,"Seattle, Washington",2012-05-20,6,1.0,7.0,Other,40.0,True,True,White,Male,47.6038321,-122.3300624,Mass,2012
+Oikos University killings,"Oakland, California",2012-04-02,7,3.0,10.0,School,43.0,True,True,Asian,Male,37.8043808,-122.2708166,Mass,2012
+Su Jung Health Sauna shooting,"Norcross, Georgia",2012-02-21,5,0.0,5.0,Other,59.0,True,True,Asian,Male,33.9412127,-84.2135309,Mass,2012
+Seal Beach shooting,"Seal Beach, California",2011-10-12,8,1.0,9.0,Other,42.0,True,True,White,Male,33.741176,-118.1046356,Mass,2011
+IHOP shooting,"Carson City, Nevada",2011-09-06,5,7.0,12.0,Other,32.0,True,True,Latino,Male,39.1637984,-119.7674034,Mass,2011
+Tucson shooting,"Tucson, Arizona",2011-01-08,6,13.0,19.0,Other,22.0,True,True,White,Male,32.335941,-110.975132,Mass,2011
+Hartford Beer Distributor shooting,"Manchester, Connecticut",2010-08-03,9,2.0,11.0,Workplace,34.0,False,True,Black,Male,41.798764,-72.570068,Mass,2010
+Coffee shop police killings,"Parkland, Washington",2009-11-29,4,1.0,5.0,Other,37.0,True,False,Black,Male,47.15277,-122.467308,Mass,2009
+Fort Hood massacre,"Fort Hood, Texas",2009-11-05,13,31.0,44.0,Military,39.0,,True,Other,Male,31.135557,-97.783664,Mass,2009
+Binghamton shootings,"Binghamton, New York",2009-04-03,14,4.0,18.0,Other,41.0,True,True,Asian,Male,42.099802,-75.917723,Mass,2009
+Carthage nursing home shooting,"Carthage, North Carolina",2009-03-29,8,3.0,11.0,Other,45.0,True,True,White,Male,35.333434,-79.414592,Mass,2009
+Atlantis Plastics shooting,"Henderson, Kentucky",2008-06-25,6,1.0,7.0,Workplace,25.0,False,True,White,Male,37.76721,-87.5573742,Spree,2008
+Northern Illinois University shooting,"DeKalb, Illinois",2008-02-14,5,21.0,26.0,School,27.0,True,True,White,Male,41.9294736,-88.7503647,Mass,2008
+Kirkwood City Council shooting,"Kirkwood, Missouri",2008-02-07,6,2.0,8.0,Other,52.0,False,False,Black,Male,38.580093,-90.40691,Mass,2008
+Westroads Mall shooting,"Omaha, Nebraska",2007-12-05,9,4.0,13.0,Other,19.0,True,False,White,Male,41.265719,-96.067495,Spree,2007
+Crandon shooting,"Crandon, Wisconsin",2007-10-07,6,1.0,7.0,Other,20.0,,True,White,Male,45.5719072,-88.9028922,Mass,2007
+Virginia Tech massacre,"Blacksburg, Virginia",2007-04-16,32,23.0,55.0,School,23.0,True,True,Asian,Male,37.2295733,-80.4139393,Mass,2007
+Trolley Square shooting,"Salt Lake City, Utah",2007-02-12,6,4.0,10.0,Other,18.0,,,White,Male,40.7606467,-111.89109,Mass,2007
+Amish school shooting,"Lancaster County, Pennsylvania",2006-10-02,6,5.0,11.0,School,32.0,False,True,White,Male,39.9589,-76.0806,Mass,2006
+Capitol Hill massacre,"Seattle, Washington",2006-03-25,7,2.0,9.0,Other,28.0,False,True,White,Male,47.6229,-122.3165,Mass,2006
+Goleta postal shootings,"Goleta, California",2006-01-30,8,0.0,8.0,Workplace,44.0,True,True,White,Female,34.425571,-119.866069,Mass,2006
+Red Lake massacre,"Red Lake, Minnesota",2005-03-21,10,5.0,15.0,School,16.0,True,False,Native American,Male,47.876346,-95.0169401,Mass,2005
+Living Church of God shooting,"Brookfield, Wisconsin",2005-03-12,7,4.0,11.0,Religious,44.0,True,True,White,Male,43.0605671,-88.1064787,Spree,2005
+Damageplan show shooting,"Columbus, Ohio",2004-12-08,5,7.0,12.0,Other,25.0,True,True,White,Male,39.9622601,-83.0007065,Mass,2004
+Lockheed Martin shooting,"Meridian, Mississippi",2003-07-08,7,8.0,15.0,Workplace,48.0,True,True,White,Male,32.410842,-88.634539,Mass,2003
+Navistar shooting,"Melrose Park, Illinois",2001-02-05,5,4.0,9.0,Workplace,66.0,False,True,Black,Male,41.908163,-87.879908,Mass,2001
+Wakefield massacre,"Wakefield, Massachusetts",2000-12-26,7,0.0,7.0,Workplace,42.0,True,True,White,Male,42.500429,-71.075913,Mass,2000
+Hotel shooting,"Tampa, Florida",1999-12-30,5,3.0,8.0,Workplace,36.0,True,True,Latino,Male,27.966479,-82.570586,Spree,1999
+Xerox killings,"Honolulu, Hawaii",1999-11-02,7,0.0,7.0,Workplace,40.0,True,True,Asian,Male,21.320063,-157.876462,Spree,1999
+Wedgwood Baptist Church shooting,"Fort Worth, Texas",1999-09-15,8,7.0,15.0,Religious,47.0,True,True,White,Male,32.664511,-97.384246,Mass,1999
+Atlanta day trading spree killings,"Atlanta, Georgia",1999-07-29,9,13.0,22.0,Workplace,44.0,True,True,White,Male,33.850116,-84.377839,Mass,1999
+Columbine High School massacre,"Littleton, Colorado",1999-04-20,13,24.0,37.0,School,17.0,True,False,White,Male,39.604034,-105.074103,Mass,1999
+Thurston High School shooting,"Springfield, Oregon",1998-05-21,4,25.0,29.0,School,15.0,True,False,White,Male,44.0462362,-123.0220289,Mass,1998
+Westside Middle School killings,"Jonesboro, Arkansas",1998-03-24,5,10.0,15.0,School,11.0,False,False,White,Male,35.8209895,-90.6682606,Mass,1998
+Connecticut Lottery shooting,"Newington, Connecticut",1998-03-06,5,1.0,6.0,Workplace,35.0,True,True,White,Male,41.6856325,-72.72983827,Mass,1998
+Caltrans maintenance yard shooting,"Orange, California",1997-12-18,5,2.0,7.0,Workplace,41.0,False,True,Latino,Male,33.7877944,-117.8531119,Spree,1997
+R.E. Phelon Company shooting,"Aiken, South Carolina",1997-09-15,4,3.0,7.0,Workplace,43.0,False,False,Black,Male,33.5598586,-81.721952,Mass,1997
+Fort Lauderdale revenge shooting,"Fort Lauderdale, Florida",1996-02-09,6,1.0,7.0,Workplace,41.0,True,True,Black,Male,26.119269,-80.104119,Spree,1996
+Walter Rossler Company massacre,"Corpus Christi, Texas",1995-04-03,6,0.0,6.0,Workplace,28.0,False,True,Other,Male,27.828025,-97.548198,Mass,1995
+Air Force base shooting,"Fairchild Air Force Base, Washington",1994-06-20,5,23.0,28.0,Military,20.0,True,True,White,Male,47.61864486,-117.6483587,Mass,1994
+Chuck E. Cheese's killings,"Aurora, Colorado",1993-12-14,4,1.0,5.0,Workplace,19.0,,,Black,Male,39.675599,-104.844845,Mass,1993
+Long Island Rail Road massacre,"Garden City, New York",1993-12-07,6,19.0,25.0,Other,35.0,True,True,Black,Male,40.7267682,-73.6342955,Spree,1993
+Luigi's shooting,"Fayetteville, North Carolina",1993-08-06,4,8.0,12.0,Other,22.0,False,True,White,Male,35.0529931,-78.8787058,Mass,1993
+101 California Street shootings,"San Francisco, California",1993-07-01,9,6.0,15.0,Other,55.0,False,False,White,Male,37.792968,-122.397973,Mass,1993
+Watkins Glen killings,"Watkins Glen, New York",1992-10-15,5,0.0,5.0,Other,50.0,True,True,White,Male,42.3810555,-76.8705777,Mass,1992
+Lindhurst High School shooting,"Olivehurst, California",1992-05-01,4,10.0,14.0,School,20.0,False,True,White,Male,39.07868761,-121.5475762,Mass,1992
+Royal Oak postal shootings,"Royal Oak, Michigan",1991-11-14,5,5.0,10.0,Workplace,31.0,True,True,White,Male,42.4894801,-83.1446485,Mass,1991
+University of Iowa shooting,"Iowa City, Iowa",1991-11-01,6,1.0,7.0,School,28.0,,True,Asian,Male,41.6606893,-91.5302214,Spree,1991
+Luby's massacre,"Killeen, Texas",1991-10-16,24,20.0,44.0,Other,35.0,False,True,White,Male,31.1171194,-97.7277959,Mass,1991
+GMAC massacre,"Jacksonville, Florida",1990-06-18,10,4.0,14.0,Other,42.0,False,True,Black,Male,30.3321838,-81.655651,Mass,1990
+Standard Gravure shooting,"Louisville, Kentucky",1989-09-14,9,12.0,21.0,Workplace,47.0,True,True,White,Male,38.2542376,-85.759407,Mass,1989
+Stockton schoolyard shooting,"Stockton, California",1989-01-17,6,29.0,35.0,School,26.0,True,True,White,Male,37.9577016,-121.2907796,Mass,1989
+ESL shooting,"Sunnyvale, California",1988-02-16,7,4.0,11.0,Workplace,39.0,True,True,White,Male,37.3688301,-122.0363496,Mass,1988
+Shopping centers spree killings,"Palm Bay, Florida",1987-04-23,6,14.0,20.0,Other,59.0,True,True,White,Male,28.0331886,-80.6429695,Spree,1987
+United States Postal Service shooting,"Edmond, Oklahoma",1986-08-20,15,6.0,21.0,Workplace,44.0,,True,White,Male,35.6672015,-97.42937037,Mass,1986
+San Ysidro McDonald's massacre,"San Ysidro, California",1984-07-18,22,19.0,41.0,Other,41.0,True,True,White,Male,32.5520013,-117.0430813,Mass,1984
+Dallas nightclub shooting,"Dallas, Texas",1984-06-29,6,1.0,7.0,Other,39.0,True,False,White,Male,32.925166,-96.838676,Mass,1984
+Welding shop shooting,"Miami, Florida",1982-08-20,8,3.0,11.0,Other,51.0,True,True,White,Male,25.796491,-80.226683,Mass,1982

@@ -1,0 +1,3 @@
+# pokemon stats
+from pokemons
+select {name, attack, defense, legendary}

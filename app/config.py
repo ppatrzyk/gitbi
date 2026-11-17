@@ -11,7 +11,7 @@ from pathlib import Path
 import utils
 from markdown import markdown
 
-DIR = os.environ.get("CONFIG_DIR", "tests/gitbi-testing")
+DIR = os.environ["GITBI_CONFIG_DIR"]
 VALID_DB_TYPES = (
     "sqlite",
     "postgres",

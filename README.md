@@ -80,7 +80,7 @@ There are 2 databases named _db1_ and _db2_. _db1_ has 2 queries, one of them ha
 For configuration you'd need to set the following environment variables:
 
 ```
-CONFIG_DIR=<path_to_repo>
+GITBI_CONFIG_DIR=<path_to_repo>
 GITBI_DB1_CONN=<conn_str_to_db1>
 GITBI_DB1_TYPE=<type_db1>
 GITBI_DB2_CONN=<conn_str_to_db2>
@@ -178,11 +178,21 @@ pip3 install clickhouse-driver duckdb Jinja2 Markdown prettytable prql-python ps
 pip3 install -r requirements-dev.txt
 pip3 install httpx2 pytest ruff
 
-# run with sample repo
-uvicorn --app-dir=app main:app
+# run with example repo
+GITBI_CONFIG_DIR=./example \
+GITBI_POKEMON_TYPE=sqlite \
+GITBI_POKEMON_CONN=./example/pokemon.sqlite \
+GITBI_SHOOTINGS_TYPE=duckdb \
+GITBI_SHOOTINGS_CONN=":memory:" \
+GITBI_SUICIDE_TYPE=sqlite \
+GITBI_SUICIDE_CONN=./example/suicide.sqlite \
+uvicorn --log-level=debug --app-dir=app main:app
 
 # run with testing repo
-GITBI_SQLITE_TYPE=sqlite GITBI_SQLITE_CONN=./tests/gitbi-testing/db.sqlite uvicorn --log-level=debug --app-dir=app main:app
+GITBI_CONFIG_DIR=./tests \
+GITBI_SQLITE_TYPE=sqlite \
+GITBI_SQLITE_CONN=./tests/gitbi-testing/db.sqlite \
+uvicorn --log-level=debug --app-dir=app main:app
 
 # build image
 podman build -t ghcr.io/ppatrzyk/gitbi:dev .

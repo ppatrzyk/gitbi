@@ -1,0 +1,33 @@
+version: '3'
+
+services:
+  gitbi:
+    image: pieca/gitbi:latest
+    ports:
+    - 8000:8000
+    restart: always
+    volumes:
+      - ./:/gitbi/gitbi-example
+    secrets:
+      - secret_pokemon_conn
+      - secret_shootings_conn
+    environment:
+      - GITBI_REPO_DIR=/gitbi/gitbi-example
+      - GITBI_POKEMON_TYPE=sqlite
+      - GITBI_POKEMON_CONN_FILE=/run/secrets/secret_pokemon_conn
+      - GITBI_SHOOTINGS_TYPE=duckdb
+      - GITBI_SHOOTINGS_CONN_FILE=/run/secrets/secret_shootings_conn
+      - GITBI_SUICIDE_TYPE=sqlite
+      - GITBI_SUICIDE_CONN=/gitbi/gitbi-example/suicide.sqlite
+      # Uncomment these to set up basic http auth and enable emails
+      # - GITBI_AUTH=admin:password
+      # - GITBI_SMTP_USER=smtp@example.com
+      # - GITBI_SMTP_PASS=password
+      # - GITBI_SMTP_URL=smtp.example.com:587
+      # - GITBI_SMTP_EMAIL=donotreply@example.com
+
+secrets:
+  secret_pokemon_conn:
+    file: ./secret_pokemon_conn.txt
+  secret_shootings_conn:
+    file: ./secret_shootings_conn.txt
