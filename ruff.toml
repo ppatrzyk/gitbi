@@ -1,0 +1,9 @@
+include = ["app/**/*.py", "tests/**/*.py"]
+target-version = "py315"
+line-length = 88
+indent-width = 4
+
+[format]
+indent-style = "space"
+quote-style = "double"
+line-ending = "lf"

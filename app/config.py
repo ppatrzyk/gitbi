@@ -1,24 +1,34 @@
 """
 Functions to interact with config
 """
-from collections import OrderedDict
-from datetime import datetime
+
 import json
 import logging
-from markdown import markdown
 import os
+from collections import OrderedDict
 from pathlib import Path
+
 import utils
+from markdown import markdown
 
 DIR = os.environ.get("CONFIG_DIR", "tests/gitbi-testing")
-VALID_DB_TYPES = ("sqlite", "postgres", "clickhouse", "duckdb", )
-VALID_QUERY_EXTENSIONS = (".sql", ".prql", )
-VALID_DASHBOARD_EXTENSIONS = (".json", )
+VALID_DB_TYPES = (
+    "sqlite",
+    "postgres",
+    "clickhouse",
+    "duckdb",
+)
+VALID_QUERY_EXTENSIONS = (
+    ".sql",
+    ".prql",
+)
+VALID_DASHBOARD_EXTENSIONS = (".json",)
 DASHBOARDS_DIR = "_dashboards"
 DASHBOARDS_FULL_PATH = os.path.join(DIR, DASHBOARDS_DIR)
 if not os.path.exists(DASHBOARDS_FULL_PATH):
     os.makedirs(DASHBOARDS_FULL_PATH)
-QUERIES_EXCLUDE = (DASHBOARDS_DIR, )
+QUERIES_EXCLUDE = (DASHBOARDS_DIR,)
+
 
 def get_db_params(db):
     """
@@ -32,6 +42,7 @@ def get_db_params(db):
         raise ValueError(f"DB type {db_type} not supported")
     return db_type, conn_str
 
+
 def get_email_params():
     """
     Reads environment variables for email
@@ -42,6 +53,7 @@ def get_email_params():
     smtp_email = _read_env_var("GITBI_SMTP_EMAIL")
     return smtp_user, smtp_pass, smtp_url, smtp_email
 
+
 def get_auth():
     """
     Get authentication configuration
@@ -50,6 +62,7 @@ def get_auth():
     users = tuple(entry.strip() for entry in users_raw.split(","))
     assert users, "Empty user list"
     return users
+
 
 def get_query(db, file):
     """
@@ -61,6 +74,7 @@ def get_query(db, file):
     query_str = _get_file_content(query_path)
     return query_str, lang
 
+
 def get_query_viz(db, file):
     """
     Gets saved viz for given query
@@ -69,8 +83,9 @@ def get_query_viz(db, file):
         viz_path = os.path.join(db, f"{file}.json")
         viz_str = _get_file_content(viz_path)
     except:
-        viz_str = "null" # this is read by JS
+        viz_str = "null"  # this is read by JS
     return viz_str
+
 
 def get_dashboard(file):
     """
@@ -81,6 +96,7 @@ def get_dashboard(file):
     raw_dashboard = _get_file_content(path)
     return json.loads(raw_dashboard)
 
+
 def get_readme():
     """
     Gets readme content from the repo
@@ -90,22 +106,31 @@ def get_readme():
         readme = markdown(readme)
     except Exception as e:
         # It is OK for README to be missing, fallback present in template
-        logging.warning(f"Readme not specified: {str(e)}")
+        logging.warning(f"Readme not specified: {e!s}")
         readme = None
     return readme
+
 
 def list_sources():
     """
     Lists all available sources (db + queries)
     """
     try:
-        db_dirs = {db_dir for db_dir in os.scandir(DIR) if db_dir.is_dir() and db_dir.name not in QUERIES_EXCLUDE}
+        db_dirs = {
+            db_dir
+            for db_dir in os.scandir(DIR)
+            if db_dir.is_dir() and db_dir.name not in QUERIES_EXCLUDE
+        }
         sources = {db_dir.name: _list_file_names(db_dir) for db_dir in db_dirs}
-        sources = OrderedDict((db, _filter_extension(queries, VALID_QUERY_EXTENSIONS)) for db, queries in sorted(sources.items()))
+        sources = OrderedDict(
+            (db, _filter_extension(queries, VALID_QUERY_EXTENSIONS))
+            for db, queries in sorted(sources.items())
+        )
     except Exception as e:
-        raise RuntimeError(f"Sources cannot be listed: {str(e)}")
+        raise RuntimeError(f"Sources cannot be listed: {e!s}")
     else:
         return sources
+
 
 def list_dashboards():
     """
@@ -115,9 +140,10 @@ def list_dashboards():
         dashboards = _list_file_names(DASHBOARDS_FULL_PATH)
         dashboards = _filter_extension(dashboards, VALID_DASHBOARD_EXTENSIONS)
     except Exception as e:
-        raise RuntimeError(f"Dashboards cannot be listed: {str(e)}")
+        raise RuntimeError(f"Dashboards cannot be listed: {e!s}")
     else:
         return dashboards
+
 
 def _list_file_names(dir):
     """
@@ -125,11 +151,13 @@ def _list_file_names(dir):
     """
     return tuple(el.name for el in os.scandir(dir) if el.is_file())
 
+
 def _filter_extension(files, valid_ext):
     """
     Filter file list based on extension
     """
     return tuple(sorted(f for f in files if Path(f).suffix in valid_ext))
+
 
 def _get_file_content(path):
     """
@@ -139,7 +167,7 @@ def _get_file_content(path):
         with open(os.path.join(DIR, path), "r") as f:
             content = f.read()
     except Exception as e:
-        raise RuntimeError(f"File {path} cannot be accessed: {str(e)}")
+        raise RuntimeError(f"File {path} cannot be accessed: {e!s}")
     else:
         return content
 
@@ -154,7 +182,7 @@ def _read_env_var(key):
         try:
             file_key = f"{key}_FILE"
             value_file = os.environ[file_key]
-            value = _get_file_content('file', value_file)
+            value = _get_file_content("file", value_file)
         except Exception as e:
-            raise NameError(f"Neither {key} nor valid {file_key} was set: {str(e)}")
+            raise NameError(f"Neither {key} nor valid {file_key} was set: {e!s}")
     return value

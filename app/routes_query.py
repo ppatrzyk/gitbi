@@ -1,9 +1,11 @@
 """
 Routes for displaying and saving queries
 """
-from starlette.exceptions import HTTPException
+
 import config
 import utils
+from starlette.exceptions import HTTPException
+
 
 async def query_route(request):
     """
@@ -11,18 +13,19 @@ async def query_route(request):
     """
     try:
         db = request.path_params.get("db")
-        if db not in config.list_sources().keys():
+        if db not in config.list_sources():
             raise RuntimeError(f"db {db} not present in repo")
         request.state.query_data = {
-            "query": request.query_params.get('query') or "",
+            "query": request.query_params.get("query") or "",
             "viz": "null",
             "file": "__empty__",
-            **request.path_params, # db
+            **request.path_params,  # db
         }
     except RuntimeError as e:
         raise HTTPException(status_code=404, detail=str(e))
     else:
         return await _query(request)
+
 
 async def saved_query_route(request):
     """
@@ -34,13 +37,13 @@ async def saved_query_route(request):
         request.state.query_data = {
             "query": query_str,
             "viz": viz_str,
-            **request.path_params, # db, file
+            **request.path_params,  # db, file
         }
     except RuntimeError as e:
         raise HTTPException(status_code=404, detail=str(e))
     else:
-        
         return await _query(request)
+
 
 async def _query(request):
     """
@@ -54,4 +57,6 @@ async def _query(request):
         **request.state.query_data,
         "echart_id": f"echart-{utils.random_id()}",
     }
-    return utils.TEMPLATES.TemplateResponse(request=request, name='query.html', context=data)
+    return utils.TEMPLATES.TemplateResponse(
+        request=request, name="query.html", context=data
+    )

@@ -1,6 +1,7 @@
 """
 common functions for all routes
 """
+
 import csv
 import datetime
 import decimal
@@ -8,16 +9,18 @@ import io
 import itertools
 import json
 import os
-import prettytable
-from pathlib import Path
-from starlette.templating import Jinja2Templates
 import uuid
+from pathlib import Path
+
+import prettytable
+from starlette.templating import Jinja2Templates
 
 VERSION = "0.11"
 APP_DIR = os.path.abspath(os.path.dirname(__file__))
 STATIC_DIR = os.path.join(APP_DIR, "frontend/static")
 TEMPLATE_DIR = os.path.join(APP_DIR, "frontend")
 TEMPLATES = Jinja2Templates(directory=TEMPLATE_DIR)
+
 
 def parse_query_data(request, form):
     """
@@ -27,11 +30,18 @@ def parse_query_data(request, form):
     """
     data = json.loads(form["data"])
     data["file"] = data["file"].strip()
-    for key in ("query", "viz", "echart_id", "file", "format", ):
-        assert key in data.keys(), f"No {key} in POST data"
+    for key in (
+        "query",
+        "viz",
+        "echart_id",
+        "file",
+        "format",
+    ):
+        assert key in data, f"No {key} in POST data"
         assert data[key] != "", f"Empty {key} string"
     data["user"] = common_context_args(request).get("user")
     return data
+
 
 def parse_dashboard_data(request, form):
     """
@@ -42,9 +52,10 @@ def parse_dashboard_data(request, form):
     data["file"] = data["file"].strip()
     assert data["file"] != "", "Empty file name"
     assert data["queries"], "zero queries chosen"
-    data["queries"] = json.dumps(tuple(el.split('/') for el in data["queries"]))
+    data["queries"] = json.dumps(tuple(el.split("/") for el in data["queries"]))
     data["user"] = common_context_args(request).get("user")
     return data
+
 
 def get_lang(file):
     """
@@ -52,6 +63,7 @@ def get_lang(file):
     """
     suffix = Path(file).suffix
     return suffix[1:]
+
 
 def format_asciitable(headers, rows):
     """
@@ -62,34 +74,45 @@ def format_asciitable(headers, rows):
     table.add_rows(rows)
     return table.get_string()
 
+
 def format_csvtable(headers, rows):
     """
     Format data into a CSV table
     """
     out = io.StringIO()
     writer = csv.writer(out)
-    for entry in itertools.chain((headers, ), rows):
+    for entry in itertools.chain((headers,), rows):
         writer.writerow(entry)
     return out.getvalue()
+
 
 def format_htmltable(request, table_id, col_names, rows, interactive):
     """
     Format data into a html table
     """
-    data = {"request": request, "table_id": table_id, }
+    data = {
+        "request": request,
+        "table_id": table_id,
+    }
     if interactive:
         data = {**data, "data_json": get_data_json(col_names, rows)}
-        response = TEMPLATES.TemplateResponse(request=request, name='partial_html_table_interactive.html', context=data)
+        response = TEMPLATES.TemplateResponse(
+            request=request, name="partial_html_table_interactive.html", context=data
+        )
     else:
         data = {**data, "col_names": col_names, "data": rows}
-        response = TEMPLATES.TemplateResponse(request=request, name='partial_html_table.html', context=data)
+        response = TEMPLATES.TemplateResponse(
+            request=request, name="partial_html_table.html", context=data
+        )
     return response.body.decode()
+
 
 def random_id():
     """
     Random id for html element
     """
-    return f"id-{str(uuid.uuid4())}"
+    return f"id-{uuid.uuid4()!s}"
+
 
 def get_data_json(headers, rows):
     """
@@ -101,7 +124,10 @@ def get_data_json(headers, rows):
         dtypes = tuple(None for _ in headers)
     headers = tuple(_data_convert(el)[0] for el in headers)
     rows = tuple(tuple(_data_convert(el)[0] for el in row) for row in rows)
-    return json.dumps({"headings": headers, "data": rows, "dtypes": dtypes}, default=str)
+    return json.dumps(
+        {"headings": headers, "data": rows, "dtypes": dtypes}, default=str
+    )
+
 
 def _data_convert(el):
     """
@@ -123,6 +149,7 @@ def _data_convert(el):
             dtype = "category"
     return el, dtype
 
+
 def common_context_args(request):
     """
     Return context args common for all endpoints
@@ -134,6 +161,7 @@ def common_context_args(request):
     }
     return data
 
+
 def _get_user(request):
     """
     Get user name, if exists
@@ -143,6 +171,7 @@ def _get_user(request):
     except:
         user = None
     return user
+
 
 def get_time():
     """

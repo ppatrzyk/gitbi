@@ -1,12 +1,15 @@
 """
 Format and send email
 """
-from email import encoders
-from email.mime.multipart import MIMEMultipart
-from email.mime.base import MIMEBase
-from email.mime.text import MIMEText
-import config
+
 import smtplib
+from email import encoders
+from email.mime.base import MIMEBase
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
+
+import config
+
 
 def send(content, format, to, file_name):
     """
@@ -15,22 +18,24 @@ def send(content, format, to, file_name):
     assert to is not None, "no email provided"
     smtp_user, smtp_pass, smtp_url, smtp_email = config.get_email_params()
     url, port = smtp_url.split(":")
-    msg = MIMEMultipart('alternative')
-    msg['Subject'] = f"Gitbi report: {file_name}"
-    msg['From'] = smtp_email
-    msg['To'] = to
+    msg = MIMEMultipart("alternative")
+    msg["Subject"] = f"Gitbi report: {file_name}"
+    msg["From"] = smtp_email
+    msg["To"] = to
     match format:
         case "html":
-            msg.attach(MIMEText("Requires html", 'plain'))
+            msg.attach(MIMEText("Requires html", "plain"))
             msg.attach(MIMEText(content, "html"))
         case "text":
-            msg.attach(MIMEText(content, 'plain'))
+            msg.attach(MIMEText(content, "plain"))
         case "csv" | "json":
-            msg.attach(MIMEText(file_name, 'plain'))
-            result = MIMEBase('application', "octet-stream")
+            msg.attach(MIMEText(file_name, "plain"))
+            result = MIMEBase("application", "octet-stream")
             result.set_payload(content)
             encoders.encode_base64(result)
-            result.add_header("Content-Disposition", f"attachment; filename={file_name}.{format}")
+            result.add_header(
+                "Content-Disposition", f"attachment; filename={file_name}.{format}"
+            )
             msg.attach(result)
     with smtplib.SMTP(url, port) as server:
         server.login(smtp_user, smtp_pass)

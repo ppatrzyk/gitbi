@@ -1,5 +1,7 @@
 import os
+
 from . import USERS
+
 
 def pytest_configure(config):
     os.environ["GITBI_AUTH"] = USERS

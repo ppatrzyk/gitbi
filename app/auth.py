@@ -2,19 +2,26 @@
 Basic Auth for app
 https://www.starlette.io/authentication/
 """
+
+import base64
+import logging
+
+import config
 from starlette.authentication import (
-    AuthCredentials, AuthenticationBackend, AuthenticationError, SimpleUser
+    AuthCredentials,
+    AuthenticationBackend,
+    AuthenticationError,
+    SimpleUser,
 )
 from starlette.middleware import Middleware
 from starlette.middleware.authentication import AuthenticationMiddleware
 from starlette.responses import PlainTextResponse
-import base64
-import logging
-import config
+
 
 class BasicAuthBackend(AuthenticationBackend):
     def __init__(self, users):
         self.users = users
+
     async def authenticate(self, conn):
         try:
             auth = conn.headers.get("Authorization")
@@ -25,9 +32,10 @@ class BasicAuthBackend(AuthenticationBackend):
             user, _pass = decoded.split(":")
             assert decoded in self.users, "Bad user"
         except Exception as e:
-            raise AuthenticationError(f"Auth error: {str(e)}")
+            raise AuthenticationError(f"Auth error: {e!s}")
         else:
             return AuthCredentials(["authenticated"]), SimpleUser(user)
+
 
 def _auth_challenge(request, exception):
     """
@@ -36,6 +44,7 @@ def _auth_challenge(request, exception):
     headers = {"WWW-Authenticate": "Basic realm=Gitbi access"}
     return PlainTextResponse(status_code=401, headers=headers, content=str(exception))
 
+
 try:
     users = config.get_auth()
     parsed = (entry.split(":") for entry in users)
@@ -43,10 +52,14 @@ try:
     for parsed_entry, raw_entry in zip(parsed, users):
         assert len(parsed_entry) == 2, f"Malformed entry: {raw_entry}"
         user_names.append(parsed_entry[0])
-    AUTH = Middleware(AuthenticationMiddleware, backend=BasicAuthBackend(users), on_error=_auth_challenge)
+    AUTH = Middleware(
+        AuthenticationMiddleware,
+        backend=BasicAuthBackend(users),
+        on_error=_auth_challenge,
+    )
     USERS = parsed
     logging.info(f"{len(user_names)} users: {', '.join(user_names)}")
 except Exception as e:
     AUTH = None
-    USERS = tuple()
-    logging.warning(f"Auth not defined: {str(e)}")
+    USERS = ()
+    logging.warning(f"Auth not defined: {e!s}")

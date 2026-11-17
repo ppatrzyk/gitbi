@@ -1,43 +1,77 @@
 """
 Main app file
 """
+
+import auth
+import routes_dashboard
+import routes_execute
+import routes_listing
+import routes_query
+import utils
 from starlette.applications import Starlette
 from starlette.exceptions import HTTPException
 from starlette.routing import Mount, Route
 from starlette.staticfiles import StaticFiles
-import auth
-import routes_dashboard, routes_execute, routes_listing, routes_query
-import utils
 
 # Error types
 # 404 RuntimeError file not accessible
 # 500 NameError variables not set
 # 500 ValueError bad query
 
+
 async def server_error(request, exc):
     data = {
         "request": request,
         "path": dict(request).get("path"),
         "code": exc.status_code,
-        "message": exc.detail
+        "message": exc.detail,
     }
-    return utils.TEMPLATES.TemplateResponse(request=request, name='partial_error.html', context=data, status_code=exc.status_code)
+    return utils.TEMPLATES.TemplateResponse(
+        request=request,
+        name="partial_error.html",
+        context=data,
+        status_code=exc.status_code,
+    )
+
 
 routes = [
     # routes execute
-    Route('/execute/{db:str}', endpoint=routes_execute.execute_route, methods=("POST", ), name="execute_route"),
-    Route('/report/{db:str}/{file:str}/{format:str}', endpoint=routes_execute.report_route, name="report_route"),
+    Route(
+        "/execute/{db:str}",
+        endpoint=routes_execute.execute_route,
+        methods=("POST",),
+        name="execute_route",
+    ),
+    Route(
+        "/report/{db:str}/{file:str}/{format:str}",
+        endpoint=routes_execute.report_route,
+        name="report_route",
+    ),
     # routes_listing
     Route("/", endpoint=routes_listing.home_route, name="home_route"),
-    Route("/resources", endpoint=routes_listing.resources_route, name="resources_route"),
-    Route("/dbdetails/{db:str}", endpoint=routes_listing.db_details_route, name="db_details_route"),
+    Route(
+        "/resources", endpoint=routes_listing.resources_route, name="resources_route"
+    ),
+    Route(
+        "/dbdetails/{db:str}",
+        endpoint=routes_listing.db_details_route,
+        name="db_details_route",
+    ),
     # routes query
-    Route('/query/{db:str}', endpoint=routes_query.query_route, name="query_route"),
-    Route('/query/{db:str}/{file:str}', endpoint=routes_query.saved_query_route, name="saved_query_route"),
+    Route("/query/{db:str}", endpoint=routes_query.query_route, name="query_route"),
+    Route(
+        "/query/{db:str}/{file:str}",
+        endpoint=routes_query.saved_query_route,
+        name="saved_query_route",
+    ),
     # routes dashboard
-    Route('/dashboard/{file:str}', endpoint=routes_dashboard.dashboard_route, name="dashboard_route"),
+    Route(
+        "/dashboard/{file:str}",
+        endpoint=routes_dashboard.dashboard_route,
+        name="dashboard_route",
+    ),
     # static
-    Mount('/static', app=StaticFiles(directory=utils.STATIC_DIR), name="static"),
+    Mount("/static", app=StaticFiles(directory=utils.STATIC_DIR), name="static"),
 ]
 
 exception_handlers = {
@@ -52,5 +86,5 @@ app = Starlette(
     debug=True,
     routes=routes,
     exception_handlers=exception_handlers,
-    middleware=middleware
+    middleware=middleware,
 )
