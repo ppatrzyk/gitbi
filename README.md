@@ -80,7 +80,7 @@ There are 2 databases named _db1_ and _db2_. _db1_ has 2 queries, one of them ha
 For configuration you'd need to set the following environment variables:
 
 ```
-GITBI_REPO_DIR=<path_to_repo>
+CONFIG_DIR=<path_to_repo>
 GITBI_DB1_CONN=<conn_str_to_db1>
 GITBI_DB1_TYPE=<type_db1>
 GITBI_DB2_CONN=<conn_str_to_db2>
@@ -170,11 +170,19 @@ git config receive.denyCurrentBranch updateInstead
 # install dependencies
 pip3 install -r requirements.txt
 
+# prod
+pip3 install -r requirements.txt
+pip3 install clickhouse-driver duckdb Jinja2 Markdown prettytable prql-python psycopg psycopg-binary sqlparse starlette python-multipart uvicorn
+
+# dev
+pip3 install -r requirements-dev.txt
+pip3 install httpx2 pytest ruff
+
 # run with sample repo
-./start_app.sh
+uvicorn --app-dir=app main:app
 
 # run with testing repo
-GITBI_REPO_DIR="./tests/gitbi-testing" GITBI_SQLITE_CONN="$(realpath ./tests/gitbi-testing/db.sqlite)" GITBI_SQLITE_TYPE=sqlite ./start_app.sh
+GITBI_SQLITE_TYPE=sqlite GITBI_SQLITE_CONN=./tests/gitbi-testing/db.sqlite uvicorn --log-level=debug --app-dir=app main:app
 
 # build image
 podman build -t ghcr.io/ppatrzyk/gitbi:dev .

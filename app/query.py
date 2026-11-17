@@ -7,7 +7,7 @@ import duckdb
 import os
 import prql_python as prql
 import psycopg
-import repo
+import config
 import sqlite3
 import sqlparse
 import utils
@@ -23,7 +23,7 @@ def list_tables(db):
     """
     List tables in db
     """
-    db_type, _conn_str = repo.get_db_params(db)
+    db_type, _conn_str = config.get_db_params(db)
     match db_type:
         case "sqlite" | "duckdb":
             query = "SELECT tbl_name FROM sqlite_master where type='table';"
@@ -41,7 +41,7 @@ def list_table_data_types(db, tables):
     """
     List columns and their data types for given tables in DB
     """
-    db_type, _conn_str = repo.get_db_params(db)
+    db_type, _conn_str = config.get_db_params(db)
     if tables:
         match db_type:
             # Every query must return table with 3 cols: table_name, column_name, data_type
@@ -66,14 +66,14 @@ def list_table_data_types(db, tables):
     else:
         rows = tuple()
     col_names = ("table", "column", "type", )
-    table = utils.format_htmltable(utils.random_id(), col_names, rows, True)
+    table = utils.format_htmltable(request, utils.random_id(), col_names, rows, True)
     return table
 
 def execute(db, query, lang):
     """
     Executes query and returns formatted table
     """
-    db_type, conn_str = repo.get_db_params(db)
+    db_type, conn_str = config.get_db_params(db)
     driver = DATABASES[db_type]
     start = time()
     if lang == "prql":
@@ -82,11 +82,11 @@ def execute(db, query, lang):
     duration_ms = round(1000*(time()-start))
     return col_names, rows, duration_ms
 
-def execute_saved(db, file, state):
+def execute_saved(db, file):
     """
     Executes from saved query
     """
-    query, lang = repo.get_query(db=db, file=file, state=state)
+    query, lang = config.get_query(db=db, file=file)
     return execute(db, query, lang)
 
 def _execute_query(driver, conn_str, query):

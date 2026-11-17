@@ -1,9 +1,8 @@
 <div class="container">
     <h2><img class="icon icon-dashboard" alt="">Dashboards</h2>
-    <a class="pure-button" href="{{ request.app.url_path_for('dashboard_new_route') }}">new dashboard</a>
     <ul class="mylist">
     {% for dashboard in dashboards %}
-        <li><a href="{{ request.app.url_path_for('dashboard_route', state=state, file=dashboard) }}">{{ dashboard|e }}</a></li>
+        <li><a href="{{ request.app.url_path_for('dashboard_route', file=dashboard) }}">{{ dashboard|e }}</a></li>
     {% endfor %}
     </ul>
     {% for db, queries in databases.items() %}
@@ -15,7 +14,7 @@
             </div>
             <ul class="mylist">
             {% for query in queries %}
-                <li><a href="{{ request.app.url_path_for('saved_query_route', state=state, db=db, file=query) }}">{{ query|e }}</a></li>
+                <li><a href="{{ request.app.url_path_for('saved_query_route', db=db, file=query) }}">{{ query|e }}</a></li>
             {% endfor %}
             </ul>
         </div>

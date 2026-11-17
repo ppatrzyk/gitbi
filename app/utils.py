@@ -13,11 +13,11 @@ from pathlib import Path
 from starlette.templating import Jinja2Templates
 import uuid
 
-VERSION = "0.10"
+VERSION = "0.11"
 APP_DIR = os.path.abspath(os.path.dirname(__file__))
 STATIC_DIR = os.path.join(APP_DIR, "frontend/static")
 TEMPLATE_DIR = os.path.join(APP_DIR, "frontend")
-TEMPLATES = Jinja2Templates(directory=TEMPLATE_DIR, autoescape=False)
+TEMPLATES = Jinja2Templates(directory=TEMPLATE_DIR)
 
 def parse_query_data(request, form):
     """
@@ -72,17 +72,17 @@ def format_csvtable(headers, rows):
         writer.writerow(entry)
     return out.getvalue()
 
-def format_htmltable(table_id, col_names, rows, interactive):
+def format_htmltable(request, table_id, col_names, rows, interactive):
     """
     Format data into a html table
     """
-    data = {"request": None, "table_id": table_id, }
+    data = {"request": request, "table_id": table_id, }
     if interactive:
         data = {**data, "data_json": get_data_json(col_names, rows)}
-        response = TEMPLATES.TemplateResponse(name='partial_html_table_interactive.html', context=data)
+        response = TEMPLATES.TemplateResponse(request=request, name='partial_html_table_interactive.html', context=data)
     else:
         data = {**data, "col_names": col_names, "data": rows}
-        response = TEMPLATES.TemplateResponse(name='partial_html_table.html', context=data)
+        response = TEMPLATES.TemplateResponse(request=request, name='partial_html_table.html', context=data)
     return response.body.decode()
 
 def random_id():
@@ -131,7 +131,6 @@ def common_context_args(request):
         "request": request,
         "version": VERSION,
         "user": _get_user(request),
-        "state": (request.path_params.get("state") or "HEAD"),
     }
     return data
 

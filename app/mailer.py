@@ -5,7 +5,7 @@ from email import encoders
 from email.mime.multipart import MIMEMultipart
 from email.mime.base import MIMEBase
 from email.mime.text import MIMEText
-import repo
+import config
 import smtplib
 
 def send(content, format, to, file_name):
@@ -13,7 +13,7 @@ def send(content, format, to, file_name):
     Main function for sending alerts/reports
     """
     assert to is not None, "no email provided"
-    smtp_user, smtp_pass, smtp_url, smtp_email = repo.get_email_params()
+    smtp_user, smtp_pass, smtp_url, smtp_email = config.get_email_params()
     url, port = smtp_url.split(":")
     msg = MIMEMultipart('alternative')
     msg['Subject'] = f"Gitbi report: {file_name}"

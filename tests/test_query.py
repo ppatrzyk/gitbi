@@ -14,9 +14,9 @@ def test_execute():
 
 def test_execute_saved():
     with pytest.raises(Exception):
-        execute_saved("sqlite", "myquery_bad.sql", "HEAD")
+        execute_saved("sqlite", "myquery_bad.sql")
     with does_not_raise():
-        execute_saved("sqlite", "myquery.sql", "HEAD")
+        execute_saved("sqlite", "myquery.sql")
 
 def test_list_tables():
     assert list_tables("sqlite") == ["mytable", ]

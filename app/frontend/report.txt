@@ -1,4 +1,4 @@
-{{ db|e }} | {{ file|e }} | {{ state|e }}
+{{ db|e }} | {{ file|e }}
 
 Returned {{ no_rows|e }} rows in {{ duration|e }}ms
 Executed on {{ time|e }}

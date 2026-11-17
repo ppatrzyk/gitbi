@@ -7,7 +7,7 @@ from starlette.responses import PlainTextResponse
 import logging
 import mailer
 import query
-import repo
+import config
 import utils
 
 async def execute_route(request):
@@ -23,7 +23,7 @@ async def execute_route(request):
             query=query_data.get("query"),
             lang=utils.get_lang(query_data.get("file"))
         )
-        format = query_data.get("format")
+        report_format = query_data.get("format")
         no_rows = len(rows)
         data_json = utils.get_data_json(col_names, rows)
         data = {
@@ -34,13 +34,13 @@ async def execute_route(request):
             "data_json": data_json,
             "echart_id": query_data["echart_id"],
         }
-        match format:
+        match report_format:
             case "interactive-table" | "simple-table":
-                interactive = (format == "interactive-table")
+                interactive = (report_format == "interactive-table")
                 table_id = f"results-table-{utils.random_id()}"
-                table = utils.format_htmltable(table_id, col_names, rows, interactive)
+                table = utils.format_htmltable(request, table_id, col_names, rows, interactive)
             case "text" | "csv" | "json":
-                match format:
+                match report_format:
                     case "text":
                         table = utils.format_asciitable(col_names, rows)
                     case "csv":
@@ -52,7 +52,7 @@ async def execute_route(request):
                 raise ValueError(f"Bad format: {other}")
         data = {**data, "table": table}
         headers = {"Gitbi-Row-Count": str(no_rows)}
-        response = utils.TEMPLATES.TemplateResponse(name='partial_result.html', headers=headers, context=data)
+        response = utils.TEMPLATES.TemplateResponse(request=request, name='partial_result.html', headers=headers, context=data)
     except Exception as e:
         status_code = 404 if isinstance(e, RuntimeError) else 500
         raise HTTPException(status_code=status_code, detail=str(e))
@@ -65,9 +65,9 @@ async def report_route(request):
     Executes saved query and passes ready result in given format
     """
     try:
-        format = request.path_params.get("format")
-        query_args = {k: request.path_params[k] for k in ("db", "file", "state")}
-        query_str, _lang = repo.get_query(**query_args)
+        report_format = request.path_params.get("format")
+        query_args = {k: request.path_params[k] for k in ("db", "file")}
+        query_str, _lang = config.get_query(**query_args)
         col_names, rows, duration_ms = query.execute_saved(**query_args)
         no_rows = len(rows)
         headers = {"Gitbi-Row-Count": str(no_rows), "Gitbi-Duration-Ms": str(duration_ms)}
@@ -80,18 +80,18 @@ async def report_route(request):
             "no_rows": no_rows,
             "query_str": query_str,
         }
-        match format:
+        match report_format:
             case "html":
-                table = utils.format_htmltable(table_id, col_names, rows, False)
+                table = utils.format_htmltable(request, table_id, col_names, rows, False)
                 data = {
                     **common_data,
                     "table": table,
                 }
-                response = utils.TEMPLATES.TemplateResponse(name='report.html', headers=headers, context=data)
+                response = utils.TEMPLATES.TemplateResponse(request=request, name='report.html', headers=headers, context=data)
             case "dashboard":
-                table = utils.format_htmltable(table_id, col_names, rows, True)
+                table = utils.format_htmltable(request, table_id, col_names, rows, True)
                 data_json = utils.get_data_json(col_names, rows)
-                viz_str = repo.get_query_viz(**query_args)
+                viz_str = config.get_query_viz(**query_args)
                 data = {
                     **common_data,
                     "table": table,
@@ -100,14 +100,14 @@ async def report_route(request):
                     "tab_id": utils.random_id(),
                     "data_json": data_json,
                 }
-                response = utils.TEMPLATES.TemplateResponse(name='partial_dashboard_entry.html', context=data)
+                response = utils.TEMPLATES.TemplateResponse(request=request, name='partial_dashboard_entry.html', context=data)
             case "text":
                 table = utils.format_asciitable(col_names, rows)
                 data = {
                     **common_data,
                     "table": table,
                 }
-                response = utils.TEMPLATES.TemplateResponse(name='report.txt', headers=headers, context=data, media_type="text/plain")
+                response = utils.TEMPLATES.TemplateResponse(request=request, name='report.txt', headers=headers, context=data, media_type="text/plain")
             case "json":
                 response = PlainTextResponse(content=utils.get_data_json(col_names, rows), headers=headers, media_type="application/json")
             case "csv":

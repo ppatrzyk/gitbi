@@ -1,5 +1,4 @@
-gitbivenv
-gitbi-example
+venv
 **/__pycache__
 **/.pytest_cache
 .vscode

@@ -12,13 +12,5 @@
             <p>[Readme file is missing]</p>
             {% endif %}
         </div>
-
-        <input id="commits" type="radio" name="tabs">
-        <label class="tabs-label" for="commits">Commits</label>
-        <div class="tab">
-            <h1>Commits</h1>
-            {{ commits_table }}
-        </div>
     </div>
-    <script type="text/javascript">{% include 'js/commit_links.js' %}</script>
 {% endblock %}

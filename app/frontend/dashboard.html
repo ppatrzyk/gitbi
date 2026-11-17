@@ -8,20 +8,11 @@
 {% endblock %}
 {% block content %}
     <h1><img class="icon icon-dashboard" alt="">{{ file }}</h1>
-        <div
-        class="pure-button"
-        hx-get="{{ request.app.url_path_for('dashboard_delete_route', file=file) }}"
-        hx-trigger="click"
-        hx-target-error="#htmx-error"
-        hx-swap="innerHTML"
-    >
-        Delete this dashboard
-    </div>
     <hr>
     {% for db, query, id in dashboard_conf %}
     <a
         class="hidden"
-        hx-get="{{ request.app.url_path_for('report_route', db=db, file=query, state=state, format='dashboard') }}"
+        hx-get="{{ request.app.url_path_for('report_route', db=db, file=query, format='dashboard') }}"
         hx-trigger="load"
         hx-target="#{{ id }}"
         hx-target-error="#htmx-error"

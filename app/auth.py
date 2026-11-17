@@ -10,7 +10,7 @@ from starlette.middleware.authentication import AuthenticationMiddleware
 from starlette.responses import PlainTextResponse
 import base64
 import logging
-import repo
+import config
 
 class BasicAuthBackend(AuthenticationBackend):
     def __init__(self, users):
@@ -37,7 +37,7 @@ def _auth_challenge(request, exception):
     return PlainTextResponse(status_code=401, headers=headers, content=str(exception))
 
 try:
-    users = repo.get_auth()
+    users = config.get_auth()
     parsed = (entry.split(":") for entry in users)
     user_names = []
     for parsed_entry, raw_entry in zip(parsed, users):

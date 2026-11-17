@@ -16,9 +16,6 @@
     <script type="text/javascript">
       {% include 'js/table.js' %}
     </script>
-    <script type="text/javascript">
-      {% include 'js/dashboard_creation.js' %}
-    </script>
     {% block extendhead %}{% endblock %}
     <title>Gitbi | {% block title %}{% endblock %}</title>
 </head>
@@ -27,20 +24,17 @@
   <div class="pure-u-1 pure-u-md-1-4 col sidebar">
     <div class="pure-g">
       <div class="container">
-        <h1><a href="{{ request.app.url_path_for('home_default_route') }}">GITBI</a></h1>
+        <h1><a href="{{ request.app.url_path_for('home_route') }}">GITBI</a></h1>
         {% if user is not none %}
         <p>User: {{ user|e }}</p>
         {% endif %}  
-        {% if state is not none %}
-        <p>State: {{ state|e }}</p>
-        {% endif %}
       </div>
     </div>
     <div class="pure-g">
       <div id="resources-list"></div>
       <a
           class="hidden"
-          hx-get="{{ request.app.url_path_for('resources_route', state=state) }}"
+          hx-get="{{ request.app.url_path_for('resources_route') }}"
           hx-trigger="load"
           hx-target="#resources-list"
           hx-target-error="#htmx-error"
