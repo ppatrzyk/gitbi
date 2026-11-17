@@ -9,10 +9,18 @@ Features:
 - Mailing reports and alerts
 - Currently supported DBs: clickhouse, duckdb (query csv files), postgresql, sqlite
 
-Test it now with sample dbs and config:
-
-```
-podman run -p 8000:8000 ghcr.io/ppatrzyk/gitbi:v0.11
+```bash
+podman run \
+  -p 8000:8000 \
+  -v ./example:/gitbi/example \
+  -e GITBI_CONFIG_DIR=./example \
+  -e GITBI_POKEMON_TYPE=sqlite \
+  -e GITBI_POKEMON_CONN=./example/pokemon.sqlite \
+  -e GITBI_SHOOTINGS_TYPE=duckdb \
+  -e GITBI_SHOOTINGS_CONN=":memory:" \
+  -e GITBI_SUICIDE_TYPE=sqlite \
+  -e GITBI_SUICIDE_CONN=./example/suicide.sqlite \
+  ghcr.io/ppatrzyk/gitbi:v0.11
 ```
 
 Or view [screenshots](screenshots.md).
@@ -57,7 +65,7 @@ sqlite | path to db file (or `:memory:`)
 
 Assume you have directory with the following structure:
 
-```
+```bash
 repo
 ├── _dashboards
 │   └── my_dashboard.json
@@ -77,7 +85,7 @@ There are 2 databases named _db1_ and _db2_. _db1_ has 2 queries, one of them ha
 
 For configuration you'd need to set the following environment variables:
 
-```
+```bash
 GITBI_CONFIG_DIR=<path_to_repo>
 GITBI_DB1_CONN=<conn_str_to_db1>
 GITBI_DB1_TYPE=<type_db1>
@@ -91,7 +99,7 @@ GITBI_DB2_TYPE=<type_db2>
 
 Visualization is a JSON file with the following format:
 
-```
+```json
 {
   "type": "scatter|line|bar|heatmap",
   "xaxis": <column_name>,
@@ -105,7 +113,7 @@ Visualization is a JSON file with the following format:
 
 Dashboard is a JSON file with the following format, list can have any number of entries:
 
-```
+```json
 [
   [
     "<db_name>",
@@ -128,7 +136,7 @@ For every query, you have a _report_ endpoint that provides query results in htm
 
 Scheduling is possible via any external service, most commonly CRON. Example:
 
-```
+```bash
 # Report sent at 6am
 0 6 * * * curl -s -u <user>:<password> <report_url>?mail=<your_email>
 
@@ -138,7 +146,7 @@ Scheduling is possible via any external service, most commonly CRON. Example:
 
 If you don't want to setup email credentials in _Gitbi_, you can still use CRON to to send reports with other tools. Examples:
 
-```
+```bash
 # HTML report via sendmail
 * * * * * echo -e "Subject: Gitbi report\nContent-Type: text/html\n\n$(curl -s -u <user>:<password> <report_url>)" | /usr/sbin/sendmail -f <sender_email> <recipient_email>
 
@@ -150,7 +158,7 @@ You can copy `report_url` from every query page.
 
 ## Development
 
-```
+```bash
 # prod
 pip3 install -r requirements.txt
 pip3 install clickhouse-driver duckdb Jinja2 Markdown prettytable prql-python psycopg psycopg-binary sqlparse starlette python-multipart uvicorn

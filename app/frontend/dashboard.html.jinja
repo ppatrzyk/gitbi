@@ -15,7 +15,8 @@
         hx-get="{{ request.app.url_path_for('report_route', db=db, file=query, format='dashboard') }}"
         hx-trigger="load"
         hx-target="#{{ id }}"
-        hx-target-error="#htmx-error"
+        hx-status:4xx="target:#htmx-error"
+        hx-status:5xx="target:#htmx-error"
         hx-swap="outerHTML"
     >
         Load dashboard

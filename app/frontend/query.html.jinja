@@ -44,7 +44,8 @@
             hx-vals="js:{data: query_format()}"
             hx-trigger="click"
             hx-target="#query-result"
-            hx-target-error="#htmx-error"
+            hx-status:4xx="target:#htmx-error"
+            hx-status:5xx="target:#htmx-error"
             hx-swap="innerHTML"
         >
             Run
