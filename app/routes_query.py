@@ -59,5 +59,5 @@ async def _query(request):
         "echart_id": f"echart-{utils.random_id()}",
     }
     return utils.TEMPLATES.TemplateResponse(
-        request=request, name="query.html", context=data
+        request=request, name="query.html.jinja", context=data
     )

@@ -6,6 +6,7 @@
     --blue3: #657594;
     --black: #101820;
     --font-size: 18px;
+    --font-family: system-ui, sans-serif;
 }
 body {
     color: var(--black);
@@ -65,8 +66,8 @@ hr {
     margin-bottom: 1em;
 }
 .icon {
-    height: 1em;
-    width: 1em;
+    height: 24px;
+    width: 24px;
     vertical-align: middle;
     border: 0;
     margin-right: 0.25em;

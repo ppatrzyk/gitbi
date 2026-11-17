@@ -28,7 +28,7 @@ async def server_error(request, exc):
     }
     return utils.TEMPLATES.TemplateResponse(
         request=request,
-        name="partial_error.html",
+        name="partial_error.html.jinja",
         context=data,
         status_code=exc.status_code,
     )

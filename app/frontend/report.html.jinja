@@ -14,7 +14,7 @@
             Returned {{ no_rows|e }} rows in {{ duration|e }}ms<br>
             Executed on {{ time|e }}<br>
         </p>
-        {% include 'partial_query_links.html' %}
+        {% include 'partial_query_links.html.jinja' %}
         <h2>Query</h2>
         <pre class="text-result"><code>{{ query_str }}</code></pre>
         <h2>Result</h2>

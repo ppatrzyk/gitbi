@@ -1,4 +1,4 @@
-{% extends "base.html" %}
+{% extends "base.html.jinja" %}
 {% block title %}Dashboard | {{ file }}{% endblock %}
 {% block extendhead %}
     <script src="{{ request.app.url_path_for('static', path='/js/echarts.min.js') }}"></script>

@@ -18,7 +18,7 @@ async def home_route(request):
             "readme": config.get_readme(),
         }
         response = utils.TEMPLATES.TemplateResponse(
-            request=request, name="index.html", context=data
+            request=request, name="index.html.jinja", context=data
         )
     except Exception as e:
         raise HTTPException(status_code=404, detail=str(e))
@@ -37,7 +37,7 @@ async def resources_route(request):
             "dashboards": config.list_dashboards(),
         }
         response = utils.TEMPLATES.TemplateResponse(
-            request=request, name="partial_resources.html", context=data
+            request=request, name="partial_resources.html.jinja", context=data
         )
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
@@ -60,7 +60,7 @@ async def db_details_route(request):
             **request.path_params,
         }
         response = utils.TEMPLATES.TemplateResponse(
-            request=request, name="db_details.html", context=data
+            request=request, name="db_details.html.jinja", context=data
         )
     except Exception as e:
         status_code = 404 if isinstance(e, RuntimeError) else 500

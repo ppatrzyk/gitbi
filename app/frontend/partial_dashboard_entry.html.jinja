@@ -4,7 +4,7 @@
     Returned {{ no_rows|e }} rows in {{ duration|e }}ms<br>
     Executed on {{ time|e }}
 </p>
-{% include 'partial_query_links.html' %}
+{% include 'partial_query_links.html.jinja' %}
 <div id="{{ tab_id }}" class="tabs">
     <input id="table-{{ tab_id }}" type="radio" name="tabs-{{ tab_id }}" checked="checked">
     <label class="tabs-label" for="table-{{ tab_id }}">Visualization</label>

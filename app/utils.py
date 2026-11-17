@@ -101,12 +101,12 @@ def format_htmltable(request, table_id, col_names, rows, interactive):
     if interactive:
         data = {**data, "data_json": get_data_json(col_names, rows)}
         response = TEMPLATES.TemplateResponse(
-            request=request, name="partial_html_table_interactive.html", context=data
+            request=request, name="partial_html_table_interactive.html.jinja", context=data
         )
     else:
         data = {**data, "col_names": col_names, "data": rows}
         response = TEMPLATES.TemplateResponse(
-            request=request, name="partial_html_table.html", context=data
+            request=request, name="partial_html_table.html.jinja", context=data
         )
     return response.body.decode()
 
@@ -137,7 +137,7 @@ def _data_convert(el):
     """
     Convert complex types such that it can be passed to json.dumps
     Data type names determined for echarts
-    https://echarts.apache.org/en/option.html#xAxis.type
+    https://echarts.apache.org/en/option.html.jinja#xAxis.type
     """
     match el:
         case decimal.Decimal() | float():

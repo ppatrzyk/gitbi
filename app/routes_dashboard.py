@@ -26,7 +26,7 @@ async def dashboard_route(request):
             "dashboard_conf": dashboard_conf,
         }
         response = utils.TEMPLATES.TemplateResponse(
-            request=request, name="dashboard.html", context=data
+            request=request, name="dashboard.html.jinja", context=data
         )
     except Exception as e:
         status_code = 404 if isinstance(e, RuntimeError) else 500
