@@ -58,7 +58,10 @@ async def execute_route(request):
         data = {**data, "table": table}
         headers = {"Gitbi-Row-Count": str(no_rows)}
         response = utils.TEMPLATES.TemplateResponse(
-            request=request, name="partial_result.html.jinja", headers=headers, context=data
+            request=request,
+            name="partial_result.html.jinja",
+            headers=headers,
+            context=data,
         )
     except Exception as e:
         status_code = 404 if isinstance(e, RuntimeError) else 500
@@ -101,7 +104,10 @@ async def report_route(request):
                     "table": table,
                 }
                 response = utils.TEMPLATES.TemplateResponse(
-                    request=request, name="report.html.jinja", headers=headers, context=data
+                    request=request,
+                    name="report.html.jinja",
+                    headers=headers,
+                    context=data,
                 )
             case "dashboard":
                 table = utils.format_htmltable(request, table_id, col_names, rows, True)
@@ -116,7 +122,9 @@ async def report_route(request):
                     "data_json": data_json,
                 }
                 response = utils.TEMPLATES.TemplateResponse(
-                    request=request, name="partial_dashboard_entry.html.jinja", context=data
+                    request=request,
+                    name="partial_dashboard_entry.html.jinja",
+                    context=data,
                 )
             case "text":
                 table = utils.format_asciitable(col_names, rows)

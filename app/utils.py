@@ -101,7 +101,9 @@ def format_htmltable(request, table_id, col_names, rows, interactive):
     if interactive:
         data = {**data, "data_json": get_data_json(col_names, rows)}
         response = TEMPLATES.TemplateResponse(
-            request=request, name="partial_html_table_interactive.html.jinja", context=data
+            request=request,
+            name="partial_html_table_interactive.html.jinja",
+            context=data,
         )
     else:
         data = {**data, "col_names": col_names, "data": rows}

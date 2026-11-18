@@ -9,7 +9,7 @@
         <div>
             <h2><img class="icon icon-db" alt="">{{ db|e }}</h2>
             <div class="pure-button-group" role="group">
-                <a class="pure-button"  href="{{ request.app.url_path_for('query_route', db=db) }}">new query</a>
+                <a class="pure-button"  href="{{ request.app.url_path_for('query_route', db=db) }}">query</a>
                 <a class="pure-button"  href="{{ request.app.url_path_for('db_details_route', db=db) }}">docs</a>
             </div>
             <ul class="mylist">

@@ -80,8 +80,8 @@
                 <label for="echart-options-yaxis">Y axis<select id="echart-options-yaxis"></select></label>
                 <label for="echart-options-zaxis">Z axis<select id="echart-options-zaxis"></select></label>
                 <label for="echart-options-group">Group<select id="echart-options-group"></select></label>
-                <button id="echart-render" class="pure-button" onclick="makeViz()">Render chart</button>
             </form>
+            <button id="echart-render" class="pure-button" onclick="makeViz()">Render chart</button>
             <div id="{{ echart_id }}"></div>
             <script type="text/javascript">
                 var chartOptions = {{ viz }};
