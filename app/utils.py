@@ -16,7 +16,7 @@ import jinja2
 import prettytable
 from starlette.templating import Jinja2Templates
 
-VERSION = "0.11"
+VERSION = "0.12"
 APP_DIR = os.path.abspath(os.path.dirname(__file__))
 STATIC_DIR = os.path.join(APP_DIR, "frontend/static")
 TEMPLATE_DIR = os.path.join(APP_DIR, "frontend")
@@ -29,7 +29,7 @@ TEMPLATES = Jinja2Templates(
 
 def parse_query_data(request, form):
     """
-    Parses and validates query data generated from query_format()
+    Parses and validates query data generated from queryFormat()
     app/frontend/js/code_editor.js
     query, user, viz: string
     """

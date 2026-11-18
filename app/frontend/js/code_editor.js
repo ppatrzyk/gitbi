@@ -3,18 +3,18 @@ import hljs from '{{ request.app.url_path_for("static", path="/js/highlight/core
 import sql from '{{ request.app.url_path_for("static", path="/js/highlight/sql.min.js") }}'
 hljs.configure({ignoreUnescapedHTML: true});
 hljs.registerLanguage('sql', sql);
-var query_editor = document.getElementById("query-editor");
-window.query_jar = CodeJar(query_editor, hljs.highlightElement);
-function query_format() {
+var queryEditorEl = document.getElementById("query-editor");
+window.queryJar = CodeJar(queryEditorEl, hljs.highlightElement);
+function queryFormat() {
     var query_lang = document.getElementById("query-lang").value;
     var format = document.getElementById("result-format").value.trim();
-    var viz = JSON.stringify(window.get_chart_options());
-    var data = {query: query_jar.toString(), viz: viz, query_lang: query_lang, format: format, echart_id: '{{ echart_id }}'};
+    var viz = JSON.stringify(window.getChartOptions());
+    var data = {query: queryJar.toString(), viz: viz, query_lang: query_lang, format: format, echart_id: '{{ echart_id }}'};
     return JSON.stringify(data)
 }
-window.query_format = query_format;
-function generate_link() {
-    var data = JSON.parse(query_format());
+window.queryFormat = queryFormat;
+function generateLink() {
+    var data = JSON.parse(queryFormat());
     delete data.echart_id;
     var path = window.location.pathname.split("/").slice(0, 3).join("/");
     var query = "?";
@@ -24,4 +24,4 @@ function generate_link() {
     var url = `${window.location.origin}${path}${query}`;
     alert(url);
 }
-window.generate_link = generate_link;
+window.generateLink = generateLink;

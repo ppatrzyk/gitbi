@@ -7,7 +7,7 @@ Features:
 - You can write queries using either SQL or [PRQL](https://github.com/PRQL/prql)
 - Interactive visualizations with [ECharts](https://github.com/apache/echarts)
 - Mailing reports and alerts
-- Currently supported DBs: clickhouse, duckdb (query csv files), postgresql, sqlite
+- Supported DBs: Clickhouse, DuckDB, PostgreSQL, SQLite
 
 ```bash
 podman run \
@@ -20,7 +20,7 @@ podman run \
   -e GITBI_SHOOTINGS_CONN=":memory:" \
   -e GITBI_SUICIDE_TYPE=sqlite \
   -e GITBI_SUICIDE_CONN=./example/suicide.sqlite \
-  ghcr.io/ppatrzyk/gitbi:v0.11
+  ghcr.io/ppatrzyk/gitbi:v0.12
 ```
 
 Or view [screenshots](screenshots.md).
@@ -32,7 +32,7 @@ _Gitbi_ requires the following to run:
 ### Configuration directory
 
 Directory needs to have the following structure:
-- directories in repo root refer to databases
+- directories in root refer to databases
 - files in each directory are queries/visualizations to be run against respective database
     - files with `.sql` or `.prql` extension are queries
     - (optional) files with `.json` extension are saved visualizations
@@ -66,7 +66,7 @@ sqlite | path to db file (or `:memory:`)
 Assume you have directory with the following structure:
 
 ```bash
-repo
+directory
 ├── _dashboards
 │   └── my_dashboard.json
 ├── db1
@@ -86,7 +86,7 @@ There are 2 databases named _db1_ and _db2_. _db1_ has 2 queries, one of them ha
 For configuration you'd need to set the following environment variables:
 
 ```bash
-GITBI_CONFIG_DIR=<path_to_repo>
+GITBI_CONFIG_DIR=<path_to_directory>
 GITBI_DB1_CONN=<conn_str_to_db1>
 GITBI_DB1_TYPE=<type_db1>
 GITBI_DB2_CONN=<conn_str_to_db2>
@@ -167,7 +167,7 @@ pip3 install clickhouse-driver duckdb Jinja2 Markdown prettytable prql-python ps
 pip3 install -r requirements-dev.txt
 pip3 install httpx2 pytest ruff
 
-# run with example repo
+# run with example config
 GITBI_CONFIG_DIR=./example \
 GITBI_POKEMON_TYPE=sqlite \
 GITBI_POKEMON_CONN=./example/pokemon.sqlite \
@@ -177,7 +177,7 @@ GITBI_SUICIDE_TYPE=sqlite \
 GITBI_SUICIDE_CONN=./example/suicide.sqlite \
 uvicorn --log-level=debug --app-dir=app main:app
 
-# run with testing repo
+# run with testing config
 GITBI_CONFIG_DIR=./tests \
 GITBI_SQLITE_TYPE=sqlite \
 GITBI_SQLITE_CONN=./tests/gitbi-testing/db.sqlite \

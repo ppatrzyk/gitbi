@@ -4,7 +4,7 @@
     try {
         var table_id = '{{ table_id }}';
         var data = {{ data_json }};
-        create_table(table_id, data)
+        createTable(table_id, data)
     } catch (error) {
         console.error(`Failed to make interactive table id=${table_id}`);
         console.error(error);
